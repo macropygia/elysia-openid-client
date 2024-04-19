@@ -2,10 +2,11 @@
 
 **English** | [日本語](README.ja.md)
 
-[OpenID Connect](https://openid.net/) client (RP, Reyling Party) plugin for [ElysiaJS](https://elysiajs.com/), wrapping [openid-client](https://github.com/panva/node-openid-client).
+[OpenID Connect](https://openid.net/) client (RP, Relying Party) plugin for [ElysiaJS](https://elysiajs.com/), wrapping [openid-client](https://github.com/panva/node-openid-client).
 
 - **This package is currently unstable.**
   - Breaking changes may occur without any notice, even if in patch releases.
+- [TypeDoc](https://macropygia.github.io/elysia-openid-client/)
 
 ## Specifications/limitations
 
@@ -27,6 +28,10 @@
   - `openid` is automatically added to `scope`
 
 ## Usage
+
+```bash
+bun add elysia-openid-clitent
+```
 
 ```typescript
 import Elysia from "elysia";

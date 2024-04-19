@@ -6,6 +6,7 @@
 
 - **このパッケージは不安定版です**
   - パッチリリースを含め予告なく破壊的変更が行われる場合があります
+- [TypeDoc](https://macropygia.github.io/elysia-openid-client/)
 
 ## 仕様・制限事項
 
@@ -27,6 +28,10 @@
   - `scope` には自動で `openid` が追加される
 
 ## Usage
+
+```bash
+bun add elysia-openid-clitent
+```
 
 ```typescript
 import Elysia from "elysia";
