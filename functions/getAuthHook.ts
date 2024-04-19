@@ -90,7 +90,7 @@ export function getAuthHook(
           return;
         }
 
-        resolvedClaims = this.getClaims(idToken);
+        resolvedClaims = this.getClaimsFromIdToken(idToken);
         const { exp } = resolvedClaims;
 
         // Expired (auto refresh disabled or refresh token does not exist)
@@ -119,7 +119,7 @@ export function getAuthHook(
             extendCookieExpiration(this, cookie);
 
             resolvedSession = newSession;
-            resolvedClaims = this.getClaims(newSession.idToken);
+            resolvedClaims = this.getClaimsFromIdToken(newSession.idToken);
           } catch (e: unknown) {
             logger?.warn("Throw exception (authHook");
             logger?.debug(e);

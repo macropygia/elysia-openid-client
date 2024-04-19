@@ -22,7 +22,7 @@ describe("Unit/endpoints/claims", () => {
       ({
         ...baseMockClient,
         fetchSession: mock().mockReturnValue(session),
-        getClaims: mock().mockReturnValue(claims),
+        getClaimsFromIdToken: mock().mockReturnValue(claims),
         logger,
       }) as DeepPartial<OidcClient> as OidcClient,
   );

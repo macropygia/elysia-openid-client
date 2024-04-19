@@ -2,7 +2,7 @@ import { createSession } from "@/functions/createSession";
 import { deleteSession } from "@/functions/deleteSession";
 import { fetchSession } from "@/functions/fetchSession";
 import { getAuthHook } from "@/functions/getAuthHook";
-import { getClaims } from "@/functions/getClaims";
+import { getClaimsFromIdToken } from "@/functions/getClaimsFromIdToken";
 import { getEndpoints } from "@/functions/getEndpoints";
 import { sessionToStatus } from "@/functions/sessionToStatus";
 import { updateSession } from "@/functions/updateSession";
@@ -108,7 +108,8 @@ export class OidcClient extends BaseOidcClient {
    * @param idToken ID Token
    * @public
    */
-  public getClaims = (idToken: string) => getClaims.call(this, idToken);
+  public getClaimsFromIdToken = (idToken: string) =>
+    getClaimsFromIdToken.call(this, idToken);
 
   /**
    * Convert session data to session status

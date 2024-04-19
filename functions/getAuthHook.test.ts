@@ -80,7 +80,7 @@ describe("Unit/endpoints/getAuthHook", () => {
 
   test("Failed (token missing)", async () => {
     const mc = mockClient(mockAuthSession);
-    mc.getClaims = mock().mockReturnValue({
+    mc.getClaimsFromIdToken = mock().mockReturnValue({
       ...mockClaims,
       exp: 100,
     });
@@ -96,7 +96,7 @@ describe("Unit/endpoints/getAuthHook", () => {
 
   test("Failed (expired, no-refresh)", async () => {
     const mc = mockClient(mockActiveSession);
-    mc.getClaims = mock().mockReturnValue({
+    mc.getClaimsFromIdToken = mock().mockReturnValue({
       ...mockClaims,
       exp: 100,
     });
@@ -114,7 +114,7 @@ describe("Unit/endpoints/getAuthHook", () => {
 
   test("Succeeded (refresh)", async () => {
     const mc = mockClient(mockActiveSession);
-    mc.getClaims = mock().mockReturnValue({
+    mc.getClaimsFromIdToken = mock().mockReturnValue({
       ...mockClaims,
       exp: 100,
     });
@@ -131,7 +131,7 @@ describe("Unit/endpoints/getAuthHook", () => {
   test("Failed (refresh)", async () => {
     const mc = mockClient(mockActiveSession);
     mc.updateSession = mock().mockReturnValue(null);
-    mc.getClaims = mock().mockReturnValue({
+    mc.getClaimsFromIdToken = mock().mockReturnValue({
       ...mockClaims,
       exp: 100,
     });
@@ -150,7 +150,7 @@ describe("Unit/endpoints/getAuthHook", () => {
     mc.updateSession = mock().mockImplementation(() => {
       throw "Unknown Error";
     });
-    mc.getClaims = mock().mockReturnValue({
+    mc.getClaimsFromIdToken = mock().mockReturnValue({
       ...mockClaims,
       exp: 100,
     });
