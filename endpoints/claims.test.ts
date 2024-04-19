@@ -15,21 +15,21 @@ import type { IdTokenClaims } from "openid-client";
 import { claims } from "./claims";
 
 describe("Unit/endpoints/claims", () => {
-  const plugin = claims;
+  const endpoints = claims;
   const path = defaultSettings.claimsPath;
   const mockClient = mock(
     (session: OIDCClientActiveSession | null, claims: IdTokenClaims | null) =>
       ({
         ...baseMockClient,
         fetchSession: mock().mockReturnValue(session),
-        getClaims: mock().mockReturnValue(claims),
+        getClaimsFromIdToken: mock().mockReturnValue(claims),
         logger,
       }) as DeepPartial<OidcClient> as OidcClient,
   );
 
   it("Succeeded", async () => {
     const app = new Elysia().use(
-      plugin.call(mockClient(mockActiveSession, mockIdTokenClaims)),
+      endpoints.call(mockClient(mockActiveSession, mockIdTokenClaims)),
     );
 
     const response = await app
@@ -40,7 +40,7 @@ describe("Unit/endpoints/claims", () => {
   });
 
   it("Session does not exist", async () => {
-    const app = new Elysia().use(plugin.call(mockClient(null, null)));
+    const app = new Elysia().use(endpoints.call(mockClient(null, null)));
 
     const response = await app
       .handle(new Request(`http://localhost${path}`, postInit))

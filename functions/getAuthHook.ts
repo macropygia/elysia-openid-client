@@ -19,7 +19,8 @@ export function getAuthHook(
   options?: Partial<AuthHookOptions>,
 ) {
   const {
-    settings: { pathPrefix, loginPath },
+    issuerUrl,
+    settings: { pathPrefix, loginPath, pluginSeed },
     cookieSettings: { sessionIdName },
     logger,
   } = this;
@@ -51,7 +52,10 @@ export function getAuthHook(
     }
   };
 
-  return new Elysia()
+  return new Elysia({
+    name: "elysia-openid-client-auth-hook",
+    seed: pluginSeed || issuerUrl,
+  })
     .guard({
       cookie: this.getCookieDefinition(),
     })
@@ -86,7 +90,7 @@ export function getAuthHook(
           return;
         }
 
-        resolvedClaims = this.getClaims(idToken);
+        resolvedClaims = this.getClaimsFromIdToken(idToken);
         const { exp } = resolvedClaims;
 
         // Expired (auto refresh disabled or refresh token does not exist)
@@ -115,7 +119,7 @@ export function getAuthHook(
             extendCookieExpiration(this, cookie);
 
             resolvedSession = newSession;
-            resolvedClaims = this.getClaims(newSession.idToken);
+            resolvedClaims = this.getClaimsFromIdToken(newSession.idToken);
           } catch (e: unknown) {
             logger?.warn("Throw exception (authHook");
             logger?.debug(e);

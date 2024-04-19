@@ -30,11 +30,11 @@ describe("Unit/endpoints/getAuthHook", () => {
   );
 
   test("Succeeded", async () => {
-    const plugin = getAuthHook.bind(mockClient(mockActiveSession))();
+    const endpoints = getAuthHook.bind(mockClient(mockActiveSession))();
     const app = new Elysia()
       .guard((app) =>
         app
-          .use(plugin)
+          .use(endpoints)
           .get("/case1", ({ sessionClaims }) => sessionClaims)
           .get("/case2", ({ sessionStatus }) => sessionStatus),
       )
@@ -55,9 +55,9 @@ describe("Unit/endpoints/getAuthHook", () => {
   });
 
   test("Skipped", async () => {
-    const plugin = getAuthHook.bind(mockClient(null))();
+    const endpoints = getAuthHook.bind(mockClient(null))();
     const app = new Elysia()
-      .guard((app) => app.use(plugin).post("/", () => "home"))
+      .guard((app) => app.use(endpoints).post("/", () => "home"))
       .listen(rpPort);
 
     const result = await app.handle(
@@ -68,9 +68,9 @@ describe("Unit/endpoints/getAuthHook", () => {
   });
 
   test("Failed (session missing)", async () => {
-    const plugin = getAuthHook.bind(mockClient(null))();
+    const endpoints = getAuthHook.bind(mockClient(null))();
     const app = new Elysia()
-      .guard((app) => app.use(plugin).get("/", () => "home"))
+      .guard((app) => app.use(endpoints).get("/", () => "home"))
       .listen(rpPort);
 
     const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
@@ -80,13 +80,13 @@ describe("Unit/endpoints/getAuthHook", () => {
 
   test("Failed (token missing)", async () => {
     const mc = mockClient(mockAuthSession);
-    mc.getClaims = mock().mockReturnValue({
+    mc.getClaimsFromIdToken = mock().mockReturnValue({
       ...mockClaims,
       exp: 100,
     });
-    const plugin = getAuthHook.bind(mc)();
+    const endpoints = getAuthHook.bind(mc)();
     const app = new Elysia()
-      .guard((app) => app.use(plugin).get("/", () => "home"))
+      .guard((app) => app.use(endpoints).get("/", () => "home"))
       .listen(rpPort);
 
     const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
@@ -96,15 +96,15 @@ describe("Unit/endpoints/getAuthHook", () => {
 
   test("Failed (expired, no-refresh)", async () => {
     const mc = mockClient(mockActiveSession);
-    mc.getClaims = mock().mockReturnValue({
+    mc.getClaimsFromIdToken = mock().mockReturnValue({
       ...mockClaims,
       exp: 100,
     });
-    const plugin = getAuthHook.bind(mc)({
+    const endpoints = getAuthHook.bind(mc)({
       autoRefresh: false,
     });
     const app = new Elysia()
-      .guard((app) => app.use(plugin).get("/", () => "home"))
+      .guard((app) => app.use(endpoints).get("/", () => "home"))
       .listen(rpPort);
 
     const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
@@ -114,13 +114,13 @@ describe("Unit/endpoints/getAuthHook", () => {
 
   test("Succeeded (refresh)", async () => {
     const mc = mockClient(mockActiveSession);
-    mc.getClaims = mock().mockReturnValue({
+    mc.getClaimsFromIdToken = mock().mockReturnValue({
       ...mockClaims,
       exp: 100,
     });
-    const plugin = getAuthHook.bind(mc)();
+    const endpoints = getAuthHook.bind(mc)();
     const app = new Elysia()
-      .guard((app) => app.use(plugin).get("/", () => "home"))
+      .guard((app) => app.use(endpoints).get("/", () => "home"))
       .listen(rpPort);
 
     const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
@@ -131,13 +131,13 @@ describe("Unit/endpoints/getAuthHook", () => {
   test("Failed (refresh)", async () => {
     const mc = mockClient(mockActiveSession);
     mc.updateSession = mock().mockReturnValue(null);
-    mc.getClaims = mock().mockReturnValue({
+    mc.getClaimsFromIdToken = mock().mockReturnValue({
       ...mockClaims,
       exp: 100,
     });
-    const plugin = getAuthHook.bind(mc)();
+    const endpoints = getAuthHook.bind(mc)();
     const app = new Elysia()
-      .guard((app) => app.use(plugin).get("/", () => "home"))
+      .guard((app) => app.use(endpoints).get("/", () => "home"))
       .listen(rpPort);
 
     const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
@@ -150,13 +150,13 @@ describe("Unit/endpoints/getAuthHook", () => {
     mc.updateSession = mock().mockImplementation(() => {
       throw "Unknown Error";
     });
-    mc.getClaims = mock().mockReturnValue({
+    mc.getClaimsFromIdToken = mock().mockReturnValue({
       ...mockClaims,
       exp: 100,
     });
-    const plugin = getAuthHook.bind(mc)();
+    const endpoints = getAuthHook.bind(mc)();
     const app = new Elysia()
-      .guard((app) => app.use(plugin).get("/", () => "home"))
+      .guard((app) => app.use(endpoints).get("/", () => "home"))
       .listen(rpPort);
 
     const res = await app.handle(new Request(`http://localhost:${rpPort}/`));

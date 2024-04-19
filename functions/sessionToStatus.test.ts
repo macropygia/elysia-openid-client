@@ -8,7 +8,7 @@ describe("Unit/functions/sessionToStatus", () => {
   test("Default", () => {
     const mockClient = {
       ...baseMockClient,
-      getClaims: mock().mockReturnValue({
+      getClaimsFromIdToken: mock().mockReturnValue({
         iss: "mock-issuer",
         exp: 1000,
         sub: "mock-sub",

@@ -11,13 +11,13 @@ const rp = await OidcClient.create({
     client_secret: "client-secret",
   },
 });
-const plugin = rp.getPlugin();
+const endpoints = rp.getEndpoints();
 const hook = rp.getAuthHook();
 
 console.log(rp.issuerMetadata);
 
 new Elysia()
-  .use(plugin)
+  .use(endpoints)
   .guard((app) =>
     app
       .use(hook)

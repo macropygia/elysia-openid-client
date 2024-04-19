@@ -117,8 +117,8 @@ export const baseMockClient = {
   getSessionIdCookieType: mock(),
   getCookieDefinition: mock(),
   getAuthHook: mock(),
-  getPlugin: mock(),
-  getClaims: mock().mockReturnValue(mockClaims),
+  getEndpoints: mock(),
+  getClaimsFromIdToken: mock().mockReturnValue(mockClaims),
   sessionToStatus: mock().mockReturnValue(mockStatus),
   logger,
 } as DeepPartial<OidcClient> as OidcClient;

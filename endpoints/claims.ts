@@ -29,7 +29,7 @@ export function claims(this: OidcClient) {
       }
 
       const { idToken } = currentSession;
-      const claims = this.getClaims(idToken);
+      const claims = this.getClaimsFromIdToken(idToken);
 
       set.headers["Content-Type"] = "application/json";
       return claims;

@@ -40,13 +40,13 @@ const rp = await OidcClient.create({
     client_secret: "client-secret",
   },
 });
-const plugin = rp.getPlugin();
+const endpoints = rp.getEndpoints();
 const hook = rp.getAuthHook();
 
 console.log(rp.issuerMetadata);
 
 new Elysia()
-  .use(plugin)
+  .use(endpoints)
   .guard((app) =>
     app
       .use(hook)
@@ -200,7 +200,7 @@ Determine the validity of the session in `onBeforeHook`, and return `sessionStat
 
 ```typescript
 const rp = await OidcClient.create({ ... });
-const plugin = rp.getPlugin();
+const endpoints = rp.getEndpoints();
 const hook = rp.getAuthHook({
   scope: "scoped",
   loginRedirectUrl: "/auth/login",
@@ -209,7 +209,7 @@ const hook = rp.getAuthHook({
 });
 
 new Elysia()
-  .use(plugin)
+  .use(endpoints)
   .guard((app) =>
     app
       .use(hook)

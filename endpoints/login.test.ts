@@ -12,8 +12,8 @@ describe("Unit/endpoints/login", () => {
   } as DeepPartial<OidcClient> as OidcClient;
 
   test("Succeeded", async () => {
-    const plugin = login.call(mc);
-    const app = new Elysia().use(plugin);
+    const endpoints = login.call(mc);
+    const app = new Elysia().use(endpoints);
 
     const response = await app.handle(new Request("http://localhost/login"));
 
@@ -40,8 +40,8 @@ describe("Unit/endpoints/login", () => {
       }),
     } as DeepPartial<OidcClient> as OidcClient;
 
-    const plugin = login.call(mc);
-    const app = new Elysia().use(plugin);
+    const endpoints = login.call(mc);
+    const app = new Elysia().use(endpoints);
 
     const response = await app.handle(new Request("http://localhost/login"));
 

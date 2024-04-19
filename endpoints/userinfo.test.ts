@@ -12,7 +12,7 @@ import Elysia from "elysia";
 import { userinfo } from "./userinfo";
 
 describe("Unit/endpoints/userinfo", () => {
-  const plugin = userinfo;
+  const endpoints = userinfo;
   const responseBody = { type: "userinfo" };
   const path = defaultSettings.userinfoPath;
   const mockClient = mock(
@@ -29,7 +29,7 @@ describe("Unit/endpoints/userinfo", () => {
 
   test("Succeeded", async () => {
     const app = new Elysia().use(
-      plugin.call(mockClient({ sessionId: "mock-sid" })),
+      endpoints.call(mockClient({ sessionId: "mock-sid" })),
     );
 
     const response = await app.handle(
@@ -41,7 +41,7 @@ describe("Unit/endpoints/userinfo", () => {
   });
 
   test("Failed", async () => {
-    const app = new Elysia().use(plugin.call(mockClient(null)));
+    const app = new Elysia().use(endpoints.call(mockClient(null)));
 
     const response = await app.handle(
       new Request(`http://localhost${path}`, getInit),

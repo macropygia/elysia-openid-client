@@ -11,17 +11,17 @@ import { status } from "@/endpoints/status";
 import { userinfo } from "@/endpoints/userinfo";
 import Elysia from "elysia";
 
-export function getPlugin(this: OidcClient) {
+export function getEndpoints(this: OidcClient) {
   const {
     issuerUrl,
     settings: { pathPrefix, pluginSeed },
     logger,
   } = this;
 
-  logger?.trace("functions/getPlugin");
+  logger?.trace("functions/getEndpoints");
 
   const app = new Elysia({
-    name: "elysia-openid-client",
+    name: "elysia-openid-client-endpoints",
     seed: pluginSeed || issuerUrl,
   }).group(pathPrefix, (app) =>
     app

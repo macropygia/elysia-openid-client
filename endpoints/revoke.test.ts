@@ -12,7 +12,7 @@ import Elysia from "elysia";
 import { revoke } from "./revoke";
 
 describe("Unit/endpoints/revoke", () => {
-  const plugin = revoke;
+  const endpoints = revoke;
   const responseBody = { type: "revoke" };
   const path = defaultSettings.revokePath;
   const mockClient = mock(
@@ -29,7 +29,7 @@ describe("Unit/endpoints/revoke", () => {
 
   test("Succeeded", async () => {
     const app = new Elysia().use(
-      plugin.call(mockClient({ sessionId: "mock-sid" })),
+      endpoints.call(mockClient({ sessionId: "mock-sid" })),
     );
 
     const response = await app.handle(
@@ -39,7 +39,7 @@ describe("Unit/endpoints/revoke", () => {
   });
 
   test("Failed", async () => {
-    const app = new Elysia().use(plugin.call(mockClient(null)));
+    const app = new Elysia().use(endpoints.call(mockClient(null)));
 
     const response = await app.handle(
       new Request(`http://localhost${path}`, getInit),

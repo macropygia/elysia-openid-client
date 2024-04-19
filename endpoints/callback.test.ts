@@ -13,7 +13,7 @@ import Elysia from "elysia";
 import { callback } from "./callback";
 
 describe("Unit/endpoints/callback", () => {
-  const plugin = callback;
+  const endpoints = callback;
   const responseBody = {
     expired: mock().mockReturnValue(false),
   };
@@ -35,7 +35,7 @@ describe("Unit/endpoints/callback", () => {
   );
 
   test("Succeeded", async () => {
-    const app = new Elysia().use(plugin.call(mockClient(mockAuthSession)));
+    const app = new Elysia().use(endpoints.call(mockClient(mockAuthSession)));
 
     const response = await app.handle(new Request(`http://localhost${path}`));
     logger?.info(response);
@@ -46,7 +46,7 @@ describe("Unit/endpoints/callback", () => {
   });
 
   test("Session data missing", async () => {
-    const app = new Elysia().use(plugin.call(mockClient(null)));
+    const app = new Elysia().use(endpoints.call(mockClient(null)));
 
     const response = await app.handle(new Request(`http://localhost${path}`));
     expect(response.status).toBe(401);
@@ -69,7 +69,7 @@ describe("Unit/endpoints/callback", () => {
       state: "mock-state",
     },
   ])("`codeVerifier` hash missing", async (session) => {
-    const app = new Elysia().use(plugin.call(mockClient(session)));
+    const app = new Elysia().use(endpoints.call(mockClient(session)));
 
     const response = await app.handle(new Request(`http://localhost${path}`));
     expect(response.status).toBe(401);
@@ -78,7 +78,7 @@ describe("Unit/endpoints/callback", () => {
   test("Update failed", async () => {
     const mc = mockClient(mockAuthSession);
     mc.updateSession = mock().mockReturnValue(null);
-    const app = new Elysia().use(plugin.call(mc));
+    const app = new Elysia().use(endpoints.call(mc));
 
     const response = await app.handle(new Request(`http://localhost${path}`));
     logger?.info(response);

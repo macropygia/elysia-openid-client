@@ -15,7 +15,7 @@ export function sessionToStatus(
 
   logger?.trace("functions/sessionToStatus");
 
-  const { iss, exp, sub } = this.getClaims(idToken);
+  const { iss, exp, sub } = this.getClaimsFromIdToken(idToken);
   return {
     sessionExpiresAt,
     hasRefreshToken: !!refreshToken,

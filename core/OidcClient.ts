@@ -2,8 +2,8 @@ import { createSession } from "@/functions/createSession";
 import { deleteSession } from "@/functions/deleteSession";
 import { fetchSession } from "@/functions/fetchSession";
 import { getAuthHook } from "@/functions/getAuthHook";
-import { getClaims } from "@/functions/getClaims";
-import { getPlugin } from "@/functions/getPlugin";
+import { getClaimsFromIdToken } from "@/functions/getClaimsFromIdToken";
+import { getEndpoints } from "@/functions/getEndpoints";
 import { sessionToStatus } from "@/functions/sessionToStatus";
 import { updateSession } from "@/functions/updateSession";
 import type {
@@ -19,7 +19,7 @@ import { BaseOidcClient } from "./BaseOidcClient";
  * OpenID Connect client plugin for ElysiaJS
  * - Usage:
  *   - `const client = await BaseOidcClient.create(options);`
- *   - `const plugin = client.getPlugin();`
+ *   - `const endpoints = client.getEndpoints();`
  *   - `const hook = client.getAuthHook();`
  */
 export class OidcClient extends BaseOidcClient {
@@ -101,14 +101,15 @@ export class OidcClient extends BaseOidcClient {
    * @public
    * @returns ElysiaJS Plugin
    */
-  public getPlugin = () => getPlugin.call(this);
+  public getEndpoints = () => getEndpoints.call(this);
 
   /**
    * Get claims by id_token
    * @param idToken ID Token
    * @public
    */
-  public getClaims = (idToken: string) => getClaims.call(this, idToken);
+  public getClaimsFromIdToken = (idToken: string) =>
+    getClaimsFromIdToken.call(this, idToken);
 
   /**
    * Convert session data to session status

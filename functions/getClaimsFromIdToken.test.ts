@@ -1,12 +1,12 @@
 import { describe, expect, test } from "bun:test";
 import { logger, mockIdToken, mockIdTokenClaims } from "@/__test__/const";
 import type { OidcClient } from "@/core/OidcClient";
-import { getClaims } from "./getClaims";
+import { getClaimsFromIdToken } from "./getClaimsFromIdToken";
 
-describe("Unit/functions/getClaims", () => {
+describe("Unit/functions/getClaimsFromIdToken", () => {
   test("Default", () => {
     expect(
-      getClaims.bind({
+      getClaimsFromIdToken.bind({
         logger,
       } as unknown as OidcClient)(mockIdToken),
     ).toMatchObject(mockIdTokenClaims);
