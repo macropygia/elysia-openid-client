@@ -31,10 +31,10 @@ describe("Integration/general", async () => {
       },
     },
   });
-  const plugin = oidcClient.getPlugin();
+  const endpoints = oidcClient.getEndpoints();
   const app = new Elysia()
     .get("/", () => "home")
-    .use(plugin)
+    .use(endpoints)
     .listen(rpPort);
   const {
     // clientMetadata,

@@ -24,8 +24,8 @@ describe("Unit/endpoints/logout", () => {
   );
 
   test("Succeeded", async () => {
-    const plugin = logout.call(mockClient({ sessionId: "mock-sid" }));
-    const app = new Elysia().use(plugin);
+    const endpoints = logout.call(mockClient({ sessionId: "mock-sid" }));
+    const app = new Elysia().use(endpoints);
 
     const response = await app.handle(new Request("http://localhost/logout"));
     expect(response.status).toBe(303);
@@ -33,8 +33,8 @@ describe("Unit/endpoints/logout", () => {
   });
 
   test("Failed", async () => {
-    const plugin = logout.call(mockClient(null));
-    const app = new Elysia().use(plugin);
+    const endpoints = logout.call(mockClient(null));
+    const app = new Elysia().use(endpoints);
 
     const response = await app.handle(new Request("http://localhost/logout"));
     expect(response.status).toBe(401);

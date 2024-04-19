@@ -14,7 +14,7 @@ import { Elysia } from "elysia";
 import { status } from "./status";
 
 describe("Unit/endpoints/status", () => {
-  const plugin = status;
+  const endpoints = status;
   const path = defaultSettings.statusPath;
   const mockClient = mock(
     (
@@ -31,7 +31,7 @@ describe("Unit/endpoints/status", () => {
 
   it("Succeeded", async () => {
     const app = new Elysia().use(
-      plugin.call(mockClient(mockActiveSession, mockStatus)),
+      endpoints.call(mockClient(mockActiveSession, mockStatus)),
     );
 
     const response = await app
@@ -42,7 +42,7 @@ describe("Unit/endpoints/status", () => {
   });
 
   it("Session does not exist", async () => {
-    const app = new Elysia().use(plugin.call(mockClient(null, null)));
+    const app = new Elysia().use(endpoints.call(mockClient(null, null)));
 
     const response = await app
       .handle(new Request(`http://localhost${path}`, postInit))

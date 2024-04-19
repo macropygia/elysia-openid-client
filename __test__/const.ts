@@ -117,7 +117,7 @@ export const baseMockClient = {
   getSessionIdCookieType: mock(),
   getCookieDefinition: mock(),
   getAuthHook: mock(),
-  getPlugin: mock(),
+  getEndpoints: mock(),
   getClaims: mock().mockReturnValue(mockClaims),
   sessionToStatus: mock().mockReturnValue(mockStatus),
   logger,

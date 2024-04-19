@@ -19,7 +19,7 @@ const rp1 = await OidcClient.create({
   },
   dataAdapter,
 });
-const plugin1 = rp1.getPlugin();
+const endpoints1 = rp1.getEndpoints();
 
 console.log(rp1.issuerMetadata);
 
@@ -36,7 +36,7 @@ const rp2 = await OidcClient.create({
     pathPrefix: "/another",
   },
 });
-const plugin2 = rp2.getPlugin();
+const endpoints2 = rp2.getEndpoints();
 
 console.log(rp2.issuerMetadata);
 
@@ -46,8 +46,8 @@ const hook = rp1.getAuthHook({
 });
 
 new Elysia()
-  .use(plugin1)
-  .use(plugin2)
+  .use(endpoints1)
+  .use(endpoints2)
   .guard((app) =>
     app
       .use(hook)

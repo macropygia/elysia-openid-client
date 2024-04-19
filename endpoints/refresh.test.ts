@@ -12,7 +12,7 @@ import Elysia from "elysia";
 import { refresh } from "./refresh";
 
 describe("Unit/endpoints/refresh", () => {
-  const plugin = refresh;
+  const endpoints = refresh;
   const responseBody = {
     id_token: "mock-id-token",
     access_token: "mock-access-token",
@@ -38,7 +38,7 @@ describe("Unit/endpoints/refresh", () => {
       sessionId: "mock-sid",
       refreshToken: "mock-refresh-token",
     };
-    const app = new Elysia().use(plugin.call(mockClient(session, true)));
+    const app = new Elysia().use(endpoints.call(mockClient(session, true)));
 
     const response = await app.handle(
       new Request(`http://localhost${path}`, getInit),
@@ -49,7 +49,7 @@ describe("Unit/endpoints/refresh", () => {
   });
 
   test("Session missing", async () => {
-    const app = new Elysia().use(plugin.call(mockClient(null, true)));
+    const app = new Elysia().use(endpoints.call(mockClient(null, true)));
 
     const response = await app.handle(
       new Request(`http://localhost${path}`, getInit),
@@ -59,7 +59,7 @@ describe("Unit/endpoints/refresh", () => {
 
   test("Refresh token missing", async () => {
     const session = { sessionId: "mock-sid" };
-    const app = new Elysia().use(plugin.call(mockClient(session, true)));
+    const app = new Elysia().use(endpoints.call(mockClient(session, true)));
 
     const response = await app.handle(
       new Request(`http://localhost${path}`, getInit),
@@ -72,7 +72,7 @@ describe("Unit/endpoints/refresh", () => {
       sessionId: "mock-sid",
       refreshToken: "mock-refresh-token",
     };
-    const app = new Elysia().use(plugin.call(mockClient(session, false)));
+    const app = new Elysia().use(endpoints.call(mockClient(session, false)));
 
     const response = await app.handle(
       new Request(`http://localhost${path}`, getInit),
