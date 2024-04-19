@@ -21,7 +21,7 @@ export function getEndpoints(this: OidcClient) {
   logger?.trace("functions/getEndpoints");
 
   const app = new Elysia({
-    name: "elysia-openid-client",
+    name: "elysia-openid-client-endpoints",
     seed: pluginSeed || issuerUrl,
   }).group(pathPrefix, (app) =>
     app

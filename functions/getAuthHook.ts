@@ -19,7 +19,8 @@ export function getAuthHook(
   options?: Partial<AuthHookOptions>,
 ) {
   const {
-    settings: { pathPrefix, loginPath },
+    issuerUrl,
+    settings: { pathPrefix, loginPath, pluginSeed },
     cookieSettings: { sessionIdName },
     logger,
   } = this;
@@ -51,7 +52,10 @@ export function getAuthHook(
     }
   };
 
-  return new Elysia()
+  return new Elysia({
+    name: "elysia-openid-client-auth-hook",
+    seed: pluginSeed || issuerUrl,
+  })
     .guard({
       cookie: this.getCookieDefinition(),
     })
