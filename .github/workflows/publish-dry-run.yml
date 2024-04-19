@@ -24,6 +24,6 @@ jobs:
       - run: bun test --coverage
       - run: bun docs
       - run: bun run build
-      - run: npm publish --dry-run
+      - run: npm publish --access public --dry-run
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

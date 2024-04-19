@@ -12,6 +12,7 @@
     "index.d.ts",
     "tsconfig.json",
     "!build.ts",
+    "!**/*.config.ts",
     "!**/*.test.ts",
     "!**/__test__"
   ],
