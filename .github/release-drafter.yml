@@ -1,0 +1,24 @@
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
+version-resolver:
+  major:
+    labels:
+      - "release:major"
+  minor:
+    labels:
+      - "release:minor"
+  patch:
+    labels:
+      - "release:patch"
+      - "release:silent"
+  default: patch
+exclude-labels:
+  - "release:silent"
+exclude-contributors:
+  - "macropygia"
+template: |
+  ## Changes
+
+  $CHANGES
+
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION

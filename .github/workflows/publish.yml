@@ -1,0 +1,68 @@
+name: Publish
+
+on:
+  release:
+    types: [released]
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify that tag and package.json match.
+        run: |
+          TAGGED_VERSION=$(echo "${{ github.ref_name }}" | grep -oP "[0-9]+\.[0-9]+\.[0-9]$")
+          PUBLISH_VERSION=$(jq --raw-output .version package.json)
+          if [ "$TAGGED_VERSION" != "$PUBLISH_VERSION" ]; then
+            exit 1
+          fi
+
+      - name: Build
+        uses: oven-sh/setup-bun@v1
+        with:
+          registry-url: 'https://registry.npmjs.org'
+      - run: bun install
+      - run: bun check:apply
+      - run: bun type-check
+      - run: bun test
+      - run: bun docs
+      - run: bun run build
+
+      - name: Publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # - uses: actions/setup-node@v4
+      #   with:
+      #     registry-url: 'https://npm.pkg.github.com'
+      # - run: npm publish
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate docs
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./docs
+
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy docs to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

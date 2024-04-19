@@ -1,0 +1,111 @@
+name: Release Drafter with Version Sync (Push)
+
+on:
+  push:
+    branches:
+      - main
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+
+jobs:
+  version_sync:
+    env:
+      BLANCH: main
+      CURRENT_VERSION: null
+      NEXT_VERSION: null
+      PACKAGE_SHA: null
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout files
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/utils
+
+      - name: Get current version from package.json
+        run: |
+          echo CURRENT_VERSION=$(jq --raw-output .version package.json) >> $GITHUB_ENV
+
+      # ref: https://github.com/release-drafter/release-drafter/blob/master/action.yml
+      - name: Get next version from release-drafter
+        id: drafter
+        uses: release-drafter/release-drafter@v6
+        with:
+          disable-autolabeler: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify next version
+        run: |
+          NEXT_VERSION=${{ steps.drafter.outputs.resolved_version }}
+          echo NEXT_VERSION=$(echo $NEXT_VERSION) >> $GITHUB_ENV
+          if [ ${#NEXT_VERSION} -lt 5 ]; then
+            exit 1
+          fi
+
+      - name: Prepare to use formatter
+        if: env.CURRENT_VERSION != env.NEXT_VERSION
+        uses: oven-sh/setup-bun@v1
+
+      - name: Sync version
+        if: env.CURRENT_VERSION != env.NEXT_VERSION
+        run: |
+          echo $(jq ".version=\"${{ env.NEXT_VERSION }}\"" package.json) > package.json
+          bunx @biomejs/biome format --write package.json
+
+      - name: Generate GitHub Apps token
+        if: env.CURRENT_VERSION != env.NEXT_VERSION
+        id: generate
+        env:
+          APP_ID: ${{ secrets.APP_ID }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+        run: |
+          chmod +x ./.github/utils/token.sh
+          ./.github/utils/token.sh
+
+      - name: Get current package.json SHA
+        if: env.CURRENT_VERSION != env.NEXT_VERSION
+        run: |
+          RES=$( \
+            gh api \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              /repos/${GITHUB_REPOSITORY}/contents/package.json \
+            )
+          echo PACKAGE_SHA=$(echo $RES | jq -r ".sha") >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ steps.generate.outputs.token }}
+
+      - name: Update package.json
+        if: env.CURRENT_VERSION != env.NEXT_VERSION
+        run: |
+          gh api --method PUT \
+          -H "Accept: application/vnd.github+json" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          /repos/${GITHUB_REPOSITORY}/contents/package.json \
+          -f "message=chore(npm): bump version to ${{ env.NEXT_VERSION }}" \
+          -f "content=$(cat package.json | base64 -w 0)" \
+          -f "sha=${{ env.PACKAGE_SHA }}" \
+          -f "branch=${{ env.BLANCH }}" \
+          -f "committer[name]=github-actions[bot]" \
+          -f "committer[email]=41898282+github-actions[bot]@users.noreply.github.com"
+        env:
+          GITHUB_TOKEN: ${{ steps.generate.outputs.token }}
+
+      - name: Revoke GitHub Apps token
+        if: env.CURRENT_VERSION != env.NEXT_VERSION
+        env:
+          GITHUB_TOKEN: ${{ steps.generate.outputs.token }}
+        run: |
+          gh api --method DELETE \
+          -H "Accept: application/vnd.github+json" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+          /installation/token

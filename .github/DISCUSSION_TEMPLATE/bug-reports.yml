@@ -1,0 +1,86 @@
+# name: "Bug reports"
+# title:
+# description: Use Q&A if you cannot fill out the form
+labels:
+  - bug
+# assignees:
+#   - macropygia
+body:
+  - type: markdown
+    attributes:
+      value: ⚠ Please write in plain English. (Repository owner is not a native English speaker.) ※日本語可
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Do all of the following conditions apply?
+      options:
+        - label: Using the latest version of `elysia-openid-client`.
+          required: true
+        - label: Using the latest version of Bun within the range specified in `engines`.
+          required: true
+        - label: Using the latest version of ElysiaJS within the range specified in `peerDependencies`.
+          required: true
+        - label: It is not due to dependencies, but rather the logic of `elysia-openid-client`.
+          required: true
+        - label: It is not due to the OpenID Provider violating the OpenID Connect specification.
+          required: true
+        - label: I will provide a minimal reproducible example.
+          required: true
+  - type: input
+    id: bun-version
+    attributes:
+      label: What version of Bun are you using?
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: elysia-version
+    attributes:
+      label: What version of ElysiaJS are you using?
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: issuer
+    attributes:
+      label: OpenID Provider (URL or name)
+      placeholder: https://example.com
+  - type: checkboxes
+    id: category
+    attributes:
+      label: Category
+      description: You may select more than one.
+      options:
+        - label: Endpoints
+        - label: Hooks
+        - label: Data Adapters
+        - label: Logic (other than above)
+        - label: Other
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: expectation
+    attributes:
+      label: What's the expected result?
+      description: Describe what you expect to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Write or link to minimal reproducible example
+      description: Recommended to create a [minimal reproduction](https://github.com/renovatebot/renovate/blob/main/docs/development/minimal-reproductions.md) and link to it.
+    validations:
+      required: true
+  - type: checkboxes
+    id: will-pr
+    attributes:
+      label: Participation
+      options:
+        - label: I am willing to create a pull request for this issue.

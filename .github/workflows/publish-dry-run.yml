@@ -1,0 +1,29 @@
+name: Publish (Manual/Dry-run)
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+        with:
+          registry-url: 'https://registry.npmjs.org'
+      - run: bun install
+      - run: bun check:apply
+      - run: bun type-check
+      - run: bun test --coverage
+      - run: bun docs
+      - run: bun run build
+      - run: npm publish --dry-run
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

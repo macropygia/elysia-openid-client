@@ -1,0 +1,12 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./*.ts", "./*/**/*.ts"],
+  "exclude": [
+    "**/__test__/**",
+    "**/*.test.ts",
+    "**/examples/**",
+    "**/*.config.ts",
+    "**/*.d.ts",
+    "./build.ts"
+  ]
+}

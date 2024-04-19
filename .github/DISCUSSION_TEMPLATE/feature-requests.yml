@@ -1,0 +1,59 @@
+# name: "Feature requests"
+# title:
+# description: Use General if you cannot fill out the form
+labels:
+  - enhancement
+# assignees:
+#   - macropygia
+body:
+  - type: markdown
+    attributes:
+      value: ⚠ Please write in plain English. (Repository owner is not a native English speaker.) ※日本語可
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Do all of the following conditions apply?
+      options:
+        - label: It does not attempt to support OpenID Connect specification not supported by [`openid-client`](https://github.com/panva/node-openid-client)."
+          required: true
+        - label: It does not intend to add support for OpenID Provider that violate the OpenID Connect specification.
+          required: true
+        - label: Custom data adapter is not a solution.
+          required: true
+        - label: Custom logger is not a solution.
+          required: true
+        - label: Feasibility is verified.
+          required: true
+  - type: checkboxes
+    id: category
+    attributes:
+      label: Category
+      description: You may select more than one.
+      options:
+        - label: Endpoints
+        - label: Hooks
+        - label: Data Adapters
+        - label: Logic (other than above)
+        - label: Documentation
+        - label: Tests
+        - label: Security/Vulnerability
+        - label: Other
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the request.
+    validations:
+      required: true
+  - type: input
+    id: additional-dependencies
+    attributes:
+      label: Additional dependencies
+      description: If needed.
+  - type: checkboxes
+    id: will-pr
+    attributes:
+      label: Participation
+      options:
+        - label: I am willing to create a pull request for this issue.

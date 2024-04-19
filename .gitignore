@@ -1,0 +1,8 @@
+.env
+docs
+index.js
+index.d.ts
+dist
+tsconfig.tsbuildinfo
+.vscode/settings.json
+node_modules

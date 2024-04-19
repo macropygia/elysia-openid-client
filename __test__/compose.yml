@@ -1,0 +1,7 @@
+services:
+  redis:
+    image: redis:7
+    container_name: elysia-openid-client-redis
+    hostname: redis-server
+    ports:
+      - "127.0.0.1:6379:6379"
