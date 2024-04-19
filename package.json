@@ -14,7 +14,8 @@
     "!build.ts",
     "!**/*.config.ts",
     "!**/*.test.ts",
-    "!**/__test__"
+    "!**/__test__",
+    "!**/examples"
   ],
   "type": "module",
   "module": "index.ts",

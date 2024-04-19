@@ -27,8 +27,6 @@ jobs:
 
       - name: Build
         uses: oven-sh/setup-bun@v1
-        with:
-          registry-url: 'https://registry.npmjs.org'
       - run: bun install
       - run: bun check:apply
       - run: bun type-check
@@ -37,13 +35,17 @@ jobs:
       - run: bun run build
 
       - name: Publish
-        run: npm publish --access public
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # - uses: actions/setup-node@v4
       #   with:
-      #     registry-url: 'https://npm.pkg.github.com'
+      #     registry-url: "https://npm.pkg.github.com"
       # - run: npm publish
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
