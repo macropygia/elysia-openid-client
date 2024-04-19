@@ -1,6 +1,6 @@
 {
   "name": "elysia-openid-client",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "OpenID Connect client plugin for ElysiaJS",
   "keywords": ["elysia", "elysiajs", "oidc", "openid", "OpenID Connect", "bun"],
   "homepage": "https://github.com/macropygia/elysia-openid-client",
