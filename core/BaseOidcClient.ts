@@ -1,11 +1,8 @@
-import {
-  defaultCookieSettings,
-  defaultLoggerOptions,
-  defaultSettings,
-} from "@/core/const";
+import { defaultCookieSettings, defaultSettings } from "@/core/const";
 import { SQLiteAdapter } from "@/dataAdapters/SQLiteAdapter";
 import { initialize } from "@/functions/initialize";
 import { validateOptions } from "@/functions/validateOptions";
+import { consoleLogger } from "@/loggers/consoleLogger";
 import type {
   OIDCClientCookieSettings,
   OIDCClientDataAdapter,
@@ -20,7 +17,6 @@ import type {
   Issuer,
   IssuerMetadata,
 } from "openid-client";
-import pino from "pino";
 
 /**
  * OidcClient without methods for testing
@@ -47,7 +43,7 @@ export class BaseOidcClient {
   /** Plugin database */
   sessions: OIDCClientDataAdapter;
   /** Logger */
-  logger?: OIDCClientLogger;
+  logger: OIDCClientLogger | undefined;
   /** Initialized */
   initialized = false;
 
@@ -65,7 +61,7 @@ export class BaseOidcClient {
       dataAdapter,
       settings,
       cookieSettings,
-      loggerOptions,
+      logger,
     } = options;
 
     if (!issuerUrl) {
@@ -87,11 +83,8 @@ export class BaseOidcClient {
 
     this.sessions = dataAdapter || new SQLiteAdapter();
 
-    this.logger = pino(
-      loggerOptions ||
-        defaultLoggerOptions[process.env.NODE_ENV || "never"] ||
-        defaultLoggerOptions.default,
-    );
+    this.logger =
+      logger === null ? undefined : logger ? logger : consoleLogger("info");
   }
 
   /**

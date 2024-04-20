@@ -36,20 +36,22 @@
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
-    "openid-client": "^5.6.5",
-    "pino": "^8.20.0",
-    "pino-pretty": "^11.0.0"
+    "openid-client": "^5.6.5"
   },
   "peerDependencies": {
     "elysia": "^1.0.13",
     "ioredis": "^5.4.1",
     "lokijs": "^1.5.12",
     "lowdb": "^7.0.1",
+    "pino": "^8.20.0",
+    "pino-pretty": "^11.0.0",
     "typescript": "^5.4.5"
   },
   "peerDependenciesMeta": {
     "ioredis": { "optional": true },
     "lokijs": { "optional": true },
+    "pino": { "optional": true },
+    "pino-pretty": { "optional": true },
     "lowdb": { "optional": true }
   },
   "devDependencies": {
@@ -65,6 +67,8 @@
     "lint-staged": "^15.2.2",
     "lokijs": "^1.5.12",
     "lowdb": "^7.0.1",
+    "pino": "^8.20.0",
+    "pino-pretty": "^11.0.0",
     "set-cookie-parser": "^2.6.0",
     "simple-git-hooks": "^2.11.1",
     "tsup": "^8.0.2",

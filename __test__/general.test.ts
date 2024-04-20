@@ -21,15 +21,6 @@ describe("Integration/general", async () => {
       client_secret,
     },
     authParams: {},
-    loggerOptions: {
-      level: "trace",
-      transport: {
-        target: "pino-pretty",
-        options: {
-          sync: true,
-        },
-      },
-    },
   });
   const endpoints = oidcClient.getEndpoints();
   const app = new Elysia()
