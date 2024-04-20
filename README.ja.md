@@ -27,10 +27,10 @@
   - `code_challenge_method` は `S256` に固定される
   - `scope` には自動で `openid` が追加される
 
-## Usage
+## 使用方法
 
 ```bash
-bun add elysia-openid-clitent
+bun add elysia-openid-client
 ```
 
 ```typescript
@@ -66,7 +66,52 @@ new Elysia()
 
 - [その他のサンプル](https://github.com/macropygia/elysia-openid-client/tree/main/examples)
 
-## Data Adapter
+## 設定
+
+```typescript
+interface OIDCClientOptions {
+  issuerUrl: string;
+  baseUrl: string;
+  settings?: Partial<OIDCClientSettings>;
+  cookieSettings?: Partial<OIDCClientCookieSettings>;
+  dataAdapter?: OIDCClientDataAdapter;
+  logger?: OIDCClientLogger | null;
+  clientMetadata: ClientMetadata & {
+      client_secret: string;
+  };
+  authParams?: AuthorizationParameters;
+}
+
+const options: OIDCClientOptions = {
+  // ...
+}
+
+const rp = await OidcClient.create(options);
+```
+
+- [OIDCClientOptions](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientOptions.html)
+  - `issuerUrl`
+    - OpenID ProviderのURL
+    - 例: `https://github.com`
+  - `baseUrl`
+    - このプラグインを使用するWebサイト/WebサービスのURL（OpenID Relying Partyとして機能する）
+    - 例: `https:/your-service.example.com`
+- [OIDCClientSettings](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientSettings.html)
+  - 全般設定（パスや有効期限など）
+- [OIDCClientCookieSettings](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientCookieSettings.html)
+  - セッションIDを保管するCookieの設定
+- [OIDCClientDataAdapter](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientDataAdapter.html)
+  - 本文書の `データアダプター` の項を参照
+- [OIDCClientLogger](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientLogger.html)
+  - 本文書の `ロガー` の項を参照
+- `ClientMetadata`
+  - `openid-client` の [型定義](https://github.com/panva/node-openid-client/blob/main/types/index.d.ts)
+  - および `OpenID Connect Dynamic Client Registration 1.0` の [Client Metadata](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata) の章を参照
+- `AuthorizationParameters`
+  - `openid-client` の [型定義](https://github.com/panva/node-openid-client/blob/main/types/index.d.ts)
+  - および `OpenID Connect Core 1.0` の [Authentication Request](https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest) の章を参照
+
+## データアダプター
 
 セッション情報の保存方法を定義したもの。
 
@@ -79,6 +124,8 @@ const client = await OidcClient.create({
 ```
 
 - 本パッケージにはSQLite/LokiJS/Lowdb/Redisを使用したデータアダプターが含まれる
+- カスタムデータアダプターを作成可能
+  - 参照: [OIDCClientDataAdapter](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientDataAdapter.html)
 - 既定ではSQLiteのインメモリーモードが使用される
 - 複数のOPを使用する場合は一つのデータアダプターを共有する
 
@@ -123,25 +170,41 @@ const fileAdapter = await LokiFileAdapter.create({
 
 ### Lowdb
 
-Use [Lowdb](https://github.com/typicode/lowdb).
+[Lowdb](https://github.com/typicode/lowdb)を使用する。
 
 ```bash
 bun add lowdb
 ```
 
-Currently experimental. No information provided.
+```typescript
+import { LowdbAdapter } from 'elysia-openid-client/dataAdapters/LowdbAdapter';
+
+// インメモリーモード
+const memoryAdapter = new LowdbAdapter();
+
+// 永続化モード
+const fileAdapter = new LowdbAdapter({
+  filename: "sessions.json",
+})
+```
 
 ### Redis
 
-Use [Redis](https://redis.io/) with [ioredis](https://github.com/redis/ioredis).
+[Redis](https://redis.io/)を[ioredis](https://github.com/redis/ioredis)で使用する。
 
 ```bash
 bun add ioredis
 ```
 
-Currently experimental. No information provided.
+```typescript
+import { RedisAdapter } from 'elysia-openid-client/dataAdapters/RedisAdapter';
+const redisAdapter = new RedisAdapter({
+  port: 6379,
+  host: "localhost",
+});
+```
 
-### カスタムアダプター
+### カスタムデータアダプター
 
 ```typescript
 // MyDataAdapter.ts
@@ -158,6 +221,73 @@ const client = await OidcClient.create({
   //...
 })
 ```
+
+## ロガー
+
+ロガーを定義する。
+
+```typescript
+const client = await OidcClient.create({
+  //...
+  logger: <logger>,
+  //...
+})
+```
+
+- [pino](https://getpino.io/)に最適化されている
+  - 変換すれば任意のロガーを使用可能
+- 省略すると `consoleLogger("info")` を使用する
+- `null` に設定するとログを出力しない
+
+### ログレベルポリシー
+
+- `silent`:
+  - トークン等のセンシティブ情報のデバッグ用出力
+  - 使用時は明示的に表示させる必要がある
+- `trace`:
+  - 関数やメソッドの呼び出し時に名称を表示
+- `debug`:
+  - デバッグ情報
+- `warn`:
+  - 予期しない呼び出し・不正な操作・攻撃などの可能性がある操作の情報
+- `error`:
+  - キャッチした例外などの情報
+- `fatal`:
+  - 現状では不使用
+
+### pinoの使用
+
+```bash
+bun add pino
+```
+
+```typescript
+import pino from "pino";
+const logger = pino();
+const client = await OidcClient.create({
+  //...
+  logger,
+  //...
+})
+```
+
+### Console logger
+
+[Console](https://bun.sh/docs/api/console)を使用するロガー。
+
+```typescript
+import { consoleLogger } from "elysia-openid-client/loggers/consoleLogger";
+const minimumLogLevel = "debug";
+const client = await OidcClient.create({
+  //...
+  logger: consoleLogger(minimumLogLevel),
+  //...
+})
+```
+
+### カスタムロガー
+
+`consoleLogger` の実装を参照のこと。
 
 ## エンドポイント
 
@@ -202,28 +332,20 @@ const client = await OidcClient.create({
 - セッションが無効な場合
   - `loginRedirectUrl` にリダイレクト
   - `disableRedirect` が `false` の場合は `sessionStatus` , `sessionClaims` 共に `null`
+- 設定
+  - [AuthHookOptions](https://macropygia.github.io/elysia-openid-client/interfaces/types.AuthHookOptions.html).
 
 ```typescript
-const rp = await OidcClient.create({ ... });
-const endpoints = rp.getEndpoints();
-const hook = rp.getAuthHook({
+const rp = await OidcClient.create(clientOptions);
+
+const hookOptions: AuthHookOptions = {
   scope: "scoped",
   loginRedirectUrl: "/auth/login",
   disableRedirect: false,
   autoRefresh: true,
-});
+}
 
-new Elysia()
-  .use(endpoints)
-  .guard((app) =>
-    app
-      .use(hook)
-      .get("/", ({
-        sessionStatus,
-        sessionClaims,
-      }) => sessionStatus ? "Logged in" : "Not logged in")
-  )
-  .listen(80);
+const hook = rp.getAuthHook(hookOptions);
 ```
 
 ## Contributing
