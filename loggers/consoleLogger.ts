@@ -3,6 +3,7 @@ import type { LevelWithSilent } from "pino";
 
 /**
  * Console logger
+ * - `silent` is displayed only when the `level` is set to `silent`
  * @param level - Minimum level to be displayed
  * @returns Logger (console)
  */
