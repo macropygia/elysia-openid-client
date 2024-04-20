@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,8 +55,8 @@ jobs:
         with:
           path: ./docs
 
-  deploy:
-    needs: build
+  deploy_docs:
+    needs: publish
     permissions:
       pages: write
       id-token: write

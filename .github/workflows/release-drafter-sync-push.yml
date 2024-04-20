@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 jobs:
-  version_sync:
+  update_release_draft_and_version_sync:
     env:
       BLANCH: main
       CURRENT_VERSION: null
