@@ -8,5 +8,7 @@
     "**/*.config.ts",
     "**/*.d.ts",
     "./build.ts"
-  ]
+  ],
+  "githubPages": true,
+  "includeVersion": true
 }
