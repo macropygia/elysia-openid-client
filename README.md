@@ -64,7 +64,7 @@ new Elysia()
   .listen(80);
 ```
 
-- See [examples here](https://github.com/macropygia/elysia-openid-client/tree/main/examples).
+- See [examples here](https://github.com/macropygia/elysia-openid-client/tree/main/__examples__).
 
 ## Configuration
 

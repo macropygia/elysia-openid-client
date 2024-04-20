@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import packageJson from "./package.json";
+import packageJson from "../package.json";
 
 const { dependencies, peerDependencies } = packageJson;
 const external = [
@@ -10,19 +10,20 @@ const external = [
 ];
 
 try {
-  fs.unlinkSync("./index.d.ts");
-  fs.unlinkSync("./index.js");
+  fs.unlinkSync("../index.d.ts");
+  fs.unlinkSync("../index.js");
 } catch {
   console.log("[Bun.build] Skip to delete some files.");
 }
 
 Bun.build({
+  root: "../",
   entrypoints: ["./index.ts"],
   target: "bun",
   format: "esm",
-  outdir: ".",
+  outdir: "../",
   external,
   minify: true,
 });
 
-console.log("[Bun.build] Create `./index.js`");
+console.log("[Bun.build] Create `../index.js`");

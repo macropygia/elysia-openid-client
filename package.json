@@ -9,13 +9,11 @@
   "author": "macropygia",
   "files": [
     "**/*.ts",
-    "index.d.ts",
     "tsconfig.json",
-    "!build.ts",
-    "!**/*.config.ts",
     "!**/*.test.ts",
-    "!**/__test__",
-    "!**/examples"
+    "!**/*.config.ts",
+    "!**/.*",
+    "!**/__*__"
   ],
   "type": "module",
   "module": "index.ts",
@@ -29,9 +27,9 @@
     "check:apply": "biome check --apply .",
     "check:unsafe": "biome check --apply-unsafe .",
     "type-check": "tsc --noEmit",
-    "build": "bun ./build.ts && bun run dts",
+    "build": "bun ./__scripts__/build.ts && bun run dts",
     "dts": "tsup ./index.ts --dts-only --format esm --out-dir .",
-    "docs": "typedoc",
+    "docs": "bun ./__scripts__/docs.ts",
     "test": "bun test --coverage",
     "prepare": "simple-git-hooks"
   },

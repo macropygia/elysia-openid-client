@@ -64,7 +64,7 @@ new Elysia()
   .listen(80);
 ```
 
-- [その他のサンプル](https://github.com/macropygia/elysia-openid-client/tree/main/examples)
+- [その他のサンプル](https://github.com/macropygia/elysia-openid-client/tree/main/__examples__)
 
 ## 設定
 
