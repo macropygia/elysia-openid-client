@@ -2,10 +2,11 @@
 
 **English** | [日本語](README.ja.md)
 
-[OpenID Connect](https://openid.net/) client (RP, Reyling Party) plugin for [ElysiaJS](https://elysiajs.com/), wrapping [openid-client](https://github.com/panva/node-openid-client).
+[OpenID Connect](https://openid.net/) client (RP, Relying Party) plugin for [ElysiaJS](https://elysiajs.com/), wrapping [openid-client](https://github.com/panva/node-openid-client).
 
 - **This package is currently unstable.**
   - Breaking changes may occur without any notice, even if in patch releases.
+- [TypeDoc](https://macropygia.github.io/elysia-openid-client/)
 
 ## Specifications/limitations
 
@@ -27,6 +28,10 @@
   - `openid` is automatically added to `scope`
 
 ## Usage
+
+```bash
+bun add elysia-openid-client
+```
 
 ```typescript
 import Elysia from "elysia";
@@ -61,6 +66,51 @@ new Elysia()
 
 - See [examples here](https://github.com/macropygia/elysia-openid-client/tree/main/examples).
 
+## Configuration
+
+```typescript
+interface OIDCClientOptions {
+  issuerUrl: string;
+  baseUrl: string;
+  settings?: Partial<OIDCClientSettings>;
+  cookieSettings?: Partial<OIDCClientCookieSettings>;
+  dataAdapter?: OIDCClientDataAdapter;
+  logger?: OIDCClientLogger | null;
+  clientMetadata: ClientMetadata & {
+      client_secret: string;
+  };
+  authParams?: AuthorizationParameters;
+}
+
+const options: OIDCClientOptions = {
+  // ...
+}
+
+const rp = await OidcClient.create(options);
+```
+
+- [OIDCClientOptions](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientOptions.html)
+  - `issuerUrl`
+    - URL of the OpenID Provider
+    - e.g. `https://github.com`
+  - `baseUrl`
+    - URL of your apps as OpenID Relying Party
+    - e.g. `https:/your-service.example.com`
+- [OIDCClientSettings](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientSettings.html)
+  - Settings about the client. Paths, durations, etc.
+- [OIDCClientCookieSettings](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientCookieSettings.html)
+  - Settings about Cookie for session.
+- [OIDCClientDataAdapter](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientDataAdapter.html)
+  - See `Data Adapter` section in this document.
+- [OIDCClientLogger](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientLogger.html)
+  - See `Logger` section in this document.
+- `ClientMetadata`
+  - See [type definition](https://github.com/panva/node-openid-client/blob/main/types/index.d.ts) of `openid-client`
+  - See [Client Metadata](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata) section in the `OpenID Connect Dynamic Client Registration 1.0`
+- `AuthorizationParameters`
+  - See [type definition](https://github.com/panva/node-openid-client/blob/main/types/index.d.ts) of `openid-client`
+  - See [Authentication Request](https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest) section in the `OpenID Connect Core 1.0`.
+
 ## Data Adapter
 
 Defines how session data is stored.
@@ -74,6 +124,8 @@ const client = await OidcClient.create({
 ```
 
 - The package includes data adapters using SQLite/LokiJS/Lowdb/Redis.
+- You can make your own adapters.
+  - Ref: [OIDCClientDataAdapter](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientDataAdapter.html)
 - SQLite with in-memory option is used by default.
 - When using multiple OP, share a single data adapter.
 
@@ -124,7 +176,17 @@ Use [Lowdb](https://github.com/typicode/lowdb).
 bun add lowdb
 ```
 
-Currently experimental. No information provided.
+```typescript
+import { LowdbAdapter } from 'elysia-openid-client/dataAdapters/LowdbAdapter';
+
+// In-memory
+const memoryAdapter = new LowdbAdapter();
+
+// Persistence to file
+const fileAdapter = new LowdbAdapter({
+  filename: "sessions.json",
+})
+```
 
 ### Redis
 
@@ -134,7 +196,13 @@ Use [Redis](https://redis.io/) with [ioredis](https://github.com/redis/ioredis).
 bun add ioredis
 ```
 
-Currently experimental. No information provided.
+```typescript
+import { RedisAdapter } from 'elysia-openid-client/dataAdapters/RedisAdapter';
+const redisAdapter = new RedisAdapter({
+  port: 6379,
+  host: "localhost",
+});
+```
 
 ### Creating your own adapters
 
@@ -153,6 +221,72 @@ const client = await OidcClient.create({
   //...
 })
 ```
+
+## Logger
+
+Defines logger.
+
+```typescript
+const client = await OidcClient.create({
+  //...
+  logger: <logger>,
+  //...
+})
+```
+
+- Optimized for [pino](https://getpino.io/).
+  - Other loggers can be used if converted.
+- If omitted, use `consoleLogger("info")`.
+- If set `null`, disable logging.
+
+### Log level policy
+
+- `silent`:
+  - Used to output tokens and other sensitive data. Only display explicitly if needed.
+- `trace`:
+  - Functions and methods executed.
+- `debug`:
+  - Debug info.
+- `warn`:
+  - Outputs for unexpected calls, tampering, and possible attacks.
+- `error`:
+  - Caught exceptions, etc.
+- `fatal`:
+  - Currently unused.
+
+### Using pino
+
+```bash
+bun add pino
+```
+
+```typescript
+import pino from "pino";
+const logger = pino();
+const client = await OidcClient.create({
+  //...
+  logger,
+  //...
+})
+```
+
+### Console logger
+
+Using [Console](https://bun.sh/docs/api/console).
+
+```typescript
+import { consoleLogger } from "elysia-openid-client/loggers/consoleLogger";
+const minimumLogLevel = "debug";
+const client = await OidcClient.create({
+  //...
+  logger: consoleLogger(minimumLogLevel),
+  //...
+})
+```
+
+### Custom logger
+
+See the `consoleLogger` implementation.
 
 ## Endpoints
 
@@ -179,7 +313,7 @@ const client = await OidcClient.create({
   - Through the response from the resource provider.
 - Revoke (ALL: `/auth/revoke` )
   - Calls `client.revoke` of openid-client.
-  - Returne `204`
+  - Return `204`
 - Status (ALL: `/auth/status` )
   - Fetches session status from internal database.
   - Does not call any endpoint of the OP.
@@ -197,28 +331,20 @@ Determine the validity of the session in `onBeforeHook`, and return `sessionStat
 - If the session is invalid:
   - Redirect to `loginRedirectUrl`.
   - If `disableRedirect` is `false`, both `sessionStatus` and `sessionClaims` will be `null`.
+- Configuration
+  - [AuthHookOptions](https://macropygia.github.io/elysia-openid-client/interfaces/types.AuthHookOptions.html).
 
 ```typescript
-const rp = await OidcClient.create({ ... });
-const endpoints = rp.getEndpoints();
-const hook = rp.getAuthHook({
+const rp = await OidcClient.create(clientOptions);
+
+const hookOptions: AuthHookOptions = {
   scope: "scoped",
   loginRedirectUrl: "/auth/login",
   disableRedirect: false,
   autoRefresh: true,
-});
+}
 
-new Elysia()
-  .use(endpoints)
-  .guard((app) =>
-    app
-      .use(hook)
-      .get("/", ({
-        sessionStatus,
-        sessionClaims,
-      }) => sessionStatus ? "Logged in" : "Not logged in")
-  )
-  .listen(80);
+const hook = rp.getAuthHook(hookOptions);
 ```
 
 ## Contributing
