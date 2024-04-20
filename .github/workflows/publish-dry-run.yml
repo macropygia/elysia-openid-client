@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  publish_dry_run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
