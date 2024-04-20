@@ -1,5 +1,6 @@
 import type { LifeCycleType } from "elysia";
 import type { AuthorizationParameters, ClientMetadata } from "openid-client";
+import type { BaseLogger } from "pino";
 
 /** Session data */
 export interface OIDCClientSession {
@@ -100,12 +101,15 @@ export interface OIDCClientOptions {
   dataAdapter?: OIDCClientDataAdapter;
 
   /**
-   * Logger Options
-   * @see
-   * [pino document](https://github.com/pinojs/pino/)
+   * Logger
+   * - pino can be assigned directly.
+   * @example
+   * ```
+   * import pino from "pino";
+   * const rp = new OidcClient.create({ ..., logger: pino() });
+   * ```
    */
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  loggerOptions?: any;
+  logger?: OIDCClientLogger | null;
 }
 
 /** Plugin settings */
@@ -255,19 +259,16 @@ export interface OIDCClientDataAdapter {
 
 /**
  * Logger
+ * - Suitable for pino
+ * - Requies `silent` , `trace` , `debug` , `info` , `warn` , `error` and `fatal` method.
+ * @remarks
+ * - `silent`: Used to output tokens and other sensitive data. Only display explicitly if needed.
+ * - `trace`: Functions and methods executed.
+ * - `debug`: Debug info.
+ * - `warn`: Outputs for unexpected calls, tampering, and possible attacks.
+ * - `error`: Caught exceptions, etc.
+ * - `fatal`: Currently unused.
+ * @see
+ * - [Logger Instance](https://getpino.io/#/docs/api?id=logger)
  */
-export interface OIDCClientLogger {
-  /** Used when sensitive data (e.g., tokens) need to be displayed. */
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  silent: (message: any) => void;
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  trace: (message: any) => void;
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  debug: (message: any) => void;
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  info: (message: any) => void;
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  warn: (message: any) => void;
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  error: (message: any) => void;
-}
+export interface OIDCClientLogger extends Omit<BaseLogger, "level"> {}

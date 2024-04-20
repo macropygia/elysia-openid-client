@@ -1,6 +1,7 @@
 import { mock } from "bun:test";
 import type { OidcClient } from "@/core/OidcClient";
 import { defaultCookieSettings, defaultSettings } from "@/core/const";
+import { consoleLogger } from "@/loggers/consoleLogger";
 import type {
   OIDCClientActiveSession,
   OIDCClientOptions,
@@ -8,7 +9,6 @@ import type {
 } from "@/types";
 import type { Cookie } from "elysia";
 import type { IdTokenClaims } from "openid-client";
-import pino from "pino";
 
 export type DeepPartial<T> = T extends object
   ? { [P in keyof T]?: DeepPartial<T[P]> }
@@ -20,6 +20,8 @@ export const lokiTestFile = "__test__/test.db";
 export const lokiTempFile = "__test__/temp.db";
 export const rpPort = 57828;
 export const opPort = 57829;
+
+export const logger = consoleLogger();
 
 export const mockBaseOptions = {
   baseUrl: "https://localhost/client",
@@ -73,16 +75,6 @@ export const getInit: RequestInit = {
     Cookie: `${defaultCookieSettings.sessionIdName}=mock-sid`,
   },
 };
-
-export const logger = pino({
-  level: "trace",
-  transport: {
-    target: "pino-pretty",
-    options: {
-      sync: true,
-    },
-  },
-});
 
 export const mockClaims = {
   exp: 5000000000000 / 1000,
