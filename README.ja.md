@@ -6,7 +6,7 @@
 
 - **このパッケージは不安定版です**
   - パッチリリースを含め予告なく破壊的変更が行われる場合があります
-- [TypeDoc](https://macropygia.github.io/elysia-openid-client/)
+- Links: [GitHub](https://github.com/macropygia/elysia-openid-client) / [npm](https://www.npmjs.com/package/elysia-openid-client) / [TypeDoc](https://macropygia.github.io/elysia-openid-client/)
 
 ## 仕様・制限事項
 
@@ -38,23 +38,26 @@ import Elysia from "elysia";
 import { OidcClient } from "elysia-openid-client";
 
 const rp = await OidcClient.create({
-  baseUrl: "https://app.example.com",
-  issuerUrl: "https://issuer.example.com",
+  baseUrl: "https://app.example.com", // RPのURL
+  issuerUrl: "https://issuer.example.com", // OPのURL
   clientMetadata: {
     client_id: "client-id",
     client_secret: "client-secret",
   },
 });
-const endpoints = rp.getEndpoints();
-const hook = rp.getAuthHook();
+const endpoints = rp.getEndpoints(); // エンドポイントプラグイン
+const hook = rp.getAuthHook(); // フックプラグイン
 
-console.log(rp.issuerMetadata);
+console.log(rp.issuerMetadata); // OPのメタデータを表示
 
 new Elysia()
-  .use(endpoints)
-  .guard((app) =>
+  .use(endpoints) // エンドポイントを挿入
+  .guard((app) => // この内側が要認証エリア
     app
-      .use(hook)
+      .use(hook) // 認証・認可用のonBeforeHandleフックを挿入
+      .onBeforeHandle(({ sessionStatus, sessionClaims }) => {
+        // ユーザー名・メール・グループ等による認可処理
+      })
       .get("/", ({ sessionStatus }) => sessionStatus ? "Logged in" : "Restricted")
       .get("/status", ({ sessionStatus }) => sessionStatus)
       .get("/claims", ({ sessionClaims }) => sessionClaims),
@@ -116,18 +119,18 @@ const rp = await OidcClient.create(options);
 セッション情報の保存方法を定義したもの。
 
 ```typescript
-const client = await OidcClient.create({
+const rp = await OidcClient.create({
   //...
-  dataAdapter: <data-adapter>,
+  dataAdapter: OIDCClientDataAdapter,
   //...
 })
 ```
 
 - 本パッケージにはSQLite/LokiJS/Lowdb/Redisを使用したデータアダプターが含まれる
 - カスタムデータアダプターを作成可能
-  - 参照: [OIDCClientDataAdapter](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientDataAdapter.html)
 - 既定ではSQLiteのインメモリーモードが使用される
 - 複数のOPを使用する場合は一つのデータアダプターを共有する
+- 参照: [OIDCClientDataAdapter](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientDataAdapter.html)
 
 ### SQLite
 
@@ -215,7 +218,7 @@ export class MyDataAdapter implements OIDCClientDataAdapter {
 
 // app.ts
 import { MyDataAdapter } from 'path/to/MyDataAdapter';
-const client = await OidcClient.create({
+const rp = await OidcClient.create({
   //...
   dataAdapter: new MyDataAdapter(),
   //...
@@ -227,9 +230,9 @@ const client = await OidcClient.create({
 ロガーを定義する。
 
 ```typescript
-const client = await OidcClient.create({
+const rp = await OidcClient.create({
   //...
-  logger: <logger>,
+  logger: OIDCClientLogger | null,
   //...
 })
 ```
@@ -238,6 +241,7 @@ const client = await OidcClient.create({
   - 変換すれば任意のロガーを使用可能
 - 省略すると `consoleLogger("info")` を使用する
 - `null` に設定するとログを出力しない
+- 参照: [OIDCClientLogger](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientLogger.html)
 
 ### ログレベルポリシー
 
@@ -257,16 +261,17 @@ const client = await OidcClient.create({
 
 ### pinoの使用
 
+直接[pino](https://getpino.io/)を割り当てられる
+
 ```bash
 bun add pino
 ```
 
 ```typescript
 import pino from "pino";
-const logger = pino();
-const client = await OidcClient.create({
+const rp = await OidcClient.create({
   //...
-  logger,
+  logger: pino(),
   //...
 })
 ```
@@ -277,8 +282,8 @@ const client = await OidcClient.create({
 
 ```typescript
 import { consoleLogger } from "elysia-openid-client/loggers/consoleLogger";
-const minimumLogLevel = "debug";
-const client = await OidcClient.create({
+const minimumLogLevel = "debug"; // pinoと同様
+const rp = await OidcClient.create({
   //...
   logger: consoleLogger(minimumLogLevel),
   //...
@@ -287,9 +292,16 @@ const client = await OidcClient.create({
 
 ### カスタムロガー
 
-`consoleLogger` の実装を参照のこと。
+[OIDCClientLogger](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientLogger.html)の型定義と `consoleLogger` の実装を参照のこと。
 
 ## エンドポイント
+
+- ElysiaJSプラグインとしてのメタデータ
+  - 名称: `elysia-openid-client-endpoints`
+  - [シード](https://elysiajs.com/essential/plugin#plugin-deduplication): `settings.pluginSeed` 、未指定なら `issuerUrl`
+- 参照: [openid-client API Documentation - Client](https://github.com/panva/node-openid-client/blob/main/docs/README.md#client)
+
+### 内訳
 
 - Login (GET: `/auth/login` )
   - `openid-client` の `client.authorizationUrl` を呼び出す
@@ -324,7 +336,7 @@ const client = await OidcClient.create({
 
 ## フック
 
-`onBeforeHook` フックでCookieを元にセッションが有効かどうかを判断し、 [`resolve` フック](https://elysiajs.com/life-cycle/before-handle.html#resolve)から `sessionStatus` と `sessionClaims` を返す。
+`onBeforeHandle` フックでCookieを元にセッションが有効かどうかを判断し、 [`resolve` フック](https://elysiajs.com/life-cycle/before-handle.html#resolve)から `sessionStatus` と `sessionClaims` を返す。
 
 - セッションが有効な場合
   - `sessionStatus` : セッションステータス
@@ -332,23 +344,11 @@ const client = await OidcClient.create({
 - セッションが無効な場合
   - `loginRedirectUrl` にリダイレクト
   - `disableRedirect` が `false` の場合は `sessionStatus` , `sessionClaims` 共に `null`
-- 設定
-  - [AuthHookOptions](https://macropygia.github.io/elysia-openid-client/interfaces/types.AuthHookOptions.html).
-
-```typescript
-const rp = await OidcClient.create(clientOptions);
-
-const hookOptions: AuthHookOptions = {
-  scope: "scoped",
-  loginRedirectUrl: "/auth/login",
-  disableRedirect: false,
-  autoRefresh: true,
-}
-
-const hook = rp.getAuthHook(hookOptions);
-```
+- ElysiaJSプラグインとしてのメタデータ
+  - 名称: `elysia-openid-client-auth-hook`
+  - [シード](https://elysiajs.com/essential/plugin#plugin-deduplication): `settings.pluginSeed` 、未指定なら `issuerUrl`
+- 参照: [AuthHookOptions](https://macropygia.github.io/elysia-openid-client/interfaces/types.AuthHookOptions.html)
 
 ## Contributing
 
-本リポジトリに提供するコードを `GitHub Copilot` で生成する場合、必ず `Suggestions matching public code` オプションを `Block` に設定すること。
-同様のオプションが存在する類似のサービスを使用する場合も同様。
+本リポジトリに提供するコードを `GitHub Copilot` で生成する場合、必ず `Suggestions matching public code` オプションを `Block` に設定すること。同様のオプションが存在する類似のサービスを使用する場合も同様。
