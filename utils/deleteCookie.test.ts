@@ -1,5 +1,5 @@
 import { describe, expect, mock, test } from "bun:test";
-import { type DeepPartial, baseMockClient, mockCookie } from "@/__test__/const";
+import { type DeepPartial, mockBaseClient, mockCookie } from "@/__mock__/const";
 import type { OidcClient } from "@/core/OidcClient";
 import { defaultCookieSettings } from "@/core/const";
 import { deleteCookie } from "./deleteCookie";
@@ -7,7 +7,7 @@ import { deleteCookie } from "./deleteCookie";
 describe("Unit/utils/deleteCookie", () => {
   test("Default", () => {
     const ms = {
-      ...baseMockClient,
+      ...mockBaseClient,
       logger: {
         trace: mock(),
         debug: mock(),

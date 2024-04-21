@@ -1,5 +1,5 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { mockBaseOptions, opPort } from "@/__test__/const";
+import { mockBaseOptions, opPort } from "@/__mock__/const";
 import { opMock } from "@/__test__/opMock";
 import { BaseOidcClient } from "@/core/BaseOidcClient";
 import { initialize } from "./initialize";

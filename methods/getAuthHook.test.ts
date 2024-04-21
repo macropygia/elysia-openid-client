@@ -1,14 +1,14 @@
 import { describe, expect, mock, test } from "bun:test";
 import {
   type DeepPartial,
-  baseMockClient,
   logger,
   mockActiveSession,
-  mockAuthSession,
+  mockBaseClient,
   mockClaims,
+  mockLoginSession,
   mockStatus,
   rpPort,
-} from "@/__test__/const";
+} from "@/__mock__/const";
 import type { OidcClient } from "@/core/OidcClient";
 import type { OIDCClientActiveSession, OIDCClientOptions } from "@/types";
 import Elysia from "elysia";
@@ -18,7 +18,7 @@ describe("Unit/endpoints/getAuthHook", () => {
   const mockClient = mock(
     (session: Partial<OIDCClientActiveSession> | null) =>
       ({
-        ...baseMockClient,
+        ...mockBaseClient,
         fetchSession: mock().mockReturnValue(session || null),
         client: {
           refresh: mock().mockReturnValue({
@@ -79,7 +79,7 @@ describe("Unit/endpoints/getAuthHook", () => {
   });
 
   test("Failed (token missing)", async () => {
-    const mc = mockClient(mockAuthSession);
+    const mc = mockClient(mockLoginSession);
     const endpoints = getAuthHook.bind(mc)();
     const app = new Elysia()
       .guard((app) => app.use(endpoints).get("/", () => "home"))

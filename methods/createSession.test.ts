@@ -1,5 +1,5 @@
 import { describe, expect, mock, test } from "bun:test";
-import { type DeepPartial, logger } from "@/__test__/const";
+import { type DeepPartial, logger } from "@/__mock__/const";
 import type { OidcClient } from "@/core/OidcClient";
 import type { OIDCClientSession } from "@/types";
 import loki from "lokijs";

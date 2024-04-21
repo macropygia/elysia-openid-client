@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { mockActiveSession } from "@/__test__/const";
+import { mockActiveSession } from "@/__mock__/const";
 import { LokiInMemoryAdapter } from "./LokiInMemoryAdapter";
 
 describe("Unit/dataAdapter/LokiInMemoryAdapter", () => {

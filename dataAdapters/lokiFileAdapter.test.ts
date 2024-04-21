@@ -4,7 +4,7 @@ import {
   lokiTempFile,
   lokiTestFile,
   mockActiveSession,
-} from "@/__test__/const";
+} from "@/__mock__/const";
 import { sleep } from "bun";
 import { LokiFileAdapter } from "./LokiFileAdapter";
 

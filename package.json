@@ -29,7 +29,6 @@
     "build": "bun ./__scripts__/build.ts && bun run dts",
     "dts": "tsup ./index.ts --dts-only --format esm --out-dir .",
     "docs": "bun ./__scripts__/docs.ts",
-    "test": "bun test --coverage",
     "prepare": "simple-git-hooks"
   },
   "dependencies": { "openid-client": "^5.6.5" },

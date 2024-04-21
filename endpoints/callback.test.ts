@@ -1,11 +1,11 @@
 import { describe, expect, mock, test } from "bun:test";
 import {
   type DeepPartial,
-  baseMockClient,
   logger,
-  mockAuthSession,
+  mockBaseClient,
+  mockLoginSession,
   rpPort,
-} from "@/__test__/const";
+} from "@/__mock__/const";
 import type { OidcClient } from "@/core/OidcClient";
 import { defaultSettings } from "@/core/const";
 import type { OIDCClientActiveSession } from "@/types";
@@ -21,7 +21,7 @@ describe("Unit/endpoints/callback", () => {
   const mockClient = mock(
     (session: Partial<OIDCClientActiveSession> | null) =>
       ({
-        ...baseMockClient,
+        ...mockBaseClient,
         fetchSession: mock().mockReturnValue(session || null),
         client: {
           callback: mock().mockResolvedValue(responseBody),
@@ -35,7 +35,7 @@ describe("Unit/endpoints/callback", () => {
   );
 
   test("Succeeded", async () => {
-    const app = new Elysia().use(endpoints.call(mockClient(mockAuthSession)));
+    const app = new Elysia().use(endpoints.call(mockClient(mockLoginSession)));
 
     const response = await app.handle(new Request(`http://localhost${path}`));
     logger?.info(response);
@@ -76,7 +76,7 @@ describe("Unit/endpoints/callback", () => {
   });
 
   test("Update failed", async () => {
-    const mc = mockClient(mockAuthSession);
+    const mc = mockClient(mockLoginSession);
     mc.updateSession = mock().mockReturnValue(null);
     const app = new Elysia().use(endpoints.call(mc));
 

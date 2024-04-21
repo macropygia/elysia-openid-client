@@ -1,5 +1,5 @@
 import { describe, expect, mock, test } from "bun:test";
-import { type DeepPartial, baseMockClient } from "@/__test__/const";
+import { type DeepPartial, mockBaseClient } from "@/__mock__/const";
 import type { OidcClient } from "@/core/OidcClient";
 import Elysia from "elysia";
 import setCookie from "set-cookie-parser";
@@ -7,7 +7,7 @@ import { login } from "./login";
 
 describe("Unit/endpoints/login", () => {
   const mc = {
-    ...baseMockClient,
+    ...mockBaseClient,
     createSession: mock().mockReturnValue(["mock-sid", "/mock-url"]),
   } as DeepPartial<OidcClient> as OidcClient;
 
@@ -34,7 +34,7 @@ describe("Unit/endpoints/login", () => {
 
   test("Failed (exception)", async () => {
     const mc = {
-      ...baseMockClient,
+      ...mockBaseClient,
       createSession: mock().mockImplementation(() => {
         throw "Unknown error";
       }),

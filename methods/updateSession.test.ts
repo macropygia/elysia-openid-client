@@ -1,10 +1,10 @@
 import { describe, expect, mock, test } from "bun:test";
 import {
   type DeepPartial,
-  baseMockClient,
   logger,
   mockActiveSession,
-} from "@/__test__/const";
+  mockBaseClient,
+} from "@/__mock__/const";
 import type { OidcClient } from "@/core/OidcClient";
 import { LokiInMemoryAdapter } from "@/dataAdapters/LokiInMemoryAdapter";
 import type { OIDCClientOptions } from "@/types";
@@ -21,7 +21,7 @@ describe("Unit/methods/updateSession", () => {
 
   const refreshExpiration = 1000;
   const mockClient = {
-    ...baseMockClient,
+    ...mockBaseClient,
     sessions,
     settings: { refreshExpiration },
     logger,

@@ -1,18 +1,18 @@
 import { describe, expect, test } from "bun:test";
 import {
-  baseMockClient,
   mockActiveSession,
+  mockBaseClient,
   mockCookie,
-} from "@/__test__/const";
+} from "@/__mock__/const";
 import { defaultCookieSettings } from "@/core/const";
 import { handleErrorResponse } from "./handleErrorResponse";
 
 describe("Unit/utils/handleErrorResponse", () => {
   test("Session does not exist", () => {
     expect(
-      handleErrorResponse(new Error(), null, baseMockClient, mockCookie).status,
+      handleErrorResponse(new Error(), null, mockBaseClient, mockCookie).status,
     ).toBe(401);
-    expect(baseMockClient.deleteSession).not.toHaveBeenCalled();
+    expect(mockBaseClient.deleteSession).not.toHaveBeenCalled();
     expect(
       mockCookie[defaultCookieSettings.sessionIdName].update,
     ).toHaveBeenCalled();
@@ -23,11 +23,11 @@ describe("Unit/utils/handleErrorResponse", () => {
       handleErrorResponse(
         new Error(),
         mockActiveSession,
-        baseMockClient,
+        mockBaseClient,
         mockCookie,
       ).status,
     ).toBe(401);
-    expect(baseMockClient.deleteSession).toHaveBeenCalled();
+    expect(mockBaseClient.deleteSession).toHaveBeenCalled();
     expect(
       mockCookie[defaultCookieSettings.sessionIdName].update,
     ).toHaveBeenCalled();
@@ -38,7 +38,7 @@ describe("Unit/utils/handleErrorResponse", () => {
       handleErrorResponse(
         "Unknown Error",
         mockActiveSession,
-        baseMockClient,
+        mockBaseClient,
         mockCookie,
       ).status,
     ).toBe(500);

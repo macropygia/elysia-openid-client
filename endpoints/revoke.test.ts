@@ -1,10 +1,10 @@
 import { describe, expect, mock, test } from "bun:test";
 import {
   type DeepPartial,
-  baseMockClient,
-  getInit,
   logger,
-} from "@/__test__/const";
+  mockBaseClient,
+  mockGetInit,
+} from "@/__mock__/const";
 import type { OidcClient } from "@/core/OidcClient";
 import { defaultSettings } from "@/core/const";
 import type { OIDCClientActiveSession } from "@/types";
@@ -18,7 +18,7 @@ describe("Unit/endpoints/revoke", () => {
   const mockClient = mock(
     (session: Partial<OIDCClientActiveSession> | null) =>
       ({
-        ...baseMockClient,
+        ...mockBaseClient,
         fetchSession: mock().mockReturnValue(session || null),
         client: {
           revoke: mock().mockResolvedValue(responseBody),
@@ -33,7 +33,7 @@ describe("Unit/endpoints/revoke", () => {
     );
 
     const response = await app.handle(
-      new Request(`http://localhost${path}`, getInit),
+      new Request(`http://localhost${path}`, mockGetInit()),
     );
     expect(response.status).toBe(204);
   });
@@ -42,7 +42,7 @@ describe("Unit/endpoints/revoke", () => {
     const app = new Elysia().use(endpoints.call(mockClient(null)));
 
     const response = await app.handle(
-      new Request(`http://localhost${path}`, getInit),
+      new Request(`http://localhost${path}`, mockGetInit()),
     );
     expect(response.status).toBe(401);
   });

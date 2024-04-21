@@ -1,5 +1,5 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { type DeepPartial, logger, mockActiveSession } from "@/__test__/const";
+import { type DeepPartial, logger, mockActiveSession } from "@/__mock__/const";
 import type { OidcClient } from "@/core/OidcClient";
 import { LokiInMemoryAdapter } from "@/dataAdapters/LokiInMemoryAdapter";
 import { deleteSession } from "./deleteSession";

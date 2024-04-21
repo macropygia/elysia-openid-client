@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { logger, mockIdToken, mockIdTokenClaims } from "@/__test__/const";
+import { logger, mockIdToken, mockIdTokenClaims } from "@/__mock__/const";
 import type { OidcClient } from "@/core/OidcClient";
 import { getClaimsFromIdToken } from "./getClaimsFromIdToken";
 

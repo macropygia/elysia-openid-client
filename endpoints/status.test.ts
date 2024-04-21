@@ -1,12 +1,12 @@
 import { describe, expect, it, mock } from "bun:test";
 import {
   type DeepPartial,
-  baseMockClient,
   logger,
   mockActiveSession,
+  mockBaseClient,
+  mockPostInit,
   mockStatus,
-  postInit,
-} from "@/__test__/const";
+} from "@/__mock__/const";
 import type { OidcClient } from "@/core/OidcClient";
 import { defaultSettings } from "@/core/const";
 import type { OIDCClientActiveSession, OIDCClientSessionStatus } from "@/types";
@@ -22,7 +22,7 @@ describe("Unit/endpoints/status", () => {
       status: OIDCClientSessionStatus | null,
     ) =>
       ({
-        ...baseMockClient,
+        ...mockBaseClient,
         fetchSession: mock().mockReturnValue(session),
         sessionToStatus: mock().mockReturnValue(status),
         logger,
@@ -35,7 +35,7 @@ describe("Unit/endpoints/status", () => {
     );
 
     const response = await app
-      .handle(new Request(`http://localhost${path}`, postInit))
+      .handle(new Request(`http://localhost${path}`, mockPostInit))
       .then((res) => res.json());
 
     expect(response).toMatchObject(mockStatus);
@@ -45,7 +45,7 @@ describe("Unit/endpoints/status", () => {
     const app = new Elysia().use(endpoints.call(mockClient(null, null)));
 
     const response = await app
-      .handle(new Request(`http://localhost${path}`, postInit))
+      .handle(new Request(`http://localhost${path}`, mockPostInit))
       .then((res) => res.status);
 
     expect(response).toBe(401);

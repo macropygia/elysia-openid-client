@@ -1,5 +1,5 @@
 import { describe, expect, mock, test } from "bun:test";
-import { type DeepPartial, baseMockClient, logger } from "@/__test__/const";
+import { type DeepPartial, logger, mockBaseClient } from "@/__mock__/const";
 import type { OidcClient } from "@/core/OidcClient";
 import type { OIDCClientActiveSession } from "@/types";
 import Elysia from "elysia";
@@ -10,7 +10,7 @@ describe("Unit/endpoints/logout", () => {
   const mockClient = mock(
     (session: Partial<OIDCClientActiveSession> | null) =>
       ({
-        ...baseMockClient,
+        ...mockBaseClient,
         settings: {
           logoutPath: "/logout",
           logoutCompletedPath: "/home",

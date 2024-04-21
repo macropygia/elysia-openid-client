@@ -1,12 +1,12 @@
 import { describe, expect, it, mock } from "bun:test";
 import {
   type DeepPartial,
-  baseMockClient,
   logger,
   mockActiveSession,
+  mockBaseClient,
   mockIdTokenClaims,
-  postInit,
-} from "@/__test__/const";
+  mockPostInit,
+} from "@/__mock__/const";
 import type { OidcClient } from "@/core/OidcClient";
 import { defaultSettings } from "@/core/const";
 import type { OIDCClientActiveSession } from "@/types";
@@ -20,7 +20,7 @@ describe("Unit/endpoints/claims", () => {
   const mockClient = mock(
     (session: OIDCClientActiveSession | null, claims: IdTokenClaims | null) =>
       ({
-        ...baseMockClient,
+        ...mockBaseClient,
         fetchSession: mock().mockReturnValue(session),
         getClaimsFromIdToken: mock().mockReturnValue(claims),
         logger,
@@ -33,7 +33,7 @@ describe("Unit/endpoints/claims", () => {
     );
 
     const response = await app
-      .handle(new Request(`http://localhost${path}`, postInit))
+      .handle(new Request(`http://localhost${path}`, mockPostInit))
       .then((res) => res.json());
 
     expect(response).toMatchObject(mockIdTokenClaims);
@@ -43,7 +43,7 @@ describe("Unit/endpoints/claims", () => {
     const app = new Elysia().use(endpoints.call(mockClient(null, null)));
 
     const response = await app
-      .handle(new Request(`http://localhost${path}`, postInit))
+      .handle(new Request(`http://localhost${path}`, mockPostInit))
       .then((res) => res.status);
 
     expect(response).toBe(401);

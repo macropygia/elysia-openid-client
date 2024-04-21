@@ -1,0 +1,9 @@
+[
+  {
+    "sessionId": "mock-session-id",
+    "idToken": "mock-id-token",
+    "accessToken": "mock-access-token",
+    "refreshToken": "mock-refresh-token",
+    "sessionExpiresAt": 5000000000000
+  }
+]

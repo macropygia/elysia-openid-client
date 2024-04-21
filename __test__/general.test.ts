@@ -1,15 +1,15 @@
 import { afterAll, describe, expect, test } from "bun:test";
+import { mockPostInitWithSid, opPort, rpPort } from "@/__mock__/const";
+import { mockProvider } from "@/__mock__/mockProvider";
 import OidcClient from "@/index";
 import Elysia from "elysia";
 import setCookie from "set-cookie-parser";
-import { opPort, postInitWithSid, rpPort } from "./const";
-import { opMock } from "./opMock";
 
 describe("Integration/general", async () => {
   const baseUrl = `http://localhost:${rpPort}`;
   const issuerUrl = `http://localhost:${opPort}`;
 
-  const op = await opMock(opPort);
+  const op = await mockProvider(opPort);
 
   const client_id = "mock-client-id";
   const client_secret = "mock-client-secret";
@@ -72,7 +72,7 @@ describe("Integration/general", async () => {
     const res = await app.handle(
       new Request(
         `${baseUrl}${settings.pathPrefix}${settings.userinfoPath}`,
-        postInitWithSid(ctx.sessionId as string),
+        mockPostInitWithSid(ctx.sessionId as string),
       ),
     );
     expect(res.status).toBe(200);
@@ -83,7 +83,7 @@ describe("Integration/general", async () => {
     const res = await app.handle(
       new Request(
         `${baseUrl}${settings.pathPrefix}${settings.introspectPath}`,
-        postInitWithSid(ctx.sessionId as string),
+        mockPostInitWithSid(ctx.sessionId as string),
       ),
     );
     expect(res.status).toBe(200);
@@ -116,7 +116,7 @@ describe("Integration/general", async () => {
     const res = await app.handle(
       new Request(
         `${baseUrl}${settings.pathPrefix}${settings.revokePath}`,
-        postInitWithSid(ctx.sessionId as string),
+        mockPostInitWithSid(ctx.sessionId as string),
       ),
     );
     expect(res.status).toBe(204);

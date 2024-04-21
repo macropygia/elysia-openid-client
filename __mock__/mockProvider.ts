@@ -1,3 +1,4 @@
+import { logger, opPort } from "@/__mock__/const";
 import Elysia from "elysia";
 // biome-ignore lint/style/noNamespaceImport: <explanation>
 import * as jose from "jose";
@@ -8,9 +9,8 @@ import {
   type TokenSetParameters,
   generators,
 } from "openid-client";
-import { logger, opPort } from "./const";
 
-export const opMock = async (port: number) => {
+export const mockProvider = async (port: number) => {
   // JWT
   const keys = [];
   const { privateKey } = await jose.generateKeyPair("RS256", {

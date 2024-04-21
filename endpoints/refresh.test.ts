@@ -1,10 +1,10 @@
 import { describe, expect, mock, test } from "bun:test";
 import {
   type DeepPartial,
-  baseMockClient,
-  getInit,
   logger,
-} from "@/__test__/const";
+  mockBaseClient,
+  mockGetInit,
+} from "@/__mock__/const";
 import type { OidcClient } from "@/core/OidcClient";
 import { defaultSettings } from "@/core/const";
 import type { OIDCClientActiveSession } from "@/types";
@@ -23,7 +23,7 @@ describe("Unit/endpoints/refresh", () => {
   const mockClient = mock(
     (session: Partial<OIDCClientActiveSession> | null, newSession?: boolean) =>
       ({
-        ...baseMockClient,
+        ...mockBaseClient,
         fetchSession: mock().mockReturnValue(session || null),
         updateSession: mock().mockReturnValue(newSession),
         client: {
@@ -41,7 +41,7 @@ describe("Unit/endpoints/refresh", () => {
     const app = new Elysia().use(endpoints.call(mockClient(session, true)));
 
     const response = await app.handle(
-      new Request(`http://localhost${path}`, getInit),
+      new Request(`http://localhost${path}`, mockGetInit()),
     );
     expect(response.status).toBe(200);
     expect(response.headers.get("content-type")).toBe("application/json");
@@ -52,7 +52,7 @@ describe("Unit/endpoints/refresh", () => {
     const app = new Elysia().use(endpoints.call(mockClient(null, true)));
 
     const response = await app.handle(
-      new Request(`http://localhost${path}`, getInit),
+      new Request(`http://localhost${path}`, mockGetInit()),
     );
     expect(response.status).toBe(401);
   });
@@ -62,7 +62,7 @@ describe("Unit/endpoints/refresh", () => {
     const app = new Elysia().use(endpoints.call(mockClient(session, true)));
 
     const response = await app.handle(
-      new Request(`http://localhost${path}`, getInit),
+      new Request(`http://localhost${path}`, mockGetInit()),
     );
     expect(response.status).toBe(401);
   });
@@ -75,7 +75,7 @@ describe("Unit/endpoints/refresh", () => {
     const app = new Elysia().use(endpoints.call(mockClient(session, false)));
 
     const response = await app.handle(
-      new Request(`http://localhost${path}`, getInit),
+      new Request(`http://localhost${path}`, mockGetInit()),
     );
     expect(response.status).toBe(401);
   });

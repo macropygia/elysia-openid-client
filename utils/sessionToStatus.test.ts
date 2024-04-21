@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { logger } from "@/__test__/const";
+import { logger } from "@/__mock__/const";
 import type { OIDCClientActiveSession } from "@/types";
 import { sessionToStatus } from "./sessionToStatus";
 

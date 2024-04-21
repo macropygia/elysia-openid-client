@@ -4,7 +4,7 @@ import {
   mockActiveSession,
   sqliteTempFile,
   sqliteTestFile,
-} from "@/__test__/const";
+} from "@/__mock__/const";
 import { sleep } from "bun";
 import { SQLiteAdapter } from "./SQLiteAdapter";
 

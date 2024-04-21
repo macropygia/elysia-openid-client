@@ -1,6 +1,6 @@
 services:
   redis:
-    image: redis:7
+    image: redis:7-alpine
     container_name: elysia-openid-client-redis
     hostname: redis-server
     ports:
