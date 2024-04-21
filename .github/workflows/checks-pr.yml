@@ -9,11 +9,10 @@ on:
       - 'biome.json'
       - 'package.json'
       - 'tsconfig.json'
-      - '!**/.github/**'
-      - '!**/.vscode/**'
-      - '!**/examples/**'
       - '!**/*.config.ts'
-      - '!./build.ts'
+      - '!**/.*/**'
+      - '!**/__*__/**'
+      - '**/__test__/**'
   pull_request:
     branches:
       - main

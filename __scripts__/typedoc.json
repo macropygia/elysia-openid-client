@@ -1,14 +1,15 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["./*.ts", "./*/**/*.ts"],
+  "out": "../docs",
+  "entryPoints": ["../*.ts", "../*/**/*.ts"],
   "exclude": [
-    "**/__test__/**",
     "**/*.test.ts",
-    "**/examples/**",
     "**/*.config.ts",
     "**/*.d.ts",
-    "./build.ts"
+    "**/.*/**",
+    "**/__*__/**"
   ],
+  "readme": "../README.md",
   "githubPages": true,
   "includeVersion": true
 }

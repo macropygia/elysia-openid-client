@@ -7,9 +7,6 @@ defaults:
   run:
     shell: bash
 
-permissions:
-  contents: write
-
 jobs:
   publish_dry_run:
     runs-on: ubuntu-latest
