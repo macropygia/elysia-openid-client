@@ -60,8 +60,7 @@ export function callback(this: OidcClient) {
         const newSession = await this.updateSession(sessionId, tokenSet);
         if (!newSession) {
           deleteCookie(this, cookie);
-          set.status = 401;
-          return;
+          throw new Error("Session update failed");
         }
 
         extendCookieExpiration(this, cookie);

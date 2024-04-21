@@ -1,8 +1,8 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import fs from "node:fs";
 import {
+  lokiMockFile,
   lokiTempFile,
-  lokiTestFile,
   mockActiveSession,
 } from "@/__mock__/const";
 import { sleep } from "bun";
@@ -65,7 +65,7 @@ describe("Unit/dataAdapter/LokiFileAdapter", () => {
 
   test("Load existing database", async () => {
     const db = await LokiFileAdapter.create({
-      filename: lokiTestFile,
+      filename: lokiMockFile,
     });
     expect(db.fetch(mockActiveSession.sessionId)).toMatchObject(
       mockActiveSession,

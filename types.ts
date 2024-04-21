@@ -271,4 +271,7 @@ export interface OIDCClientDataAdapter {
  * @see
  * - [Logger Instance](https://getpino.io/#/docs/api?id=logger)
  */
-export interface OIDCClientLogger extends Omit<BaseLogger, "level"> {}
+export interface OIDCClientLogger extends Omit<BaseLogger, "level"> {
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  [key: string]: any;
+}

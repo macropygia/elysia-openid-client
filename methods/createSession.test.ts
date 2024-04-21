@@ -1,41 +1,36 @@
-import { describe, expect, mock, test } from "bun:test";
-import { type DeepPartial, logger } from "@/__mock__/const";
-import type { OidcClient } from "@/core/OidcClient";
-import type { OIDCClientSession } from "@/types";
-import loki from "lokijs";
+import { afterAll, beforeEach, describe, expect, test } from "bun:test";
+import { mockBaseClient, mockResetRecursively } from "@/__mock__/const";
+import { SQLiteAdapter } from "@/dataAdapters/SQLiteAdapter";
 import { createSession } from "./createSession";
 
 describe("Unit/methods/createSession", () => {
+  const sessions = new SQLiteAdapter();
+
+  beforeEach(() => {
+    mockResetRecursively(mockBaseClient);
+    mockBaseClient.client.authorizationUrl = () => "authorizationUrl";
+    mockBaseClient.settings.loginExpiration = 60 * 10 * 1000;
+    mockBaseClient.sessions = sessions;
+  });
+
+  afterAll(() => {
+    sessions.close();
+  });
+
   test("Default", async () => {
-    const db = new loki("in-memory.db");
-    const sessions = db.addCollection<OIDCClientSession>("sessions");
-    const loginExpiration = 60 * 10 * 1000;
-
-    const mockClient = {
-      db,
-      sessions,
-      client: {
-        authorizationUrl: mock().mockReturnValue("authorizationUrl"),
-      },
-      settings: {
-        loginExpiration,
-      },
-      logger,
-    } as DeepPartial<OidcClient> as OidcClient;
-
     const [sessionId, authorizationUrl] =
-      await createSession.bind(mockClient)();
+      await createSession.call(mockBaseClient);
     expect(sessionId).toBeTypeOf("string");
     expect(sessionId.length).toBe(43);
     expect(authorizationUrl).toBe("authorizationUrl");
 
-    const record = sessions.findOne();
+    const record = sessions.fetch(sessionId);
     expect(record?.sessionId === sessionId);
     expect(record?.sessionExpiresAt).toBeTypeOf("number");
     expect(record?.codeVerifier).toBeTypeOf("string");
     expect(record?.state).toBeTypeOf("string");
     expect(record?.nonce).toBeTypeOf("string");
 
-    db.close();
+    console.debug("Inserted record", record);
   });
 });

@@ -1,18 +1,19 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { type DeepPartial, logger, mockActiveSession } from "@/__mock__/const";
-import type { OidcClient } from "@/core/OidcClient";
-import { LokiInMemoryAdapter } from "@/dataAdapters/LokiInMemoryAdapter";
+import {
+  mockActiveSession,
+  mockBaseClient,
+  mockResetRecursively,
+} from "@/__mock__/const";
+import { SQLiteAdapter } from "@/dataAdapters/SQLiteAdapter";
 import { deleteSession } from "./deleteSession";
 
 describe("Unit/methods/deleteSession", () => {
-  const sessions = new LokiInMemoryAdapter();
-  const mockClient = {
-    sessions,
-    logger,
-  } as DeepPartial<OidcClient> as OidcClient;
+  const sessions = new SQLiteAdapter();
+  mockBaseClient.sessions = sessions;
 
   afterAll(() => {
     sessions.close();
+    mockResetRecursively(mockBaseClient);
   });
 
   test("Default", async () => {
@@ -26,14 +27,16 @@ describe("Unit/methods/deleteSession", () => {
     expect(before).toBeTruthy();
 
     expect(
-      await deleteSession.bind(mockClient)(currentSessionId),
+      await deleteSession.call(mockBaseClient, currentSessionId),
     ).toBeUndefined();
 
     const after = sessions.fetch(currentSessionId);
     expect(after).toBeNull();
   });
 
-  test("Id does not exists", async () => {
-    expect(await deleteSession.bind(mockClient)("invalidId")).toBeUndefined();
+  test("Id does not exist", async () => {
+    expect(
+      await deleteSession.call(mockBaseClient, "invalidId"),
+    ).toBeUndefined();
   });
 });

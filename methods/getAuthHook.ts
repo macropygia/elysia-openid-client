@@ -123,7 +123,7 @@ export function getAuthHook(
             resolvedSession = newSession;
             resolvedClaims = getClaimsFromIdToken(newSession.idToken, logger);
           } catch (e: unknown) {
-            logger?.warn("Throw exception (authHook");
+            logger?.warn("Throw exception (authHook)");
             logger?.debug(e);
             await this.deleteSession(sessionId);
             deleteCookie(this, cookie);

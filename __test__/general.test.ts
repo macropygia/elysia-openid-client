@@ -1,5 +1,5 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { mockPostInitWithSid, opPort, rpPort } from "@/__mock__/const";
+import { mockPostInit, opPort, rpPort } from "@/__mock__/const";
 import { mockProvider } from "@/__mock__/mockProvider";
 import OidcClient from "@/index";
 import Elysia from "elysia";
@@ -72,7 +72,7 @@ describe("Integration/general", async () => {
     const res = await app.handle(
       new Request(
         `${baseUrl}${settings.pathPrefix}${settings.userinfoPath}`,
-        mockPostInitWithSid(ctx.sessionId as string),
+        mockPostInit(ctx.sessionId as string),
       ),
     );
     expect(res.status).toBe(200);
@@ -83,7 +83,7 @@ describe("Integration/general", async () => {
     const res = await app.handle(
       new Request(
         `${baseUrl}${settings.pathPrefix}${settings.introspectPath}`,
-        mockPostInitWithSid(ctx.sessionId as string),
+        mockPostInit(ctx.sessionId as string),
       ),
     );
     expect(res.status).toBe(200);
@@ -116,7 +116,7 @@ describe("Integration/general", async () => {
     const res = await app.handle(
       new Request(
         `${baseUrl}${settings.pathPrefix}${settings.revokePath}`,
-        mockPostInitWithSid(ctx.sessionId as string),
+        mockPostInit(ctx.sessionId as string),
       ),
     );
     expect(res.status).toBe(204);

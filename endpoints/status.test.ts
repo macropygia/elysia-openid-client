@@ -1,53 +1,64 @@
-import { describe, expect, it, mock } from "bun:test";
+import { beforeEach, describe, expect, mock, test } from "bun:test";
 import {
-  type DeepPartial,
-  logger,
-  mockActiveSession,
+  mockActiveSessionWithRealIdToken,
   mockBaseClient,
   mockPostInit,
-  mockStatus,
+  mockResetRecursively,
 } from "@/__mock__/const";
-import type { OidcClient } from "@/core/OidcClient";
 import { defaultSettings } from "@/core/const";
-import type { OIDCClientActiveSession, OIDCClientSessionStatus } from "@/types";
+import type {} from "@/types";
+import { sessionToStatus } from "@/utils/sessionToStatus";
 import { Elysia } from "elysia";
 import { status } from "./status";
 
 describe("Unit/endpoints/status", () => {
-  const endpoints = status;
+  const endpoint = status;
   const path = defaultSettings.statusPath;
-  const mockClient = mock(
-    (
-      session: OIDCClientActiveSession | null,
-      status: OIDCClientSessionStatus | null,
-    ) =>
-      ({
-        ...mockBaseClient,
-        fetchSession: mock().mockReturnValue(session),
-        sessionToStatus: mock().mockReturnValue(status),
-        logger,
-      }) as DeepPartial<OidcClient> as OidcClient,
-  );
+  const { logger } = mockBaseClient;
 
-  it("Succeeded", async () => {
-    const app = new Elysia().use(
-      endpoints.call(mockClient(mockActiveSession, mockStatus)),
+  beforeEach(() => {
+    mockResetRecursively(mockBaseClient);
+    mockBaseClient.fetchSession = mock().mockReturnValue(
+      mockActiveSessionWithRealIdToken,
     );
-
-    const response = await app
-      .handle(new Request(`http://localhost${path}`, mockPostInit))
-      .then((res) => res.json());
-
-    expect(response).toMatchObject(mockStatus);
   });
 
-  it("Session does not exist", async () => {
-    const app = new Elysia().use(endpoints.call(mockClient(null, null)));
+  test("Succeeded", async () => {
+    const app = new Elysia().use(endpoint.call(mockBaseClient));
 
     const response = await app
-      .handle(new Request(`http://localhost${path}`, mockPostInit))
+      .handle(new Request(`http://localhost${path}`, mockPostInit()))
+      .then((res) => res);
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject(
+      sessionToStatus(mockActiveSessionWithRealIdToken),
+    );
+  });
+
+  test("Session does not exist", async () => {
+    mockBaseClient.fetchSession = mock().mockReturnValue(null);
+
+    const app = new Elysia().use(endpoint.call(mockBaseClient));
+    const response = await app
+      .handle(new Request(`http://localhost${path}`, mockPostInit()))
       .then((res) => res.status);
 
     expect(response).toBe(401);
+    expect(logger?.warn).toHaveBeenCalledTimes(1);
+  });
+
+  test("Exception", async () => {
+    mockBaseClient.fetchSession = () => {
+      throw "Unknown Error";
+    };
+
+    const app = new Elysia().use(endpoint.call(mockBaseClient));
+    const response = await app
+      .handle(new Request(`http://localhost${path}`, mockPostInit()))
+      .then((res) => res.status);
+
+    expect(response).toBe(500);
+    expect(logger?.warn).not.toHaveBeenCalled();
   });
 });

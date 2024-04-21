@@ -1,146 +1,245 @@
-import { describe, expect, mock, test } from "bun:test";
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test";
 import {
-  type DeepPartial,
-  logger,
-  mockActiveSession,
+  mockActiveSessionWithRealIdToken,
+  mockActiveSessionWithRealIdTokenExpired,
   mockBaseClient,
-  mockClaims,
+  mockIdTokenClaims,
   mockLoginSession,
-  mockStatus,
+  mockResetRecursively,
   rpPort,
 } from "@/__mock__/const";
-import type { OidcClient } from "@/core/OidcClient";
-import type { OIDCClientActiveSession, OIDCClientOptions } from "@/types";
+import type {} from "@/types";
+import { sessionToStatus } from "@/utils/sessionToStatus";
 import Elysia from "elysia";
 import { getAuthHook } from "./getAuthHook";
 
 describe("Unit/endpoints/getAuthHook", () => {
-  const mockClient = mock(
-    (session: Partial<OIDCClientActiveSession> | null) =>
-      ({
-        ...mockBaseClient,
-        fetchSession: mock().mockReturnValue(session || null),
-        client: {
-          refresh: mock().mockReturnValue({
-            expired: mock().mockReturnValue(false),
-          }),
-        },
-        logger,
-      }) as DeepPartial<OIDCClientOptions> as OidcClient,
-  );
+  const { logger } = mockBaseClient;
 
-  test("Succeeded", async () => {
-    const endpoints = getAuthHook.bind(mockClient(mockActiveSession))();
+  beforeEach(() => {
+    mockResetRecursively(mockBaseClient);
+  });
+
+  afterAll(() => {
+    mockResetRecursively(mockBaseClient);
+  });
+
+  test("Method is not GET (authHook)", async () => {
+    const hook = getAuthHook.call(mockBaseClient);
+    const app = new Elysia()
+      .guard((app) => app.use(hook).post("/", () => ""))
+      .listen(rpPort);
+
+    const res = await app.handle(
+      new Request(`http://localhost:${rpPort}/`, { method: "POST" }),
+    );
+
+    expect(res.status).toBe(200);
+    expect(logger?.debug).toHaveBeenCalledWith("Method is not GET (authHook)");
+
+    app.stop();
+  });
+
+  test("Session does not exist (authHook)", async () => {
+    const hook = getAuthHook.call(mockBaseClient);
+    const app = new Elysia()
+      .guard((app) => app.use(hook).get("/", () => ""))
+      .listen(rpPort);
+
+    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+
+    expect(res.status).toBe(303);
+    expect(logger?.debug).toHaveBeenCalledWith(
+      "Session does not exist (authHook)",
+    );
+
+    app.stop();
+  });
+
+  test("Token does not exist (authHook)", async () => {
+    mockBaseClient.fetchSession = mock().mockReturnValue({
+      mockLoginSession,
+    });
+
+    const hook = getAuthHook.call(mockBaseClient);
+    const app = new Elysia()
+      .guard((app) => app.use(hook).get("/", () => ""))
+      .listen(rpPort);
+
+    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+
+    expect(res.status).toBe(303);
+    expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
+    expect(logger?.warn).toHaveBeenCalledWith(
+      "Token does not exist (authHook)",
+    );
+
+    app.stop();
+  });
+
+  test("Session expired (authHook) Auto refresh disabled", async () => {
+    mockBaseClient.fetchSession = mock().mockReturnValue(
+      mockActiveSessionWithRealIdTokenExpired,
+    );
+
+    const hook = getAuthHook.call(mockBaseClient, { autoRefresh: false });
+    const app = new Elysia()
+      .guard((app) => app.use(hook).get("/", () => ""))
+      .listen(rpPort);
+
+    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+
+    expect(res.status).toBe(303);
+    expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
+    expect(logger?.warn).toHaveBeenCalledWith("Session expired (authHook)");
+
+    app.stop();
+  });
+
+  test("Session expired (authHook) Refresh token does not exist", async () => {
+    mockBaseClient.fetchSession = mock().mockReturnValue({
+      ...mockActiveSessionWithRealIdTokenExpired,
+      refreshToken: undefined,
+    });
+
+    const hook = getAuthHook.call(mockBaseClient);
+    const app = new Elysia()
+      .guard((app) => app.use(hook).get("/", () => ""))
+      .listen(rpPort);
+
+    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+
+    expect(res.status).toBe(303);
+    expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
+    expect(logger?.warn).toHaveBeenCalledWith("Session expired (authHook)");
+
+    app.stop();
+  });
+
+  test("Session renew failed (authHook)", async () => {
+    mockBaseClient.fetchSession = mock().mockReturnValue(
+      mockActiveSessionWithRealIdTokenExpired,
+    );
+    mockBaseClient.client.refresh = mock();
+    mockBaseClient.updateSession = mock().mockReturnValue(null);
+
+    const hook = getAuthHook.call(mockBaseClient);
+    const app = new Elysia()
+      .guard((app) => app.use(hook).get("/", () => ""))
+      .listen(rpPort);
+
+    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+
+    expect(res.status).toBe(303);
+    expect(mockBaseClient.updateSession).toHaveBeenCalledTimes(1);
+    expect(logger?.warn).toHaveBeenCalledWith(
+      "Session renew failed (authHook)",
+    );
+
+    app.stop();
+  });
+
+  test("Error on refresh", async () => {
+    mockBaseClient.fetchSession = mock().mockReturnValue(
+      mockActiveSessionWithRealIdTokenExpired,
+    );
+    mockBaseClient.client.refresh = mock().mockImplementation(() => {
+      throw new Error("Error");
+    });
+    mockBaseClient.updateSession = mock().mockReturnValue(null);
+
+    const hook = getAuthHook.call(mockBaseClient);
+    const app = new Elysia()
+      .guard((app) => app.use(hook).get("/", () => ""))
+      .listen(rpPort);
+
+    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+
+    expect(res.status).toBe(401);
+    expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
+    expect(logger?.warn).toHaveBeenCalledWith("Throw exception (authHook)");
+
+    app.stop();
+  });
+
+  test("Unknown error on refresh", async () => {
+    mockBaseClient.fetchSession = mock().mockReturnValue(
+      mockActiveSessionWithRealIdTokenExpired,
+    );
+    mockBaseClient.client.refresh = mock().mockImplementation(() => {
+      throw "Unknown error";
+    });
+    mockBaseClient.updateSession = mock().mockReturnValue(null);
+
+    const hook = getAuthHook.call(mockBaseClient);
+    const app = new Elysia()
+      .guard((app) => app.use(hook).get("/", () => ""))
+      .listen(rpPort);
+
+    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+
+    expect(res.status).toBe(500);
+    expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
+    expect(logger?.warn).toHaveBeenCalledWith("Throw exception (authHook)");
+
+    app.stop();
+  });
+
+  test("Succeeded with refresh", async () => {
+    mockBaseClient.fetchSession = mock().mockReturnValue(
+      mockActiveSessionWithRealIdTokenExpired,
+    );
+    mockBaseClient.client.refresh = mock();
+    mockBaseClient.updateSession = mock().mockReturnValue(
+      mockActiveSessionWithRealIdToken,
+    );
+
+    const hook = getAuthHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) =>
-        app
-          .use(endpoints)
-          .get("/case1", ({ sessionClaims }) => sessionClaims)
-          .get("/case2", ({ sessionStatus }) => sessionStatus),
+        app.use(hook).get("/", ({ sessionStatus, sessionClaims }) =>
+          JSON.stringify({
+            sessionStatus,
+            sessionClaims,
+          }),
+        ),
       )
       .listen(rpPort);
 
-    const case1 = await app.handle(
-      new Request(`http://localhost:${rpPort}/case1`),
-    );
-    expect(case1.status).toBe(200);
-    expect(await case1.json()).toMatchObject(mockClaims);
-
-    const case2 = await app.handle(
-      new Request(`http://localhost:${rpPort}/case2`),
-    );
-    expect(case2.status).toBe(200);
-    expect(await case2.json()).toMatchObject(mockStatus);
-    app.stop();
-  });
-
-  test("Skipped", async () => {
-    const endpoints = getAuthHook.bind(mockClient(null))();
-    const app = new Elysia()
-      .guard((app) => app.use(endpoints).post("/", () => "home"))
-      .listen(rpPort);
-
-    const result = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, { method: "POST" }),
-    );
-    expect(result.status).toBe(200);
-    app.stop();
-  });
-
-  test("Failed (session missing)", async () => {
-    const endpoints = getAuthHook.bind(mockClient(null))();
-    const app = new Elysia()
-      .guard((app) => app.use(endpoints).get("/", () => "home"))
-      .listen(rpPort);
-
     const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
-    expect(res.status).toBe(303);
-    app.stop();
-  });
 
-  test("Failed (token missing)", async () => {
-    const mc = mockClient(mockLoginSession);
-    const endpoints = getAuthHook.bind(mc)();
-    const app = new Elysia()
-      .guard((app) => app.use(endpoints).get("/", () => "home"))
-      .listen(rpPort);
-
-    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
-    expect(res.status).toBe(303);
-    app.stop();
-  });
-
-  test("Failed (expired, no-refresh)", async () => {
-    const mc = mockClient(mockActiveSession);
-    const endpoints = getAuthHook.bind(mc)({
-      autoRefresh: false,
-    });
-    const app = new Elysia()
-      .guard((app) => app.use(endpoints).get("/", () => "home"))
-      .listen(rpPort);
-
-    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
-    expect(res.status).toBe(303);
-    app.stop();
-  });
-
-  test("Succeeded (refresh)", async () => {
-    const mc = mockClient(mockActiveSession);
-    const endpoints = getAuthHook.bind(mc)();
-    const app = new Elysia()
-      .guard((app) => app.use(endpoints).get("/", () => "home"))
-      .listen(rpPort);
-
-    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
     expect(res.status).toBe(200);
-    app.stop();
-  });
-
-  test("Failed (refresh)", async () => {
-    const mc = mockClient(mockActiveSession);
-    mc.updateSession = mock().mockReturnValue(null);
-    const endpoints = getAuthHook.bind(mc)();
-    const app = new Elysia()
-      .guard((app) => app.use(endpoints).get("/", () => "home"))
-      .listen(rpPort);
-
-    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
-    expect(res.status).toBe(303);
-    app.stop();
-  });
-
-  test("Failed (throw)", async () => {
-    const mc = mockClient(mockActiveSession);
-    mc.updateSession = mock().mockImplementation(() => {
-      throw "Unknown Error";
+    expect(await res.json()).toMatchObject({
+      sessionClaims: mockIdTokenClaims,
+      sessionStatus: sessionToStatus(mockActiveSessionWithRealIdToken),
     });
-    const endpoints = getAuthHook.bind(mc)();
+    app.stop();
+  });
+
+  test("Succeeded withpit refresh", async () => {
+    mockBaseClient.fetchSession = mock().mockReturnValue(
+      mockActiveSessionWithRealIdToken,
+    );
+
+    const hook = getAuthHook.call(mockBaseClient);
     const app = new Elysia()
-      .guard((app) => app.use(endpoints).get("/", () => "home"))
+      .guard((app) =>
+        app.use(hook).get("/", ({ sessionStatus, sessionClaims }) =>
+          JSON.stringify({
+            sessionStatus,
+            sessionClaims,
+          }),
+        ),
+      )
       .listen(rpPort);
 
     const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
-    expect(res.status).toBe(500);
+
+    expect(res.status).toBe(200);
+    expect(await res.json()).toMatchObject({
+      sessionClaims: mockIdTokenClaims,
+      sessionStatus: sessionToStatus(mockActiveSessionWithRealIdToken),
+    });
     app.stop();
   });
 });

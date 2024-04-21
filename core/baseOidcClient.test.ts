@@ -1,13 +1,13 @@
 import { describe, expect, test } from "bun:test";
 import { mockBaseOptions, opPort } from "@/__mock__/const";
-import { opMock } from "@/__test__/opMock";
+import { mockProvider } from "@/__mock__/mockProvider";
 import { BaseOidcClient } from "./BaseOidcClient";
 import { defaultCookieSettings, defaultSettings } from "./const";
 
 describe("Unit/core/BaseOidcClient", () => {
   describe("handleErrorResponse", () => {
     test("Default", async () => {
-      const op = await opMock(opPort);
+      const op = await mockProvider(opPort);
 
       const client = await BaseOidcClient.create({
         ...mockBaseOptions,

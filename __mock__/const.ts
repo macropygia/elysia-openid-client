@@ -38,8 +38,8 @@ export const mockLogger = {
 };
 
 export const mockBaseOptions = {
-  baseUrl: `https://localhost:${rpPort}`,
-  issuerUrl: `https://localhost:${opPort}`,
+  baseUrl: `http://localhost:${rpPort}`,
+  issuerUrl: `http://localhost:${opPort}`,
   clientMetadata: {
     client_id: "mock-client-id",
     client_secret: "mock-client-secret",
@@ -53,15 +53,27 @@ export const mockBaseOptions = {
 } as OIDCClientOptions;
 
 export const mockIdToken =
-  "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFlOWdkazcifQ.ewogImlzcyI6Imh0dHBzOi8vc2VydmVyLmV4YW1wbGUuY29tIiwKICAic3ViIjoiMjQ4Mjg5NzYxMDAxIiwKICAiYXVkIjoiczZCaGRSa3F0MyIsCiAgIm5vbmNlIjoibi0wUzZfV3pBMk1qIiwKICAiZXhwIjoxMzExMjgxOTcwLAogImlhdCI6MTMxMTI4MDE3MAp9.ggW8hZ1EuVLuxNuuIJKX_V8a_OMXzR0EHrAsNSbvOojeUFFrEalG9covNi1SDYmXKlgNuL59mVPeHspqI6J7sbo4-K3TSkhogU6JUgiy3OdDrfAav9yU5SCLZSxnW8NAkFguHiMeJfRugKyybartdLriPmIYkmI6VzwlHxGiuqlEkjFZjoiewpIdRHFuzkzGSmXEOpZGDaSIPuP7oGxjn_vSI7v7kpJIlBS-xloiFqXnudkjESaWCtkZO5LF1Wn01YklmTPQoh3Sxsm0Tp1QTwecRjyFz7exbcVwhQqXYTlvaUo-4KE5lKcxKVV_uCZuhSA2QS1cvI";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtb2NrLXN1YiIsIm5vbmNlIjoibW9jay1ub25jZSIsImF1ZCI6Im1vY2stYXVkIiwiaWF0Ijo1MDAwMDAwMDAwLCJleHAiOjUwMDAwMDAwMDAsImlzcyI6Imh0dHBzOi8vb3AuZXhhbXBsZS5jb20ifQ.SyVdKzxYNl0ZsjZvJ9gZyOzPDEE9Q0_bI2l_j5B8fSw";
+
+export const mockIdTokenExpired =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtb2NrLXN1YiIsIm5vbmNlIjoibW9jay1ub25jZSIsImF1ZCI6Im1vY2stYXVkIiwiaWF0IjoxNzA0MDY3MjAwLCJleHAiOjE3MDQwNjcyMDAsImlzcyI6Imh0dHBzOi8vb3AuZXhhbXBsZS5jb20ifQ.JrNwu4_ji3cnoCDd_wxhRVbc25D1Y2io6n7VKDd5pLc";
 
 export const mockIdTokenClaims = {
-  aud: "s6BhdRkqt3",
-  exp: 1311281970,
-  iat: 1311280170,
-  iss: "https://server.example.com",
-  nonce: "n-0S6_WzA2Mj",
-  sub: "248289761001",
+  aud: "mock-aud",
+  exp: 5000000000,
+  iat: 5000000000,
+  iss: "https://op.example.com",
+  nonce: "mock-nonce",
+  sub: "mock-sub",
+};
+
+export const mockIdTokenExpiredClaims = {
+  aud: "mock-aud",
+  exp: 1704067200,
+  iat: 1704067200,
+  iss: "https://op.example.com",
+  nonce: "mock-nonce",
+  sub: "mock-sub",
 };
 
 export const mockLoginSession: OIDCClientSession = {
@@ -95,14 +107,16 @@ export const mockActiveSessionWithRealIdToken: OIDCClientActiveSession = {
   sessionExpiresAt: 5000000000000,
 };
 
-export const mockPostInit: RequestInit = {
-  method: "POST",
-  headers: {
-    Cookie: `${defaultCookieSettings.sessionIdName}=mock-sid`,
-  },
-};
+export const mockActiveSessionWithRealIdTokenExpired: OIDCClientActiveSession =
+  {
+    sessionId: "mock-session-id",
+    idToken: mockIdTokenExpired,
+    accessToken: "mock-access-token",
+    refreshToken: "mock-refresh-token",
+    sessionExpiresAt: 5000000000000,
+  };
 
-export const mockPostInitWithSid = (sid?: string): RequestInit => ({
+export const mockPostInit = (sid?: string): RequestInit => ({
   method: "POST",
   headers: {
     Cookie: `${defaultCookieSettings.sessionIdName}=${sid || "mock-sid"}`,
@@ -136,14 +150,17 @@ export const mockBaseClient = {
   initialize: mock(),
   validateOptions: mock(),
   createSession: mock(),
-  updateSession: mock().mockReturnValue(mockActiveSession),
+  updateSession: mock(),
   fetchSession: mock(),
   deleteSession: mock(),
   getSessionIdCookieType: mock(),
   getCookieDefinition: mock(),
   getAuthHook: mock(),
   getEndpoints: mock(),
-  logger: undefined,
+  logger: mockLogger,
+  initialized: true,
+  client: {},
+  sessions: mock(),
 } as DeepPartial<OidcClient> as OidcClient;
 
 export const mockCookie = {
@@ -153,3 +170,51 @@ export const mockCookie = {
     update: mock(),
   },
 } as unknown as Record<string, Cookie<string>>;
+
+/**
+ * Clear calls/instances
+ */
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export const mockClearRecursively = (mockObj: any) => {
+  if (typeof mockObj !== "object") {
+    return;
+  }
+  for (const [_name, maybeMethod] of Object.entries(mockObj)) {
+    if (!maybeMethod) {
+      continue;
+    }
+    if (
+      typeof maybeMethod === "function" &&
+      "mockClear" in maybeMethod &&
+      typeof maybeMethod.mockClear === "function"
+    ) {
+      maybeMethod.mockClear();
+    } else if (typeof maybeMethod === "object") {
+      mockClearRecursively(maybeMethod);
+    }
+  }
+};
+
+/**
+ * Reset all mocks to `mock()`
+ */
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export const mockResetRecursively = (mockObj: any) => {
+  if (typeof mockObj !== "object") {
+    return;
+  }
+  for (const [_name, maybeMethod] of Object.entries(mockObj)) {
+    if (!maybeMethod) {
+      continue;
+    }
+    if (
+      typeof maybeMethod === "function" &&
+      "mockReset" in maybeMethod &&
+      typeof maybeMethod.mockReset === "function"
+    ) {
+      maybeMethod.mockReset();
+    } else if (typeof maybeMethod === "object") {
+      mockResetRecursively(maybeMethod);
+    }
+  }
+};

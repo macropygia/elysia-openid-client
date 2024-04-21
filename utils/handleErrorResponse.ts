@@ -5,7 +5,10 @@ import { deleteCookie } from "./deleteCookie";
 
 /**
  * Handle error response
- * @param e Error
+ * @param e Error object
+ * @param currentSession Session data
+ * @param ctx OIDCClient Instance
+ * @param cookie Cookie
  * @returns Response
  */
 export function handleErrorResponse(

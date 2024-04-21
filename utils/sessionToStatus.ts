@@ -7,7 +7,8 @@ import { getClaimsFromIdToken } from "./getClaimsFromIdToken";
 
 /**
  * Convert session data to session status
- * @param rp OidcClient Instance
+ * @param session Session data
+ * @param logger Logger
  * @returns Session status
  */
 export function sessionToStatus(

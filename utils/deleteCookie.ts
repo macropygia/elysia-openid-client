@@ -16,7 +16,7 @@ export function deleteCookie(
   } = ctx;
   logger?.trace("core/deleteCookie");
 
-  // cookie[sessionIdName].remove();
+  // cookie[sessionIdName].remove(); // NOTE: No effect (2024-04-19)
 
   if (cookie[sessionIdName].value) {
     logger?.debug(`Session ID Cookie deleted: ${cookie[sessionIdName].value}`);

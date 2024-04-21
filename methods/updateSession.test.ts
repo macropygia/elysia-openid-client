@@ -1,22 +1,20 @@
-import { describe, expect, mock, test } from "bun:test";
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test";
 import {
   type DeepPartial,
-  logger,
   mockActiveSession,
   mockBaseClient,
+  mockResetRecursively,
 } from "@/__mock__/const";
 import type { OidcClient } from "@/core/OidcClient";
-import { LokiInMemoryAdapter } from "@/dataAdapters/LokiInMemoryAdapter";
+import { SQLiteAdapter } from "@/dataAdapters/SQLiteAdapter";
 import type { OIDCClientOptions } from "@/types";
 import type { TokenSet } from "openid-client";
 import { updateSession } from "./updateSession";
 
 describe("Unit/methods/updateSession", () => {
-  const sessions = new LokiInMemoryAdapter();
-  const currentSessionId = "updateSession";
+  const sessions = new SQLiteAdapter();
   sessions.insert({
     ...mockActiveSession,
-    sessionId: currentSessionId,
   });
 
   const refreshExpiration = 1000;
@@ -24,60 +22,113 @@ describe("Unit/methods/updateSession", () => {
     ...mockBaseClient,
     sessions,
     settings: { refreshExpiration },
-    logger,
   } as DeepPartial<OIDCClientOptions> as OidcClient;
 
-  const exp = Math.floor(Date.now() / 1000);
+  const { logger } = mockClient;
+
+  beforeEach(() => {
+    mockResetRecursively(mockClient);
+  });
+
+  afterAll(() => {
+    sessions.close();
+    mockResetRecursively(mockBaseClient);
+  });
+
+  test("Expired", async () => {
+    const result = await updateSession.call(
+      mockClient,
+      mockActiveSession.sessionId,
+      {
+        expired: () => true,
+      } as unknown as TokenSet,
+    );
+
+    expect(result).toBeNull();
+    expect(mockClient.deleteSession).toHaveBeenCalledTimes(1);
+    expect(logger?.info).toHaveBeenCalledWith("Session expired (tokenSet)");
+  });
+
   test.each([
     {
-      id_token: "new-id-token",
-      access_token: "new-access-token",
-      refresh_token: "new-refresh-token",
-      expired: mock().mockReturnValue(false),
-      claims: mock().mockReturnValue({ sub: "new-sub", exp }),
-    } as unknown as TokenSet,
+      id_token: "mock-id-token",
+    },
     {
-      id_token: "new-id-token",
-      access_token: "new-access-token",
-      refresh_token: "new-refresh-token",
-      expired: mock().mockReturnValue(true),
-      claims: mock().mockReturnValue({ sub: "new-sub" }),
-    } as unknown as TokenSet,
-    {
-      access_token: "new-access-token",
-      refresh_token: "new-refresh-token",
-      expired: mock().mockReturnValue(false),
-      claims: mock().mockReturnValue({ sub: "new-sub" }),
-    } as unknown as TokenSet,
-    {
-      id_token: "new-id-token",
-      refresh_token: "new-refresh-token",
-      expired: mock().mockReturnValue(false),
-      claims: mock().mockReturnValue({ sub: "new-sub" }),
-    } as unknown as TokenSet,
-  ])("Default", async (tokenSet) => {
-    const updateResult = await updateSession.bind(mockClient)(
-      currentSessionId,
-      tokenSet,
+      access_token: "mock-access-token",
+    },
+  ])("Token does not exist", async (tokenParts) => {
+    const result = await updateSession.call(
+      mockClient,
+      mockActiveSession.sessionId,
+      {
+        expired: () => false,
+        ...tokenParts,
+      } as unknown as TokenSet,
     );
-    const now = Date.now();
 
-    if (updateResult) {
-      const result = sessions.fetch(currentSessionId);
+    expect(result).toBeNull();
+    expect(mockClient.deleteSession).toHaveBeenCalledTimes(1);
+    expect(logger?.warn).toHaveBeenCalledWith("Token missing (tokenSet)");
+  });
 
-      if (result) {
-        expect(result.idToken).toBe("new-id-token");
-        expect(result.accessToken).toBe("new-access-token");
-        expect(result.refreshToken).toBe("new-refresh-token");
-        expect(result.codeVerifier).toBeUndefined();
-        expect(result.state).toBeUndefined();
-        expect(result.nonce).toBeUndefined();
-        expect(result.sessionExpiresAt).toBeGreaterThan(now);
-      }
-    } else {
-      expect(updateResult).toBeNull();
-    }
+  test("Error", async () => {
+    mockClient.sessions.update = mock().mockImplementation(() => {
+      throw new Error("Error");
+    });
 
-    // sessions.close();
+    const result = await updateSession.call(
+      mockClient,
+      mockActiveSession.sessionId,
+      {
+        expired: () => false,
+        id_token: "mock-id-token",
+        access_token: "mock-access-token",
+      } as unknown as TokenSet,
+    );
+
+    expect(result).toBeNull();
+    expect(logger?.warn).toHaveBeenCalledWith("Error");
+  });
+
+  test("Unknown error", async () => {
+    mockClient.sessions.update = mock().mockImplementation(() => {
+      throw "Unknown error";
+    });
+
+    const result = await updateSession.call(
+      mockClient,
+      mockActiveSession.sessionId,
+      {
+        expired: () => false,
+        id_token: "mock-id-token",
+        access_token: "mock-access-token",
+      } as unknown as TokenSet,
+    );
+
+    expect(result).toBeNull();
+    expect(logger?.warn).toHaveBeenCalledWith("Unknown error (update)");
+  });
+
+  test("Succeeded", async () => {
+    const result = await updateSession.call(
+      mockClient,
+      mockActiveSession.sessionId,
+      {
+        expired: () => false,
+        id_token: "mock-id-token",
+        access_token: "mock-access-token",
+      } as unknown as TokenSet,
+    );
+
+    expect(result).toMatchObject({
+      accessToken: "mock-access-token",
+      codeVerifier: undefined,
+      idToken: "mock-id-token",
+      nonce: undefined,
+      refreshToken: undefined,
+      sessionExpiresAt: Date.now() + mockClient.settings.refreshExpiration,
+      sessionId: "mock-session-id",
+      state: undefined,
+    });
   });
 });

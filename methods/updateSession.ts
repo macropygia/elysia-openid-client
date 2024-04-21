@@ -15,29 +15,38 @@ export async function updateSession(
 
   logger?.trace("functions/updateSession");
 
-  if (tokenSet.expired()) {
-    logger?.info("Session expired (tokenSet)");
-    await this.deleteSession(sessionId);
-    return null;
+  try {
+    if (tokenSet.expired()) {
+      logger?.info("Session expired (tokenSet)");
+      await this.deleteSession(sessionId);
+      return null;
+    }
+    const now = Date.now();
+    const { id_token, access_token, refresh_token } = tokenSet;
+    // biome-ignore lint/complexity/useSimplifiedLogicExpression: <explanation>
+    if (!id_token || !access_token) {
+      logger?.warn("Token missing (tokenSet)");
+      await this.deleteSession(sessionId);
+      return null;
+    }
+    const newSession: OIDCClientActiveSession = {
+      sessionId,
+      sessionExpiresAt: now + refreshExpiration,
+      idToken: id_token,
+      accessToken: access_token,
+      refreshToken: refresh_token,
+      codeVerifier: undefined,
+      state: undefined,
+      nonce: undefined,
+    };
+    await sessions.update(newSession);
+    return newSession;
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      logger?.warn(e.message);
+    } else {
+      logger?.warn("Unknown error (update)");
+    }
   }
-  const now = Date.now();
-  const { id_token, access_token, refresh_token } = tokenSet;
-  // biome-ignore lint/complexity/useSimplifiedLogicExpression: <explanation>
-  if (!id_token || !access_token) {
-    logger?.warn("Token missing (tokenSet)");
-    await this.deleteSession(sessionId);
-    return null;
-  }
-  const newSession: OIDCClientActiveSession = {
-    sessionId,
-    sessionExpiresAt: now + refreshExpiration,
-    idToken: id_token,
-    accessToken: access_token,
-    refreshToken: refresh_token,
-    codeVerifier: undefined,
-    state: undefined,
-    nonce: undefined,
-  };
-  await sessions.update(newSession);
-  return newSession;
+  return null;
 }

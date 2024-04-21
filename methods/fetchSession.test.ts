@@ -1,78 +1,130 @@
-import { describe, expect, mock, test } from "bun:test";
-import { type DeepPartial, logger } from "@/__mock__/const";
-import type { OidcClient } from "@/core/OidcClient";
-import type { OIDCClientActiveSession } from "@/types";
+import { afterAll, beforeEach, describe, expect, test } from "bun:test";
+import {
+  mockActiveSession,
+  mockBaseClient,
+  mockResetRecursively,
+} from "@/__mock__/const";
+import type { OIDCClientDataAdapter, OIDCClientSession } from "@/types";
 import { fetchSession } from "./fetchSession";
 
 describe("Unit/methods/fetchSession", () => {
-  const mockClient = mock(
-    (session: Partial<OIDCClientActiveSession> | null) =>
-      ({
-        sessions: {
-          fetch: mock().mockReturnValue(session),
-        },
-        deleteSession: mock(),
-        logger,
-      }) as DeepPartial<OidcClient> as OidcClient,
-  );
+  const mockSession = (session: OIDCClientSession | null) =>
+    ({
+      fetch: () => session,
+    }) as unknown as OIDCClientDataAdapter;
+  const { logger } = mockBaseClient;
 
-  test("`sessionId` missing", async () => {
-    const result = await fetchSession.call(mockClient(null), undefined);
-    expect(result).toBeNull();
+  beforeEach(() => {
+    mockResetRecursively(mockBaseClient);
   });
 
-  test("Invalid session", async () => {
-    const result = await fetchSession.call(mockClient(null), "mock-session");
+  afterAll(() => {
+    mockResetRecursively(mockBaseClient);
+  });
+
+  test("Session ID does not exist", async () => {
+    mockBaseClient.sessions = mockSession(null);
+
+    const result = await fetchSession.call(mockBaseClient, undefined);
+
     expect(result).toBeNull();
+    expect(logger?.debug).toHaveBeenCalledWith(
+      "Session ID does not exist (fetch)",
+    );
+  });
+
+  test("Session data does not exist", async () => {
+    mockBaseClient.sessions = mockSession(null);
+
+    const result = await fetchSession.call(mockBaseClient, "mock-session");
+
+    expect(result).toBeNull();
+    expect(logger?.debug).toHaveBeenCalledWith(
+      "Session data does not exist (fetch)",
+    );
   });
 
   test("Expired", async () => {
-    const result = await fetchSession.call(
-      mockClient({
-        sessionExpiresAt: Date.now() - 1000,
-      }),
-      "mock-session",
-    );
+    mockBaseClient.sessions = mockSession({
+      ...mockActiveSession,
+      sessionExpiresAt: Date.now() - 1000,
+    });
+
+    const result = await fetchSession.call(mockBaseClient, "mock-session");
+
     expect(result).toBeNull();
-  });
-
-  test("Before verify", async () => {
-    const sessionExpiresAt = Date.now() + 1000;
-    const session = {
-      sessionExpiresAt,
-      codeVerifier: "mock-code-verifier",
-      state: "mock-state",
-      nonce: "mock-nonce",
-    };
-    const result = await fetchSession.call(mockClient(session), "mock-session");
-    expect(result).toMatchObject(session);
-  });
-
-  test("After verify", async () => {
-    const sessionExpiresAt = Date.now() + 1000;
-    const session = {
-      sessionExpiresAt,
-      idToken: "mock-idToken",
-      accessToken: "mock-accessToken",
-      refreshToken: "mock-refreshToken",
-    };
-    const result = await fetchSession.call(mockClient(session), "mock-session");
-    expect(result).toMatchObject(session);
+    expect(logger?.debug).toHaveBeenCalledWith(
+      "Session expired internally (fetch)",
+    );
+    expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
   });
 
   test.each([
     {
-      sessionExpiresAt: Date.now() + 1000,
       accessToken: "mock-access-token",
       refreshToken: "mock-refresh-token",
     },
     {
-      sessionExpiresAt: Date.now() + 1000,
       idToken: "mock-id-token",
       refreshToken: "mock-refresh-token",
     },
-  ])("Required tokenSet property missing", async (session) => {
-    const result = await fetchSession.call(mockClient(session), "mock-session");
+    {
+      codeVerifier: "mock-code-verifier",
+      state: "mock-state",
+    },
+    {
+      codeVerifier: "mock-code-verifier",
+      nonce: "mock-nonce",
+    },
+    {
+      state: "mock-state",
+      nonce: "mock-nonce",
+    },
+  ])("Invalid sessions", async (invalidSession) => {
+    mockBaseClient.sessions = mockSession({
+      sessionId: "mock-session-id",
+      sessionExpiresAt: Date.now() + 1000,
+      ...invalidSession,
+    } as unknown as OIDCClientSession);
+
+    const result = await fetchSession.call(mockBaseClient, "mock-session");
+
     expect(result).toBeNull();
+    expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
+    expect(logger?.debug).toHaveBeenCalledWith(
+      "Either tokens and hashes do not exist, or both do exist (fetch)",
+    );
+  });
+
+  test.each([
+    {
+      idToken: "mock-id-token",
+      accessToken: "mock-access-token",
+      refreshToken: "mock-refresh-token",
+    },
+    {
+      idToken: "mock-id-token",
+      accessToken: "mock-access-token",
+    },
+    {
+      codeVerifier: "mock-code-verifier",
+      state: "mock-state",
+      nonce: "mock-nonce",
+    },
+  ])("Valid sessions", async (validSession) => {
+    const sessionExpiresAt = Date.now() + 1000;
+    mockBaseClient.sessions = mockSession({
+      sessionId: "mock-session-id",
+      sessionExpiresAt,
+      ...validSession,
+    } as unknown as OIDCClientSession);
+
+    const result = await fetchSession.call(mockBaseClient, "mock-session");
+
+    expect(result).toMatchObject({
+      sessionId: "mock-session-id",
+      sessionExpiresAt,
+      ...validSession,
+    });
   });
 });

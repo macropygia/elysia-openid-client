@@ -1,24 +1,19 @@
 import { describe, expect, test } from "bun:test";
-import { logger } from "@/__mock__/const";
-import type { OIDCClientActiveSession } from "@/types";
+import { mockActiveSessionWithRealIdToken, mockLogger } from "@/__mock__/const";
 import { sessionToStatus } from "./sessionToStatus";
 
 describe("Unit/utils/sessionToStatus", () => {
   test("Default", () => {
     const result = sessionToStatus(
-      {
-        idToken: "mock-id-token",
-        sessionExpiresAt: 2000,
-        refreshToken: "mock-refresh-token",
-      } as OIDCClientActiveSession,
-      logger,
+      mockActiveSessionWithRealIdToken,
+      mockLogger,
     );
     expect(result).toMatchObject({
-      expiresAt: 1000000,
+      expiresAt: 5000000000000,
       hasRefreshToken: true,
-      isExpired: true,
-      issuerUrl: "mock-issuer",
-      sessionExpiresAt: 2000,
+      isExpired: false,
+      issuerUrl: "https://op.example.com",
+      sessionExpiresAt: 5000000000000,
       sub: "mock-sub",
     });
   });

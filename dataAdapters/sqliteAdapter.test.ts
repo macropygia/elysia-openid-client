@@ -2,8 +2,8 @@ import { describe, expect, test } from "bun:test";
 import fs from "node:fs";
 import {
   mockActiveSession,
+  sqliteMockFile,
   sqliteTempFile,
-  sqliteTestFile,
 } from "@/__mock__/const";
 import { sleep } from "bun";
 import { SQLiteAdapter } from "./SQLiteAdapter";
@@ -48,7 +48,7 @@ describe("Unit/dataAdapter/SQLiteAdapter", () => {
 
   test("Load existing database", () => {
     const db = new SQLiteAdapter({
-      filename: sqliteTestFile,
+      filename: sqliteMockFile,
     });
     expect(db.fetch(mockActiveSession.sessionId)).toMatchObject(
       mockActiveSession,

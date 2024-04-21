@@ -1,6 +1,10 @@
 import type { BaseOidcClient } from "@/core/BaseOidcClient";
 
-export function validateOptions(rp: BaseOidcClient) {
+/**
+ * Validate options
+ * @param ctx OIDCClient Instance
+ */
+export function validateOptions(ctx: BaseOidcClient) {
   const {
     baseUrl,
     settings: {
@@ -15,11 +19,11 @@ export function validateOptions(rp: BaseOidcClient) {
       statusPath,
     },
     logger,
-  } = rp;
+  } = ctx;
 
   logger?.trace("functions/validateOptions");
 
-  if (!rp.clientMetadata.client_secret) {
+  if (!ctx.clientMetadata.client_secret) {
     throw new Error("client_secret is required");
   }
 
@@ -38,32 +42,37 @@ export function validateOptions(rp: BaseOidcClient) {
     throw new Error("Duplicate path");
   }
 
-  if (rp.authParams.response_mode && rp.authParams.response_mode !== "query") {
+  if (
+    ctx.authParams.response_mode &&
+    ctx.authParams.response_mode !== "query"
+  ) {
     throw new Error("response_mode must be query or undefined");
   }
 
   // Fixed params
-  rp.clientMetadata.response_types = ["code"];
-  rp.authParams.code_challenge_method = "S256";
-  rp.authParams.response_type = "code";
+  ctx.clientMetadata.response_types = ["code"];
+  ctx.authParams.code_challenge_method = "S256";
+  ctx.authParams.response_type = "code";
 
   // Scope check
-  if (!rp.authParams.scope) {
-    rp.authParams.scope = "openid";
-  } else if (!rp.authParams.scope.toLowerCase().split(" ").includes("openid")) {
-    rp.authParams.scope = `openid ${rp.authParams.scope}`;
+  if (!ctx.authParams.scope) {
+    ctx.authParams.scope = "openid";
+  } else if (
+    !ctx.authParams.scope.toLowerCase().split(" ").includes("openid")
+  ) {
+    ctx.authParams.scope = `openid ${ctx.authParams.scope}`;
   }
 
   // Redirect URLs
-  if (!rp.authParams.redirect_uri) {
-    rp.authParams.redirect_uri = `${baseUrl}${pathPrefix}${callbackPath}`;
+  if (!ctx.authParams.redirect_uri) {
+    ctx.authParams.redirect_uri = `${baseUrl}${pathPrefix}${callbackPath}`;
   }
-  if (!rp.clientMetadata.redirect_uris) {
-    rp.clientMetadata.redirect_uris = [rp.authParams.redirect_uri];
+  if (!ctx.clientMetadata.redirect_uris) {
+    ctx.clientMetadata.redirect_uris = [ctx.authParams.redirect_uri];
   } else if (
-    Array.isArray(rp.clientMetadata.redirect_uris) &&
-    !rp.clientMetadata.redirect_uris.includes(rp.authParams.redirect_uri)
+    Array.isArray(ctx.clientMetadata.redirect_uris) &&
+    !ctx.clientMetadata.redirect_uris.includes(ctx.authParams.redirect_uri)
   ) {
-    rp.clientMetadata.redirect_uris.push(rp.authParams.redirect_uri);
+    ctx.clientMetadata.redirect_uris.push(ctx.authParams.redirect_uri);
   }
 }

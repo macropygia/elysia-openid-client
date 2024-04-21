@@ -5,7 +5,7 @@ import type { Cookie } from "elysia";
 import { extendCookieExpiration } from "./extendCookieExpiration";
 
 describe("Unit/utils/extendCookieExpiration", () => {
-  test("Default", () => {
+  test("Succeeded", () => {
     const ctx = {
       settings: { refreshExpiration: 3600000 },
       cookieSettings: {
@@ -21,7 +21,6 @@ describe("Unit/utils/extendCookieExpiration", () => {
 
     const cookie = {
       session_id: {
-        expires: new Date(),
         update: mock(),
       },
     } as unknown as Record<string, Cookie<string>>;
@@ -39,23 +38,15 @@ describe("Unit/utils/extendCookieExpiration", () => {
 
   test("Skip", () => {
     const ctx = {
-      settings: { refreshExpiration: 3600000 },
+      settings: {},
       cookieSettings: {
-        sessionIdName: "session_id",
-        httpOnly: true,
-        secure: true,
-        sameSite: "lax",
-        path: "/",
         expires: 0,
       },
-      logger: {
-        trace: mock(),
-      },
+      logger: undefined,
     } as DeepPartial<OidcClient> as OidcClient;
 
     const cookie = {
       session_id: {
-        expires: new Date(),
         update: mock(),
       },
     } as unknown as Record<string, Cookie<string>>;
