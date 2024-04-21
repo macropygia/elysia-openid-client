@@ -9,9 +9,6 @@ defaults:
   run:
     shell: bash
 
-permissions:
-  contents: read
-
 jobs:
   update_release_draft_and_version_sync:
     env:

@@ -3,6 +3,10 @@ name: Deploy Docs
 on:
   workflow_dispatch:
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   deploy_docs:
     permissions:
