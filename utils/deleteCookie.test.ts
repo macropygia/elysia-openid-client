@@ -1,7 +1,7 @@
 import { describe, expect, mock, test } from "bun:test";
 import { type DeepPartial, baseMockClient, mockCookie } from "@/__test__/const";
 import type { OidcClient } from "@/core/OidcClient";
-import { defaultCookieSettings } from "./const";
+import { defaultCookieSettings } from "@/core/const";
 import { deleteCookie } from "./deleteCookie";
 
 describe("Unit/core/deleteCookie", () => {

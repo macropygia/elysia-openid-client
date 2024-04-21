@@ -1,7 +1,7 @@
 import type { OidcClient } from "@/core/OidcClient";
-import { deleteCookie } from "@/core/deleteCookie";
-import { extendCookieExpiration } from "@/core/extendCookieExpiration";
-import { handleErrorResponse } from "@/core/handleErrorResponse";
+import { deleteCookie } from "@/utils/deleteCookie";
+import { extendCookieExpiration } from "@/utils/extendCookieExpiration";
+import { handleErrorResponse } from "@/utils/handleErrorResponse";
 import { Elysia } from "elysia";
 
 /**

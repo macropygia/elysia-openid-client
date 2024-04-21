@@ -1,4 +1,5 @@
 import type { OidcClient } from "@/core/OidcClient";
+import { sessionToStatus } from "@/utils/sessionToStatus";
 import { Elysia } from "elysia";
 
 /**
@@ -28,7 +29,7 @@ export function status(this: OidcClient) {
         return;
       }
 
-      const status = this.sessionToStatus(currentSession);
+      const status = sessionToStatus(currentSession, logger);
 
       set.headers["Content-Type"] = "application/json";
       return status;

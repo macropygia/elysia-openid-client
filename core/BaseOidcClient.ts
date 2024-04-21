@@ -1,7 +1,6 @@
 import { defaultCookieSettings, defaultSettings } from "@/core/const";
 import { SQLiteAdapter } from "@/dataAdapters/SQLiteAdapter";
 import { initialize } from "@/functions/initialize";
-import { validateOptions } from "@/functions/validateOptions";
 import { consoleLogger } from "@/loggers/consoleLogger";
 import type {
   OIDCClientCookieSettings,
@@ -89,8 +88,8 @@ export class BaseOidcClient {
 
   /**
    * Create BaseOidcClient instance
-   * @param options
    * @static
+   * @param options
    * @returns BaseOidcClient instance
    */
   static async create(options: OIDCClientOptions) {
@@ -99,9 +98,6 @@ export class BaseOidcClient {
     return instance;
   }
 
-  /** Flag for wait for sessions */
-  protected sessionsPromise: Promise<void> | null = null;
-
   /**
    * Async part of constructor
    * @protected
@@ -109,13 +105,8 @@ export class BaseOidcClient {
   protected initialize = async () => initialize.call(this);
 
   /**
-   * Validate options, params and metadata
-   * @protected
-   */
-  protected validateOptions = () => validateOptions.call(this);
-
-  /**
    * Get list of endpoint paths
+   * @public
    * @returns Record<string, string>
    */
   public getPaths = () => {

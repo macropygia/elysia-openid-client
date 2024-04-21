@@ -1,4 +1,5 @@
 import type { OidcClient } from "@/core/OidcClient";
+import { getClaimsFromIdToken } from "@/utils/getClaimsFromIdToken";
 import { Elysia } from "elysia";
 
 /**
@@ -29,7 +30,7 @@ export function claims(this: OidcClient) {
       }
 
       const { idToken } = currentSession;
-      const claims = this.getClaimsFromIdToken(idToken);
+      const claims = getClaimsFromIdToken(idToken, logger);
 
       set.headers["Content-Type"] = "application/json";
       return claims;

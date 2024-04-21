@@ -1,21 +1,24 @@
-import type { OidcClient } from "@/core/OidcClient";
-import type { OIDCClientActiveSession, OIDCClientSessionStatus } from "@/types";
+import type {
+  OIDCClientActiveSession,
+  OIDCClientLogger,
+  OIDCClientSessionStatus,
+} from "@/types";
+import { getClaimsFromIdToken } from "./getClaimsFromIdToken";
 
 /**
  * Convert session data to session status
- * @param this OidcClient Instance
+ * @param rp OidcClient Instance
  * @returns Session status
  */
 export function sessionToStatus(
-  this: OidcClient,
   session: OIDCClientActiveSession,
+  logger?: OIDCClientLogger,
 ): OIDCClientSessionStatus {
-  const { logger } = this;
   const { idToken, sessionExpiresAt, refreshToken } = session;
 
   logger?.trace("functions/sessionToStatus");
 
-  const { iss, exp, sub } = this.getClaimsFromIdToken(idToken);
+  const { iss, exp, sub } = getClaimsFromIdToken(idToken, logger);
   return {
     sessionExpiresAt,
     hasRefreshToken: !!refreshToken,

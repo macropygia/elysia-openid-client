@@ -1,5 +1,5 @@
 import type { OidcClient } from "@/core/OidcClient";
-import { handleErrorResponse } from "@/core/handleErrorResponse";
+import { handleErrorResponse } from "@/utils/handleErrorResponse";
 import { Elysia } from "elysia";
 
 /**
