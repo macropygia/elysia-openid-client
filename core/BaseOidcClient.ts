@@ -1,7 +1,7 @@
 import { defaultCookieSettings, defaultSettings } from "@/core/const";
 import { SQLiteAdapter } from "@/dataAdapters/SQLiteAdapter";
-import { initialize } from "@/functions/initialize";
 import { consoleLogger } from "@/loggers/consoleLogger";
+import { initialize } from "@/methods/initialize";
 import type {
   OIDCClientCookieSettings,
   OIDCClientDataAdapter,

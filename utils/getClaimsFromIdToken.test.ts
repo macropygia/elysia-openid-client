@@ -3,7 +3,7 @@ import { logger, mockIdToken, mockIdTokenClaims } from "@/__test__/const";
 import type { OidcClient } from "@/core/OidcClient";
 import { getClaimsFromIdToken } from "./getClaimsFromIdToken";
 
-describe("Unit/functions/getClaimsFromIdToken", () => {
+describe("Unit/utils/getClaimsFromIdToken", () => {
   test("Default", () => {
     expect(
       getClaimsFromIdToken.bind({

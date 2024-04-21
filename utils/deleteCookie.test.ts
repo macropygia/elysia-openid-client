@@ -4,7 +4,7 @@ import type { OidcClient } from "@/core/OidcClient";
 import { defaultCookieSettings } from "@/core/const";
 import { deleteCookie } from "./deleteCookie";
 
-describe("Unit/core/deleteCookie", () => {
+describe("Unit/utils/deleteCookie", () => {
   test("Default", () => {
     const ms = {
       ...baseMockClient,

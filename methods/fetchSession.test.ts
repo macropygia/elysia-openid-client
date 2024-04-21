@@ -4,7 +4,7 @@ import type { OidcClient } from "@/core/OidcClient";
 import type { OIDCClientActiveSession } from "@/types";
 import { fetchSession } from "./fetchSession";
 
-describe("Unit/functions/fetchSession", () => {
+describe("Unit/methods/fetchSession", () => {
   const mockClient = mock(
     (session: Partial<OIDCClientActiveSession> | null) =>
       ({

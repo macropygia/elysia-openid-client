@@ -19,11 +19,11 @@ const baseOptions = {
   },
 } as OIDCClientOptions as BaseOidcClient;
 
-describe("Unit/functions/validateOptions", () => {
+describe("Unit/utils/validateOptions", () => {
   test("Succeeded", () => {
     const options = structuredClone(baseOptions);
 
-    validateOptions.bind(options)();
+    validateOptions(options);
     expect(options).toMatchObject(baseOptions);
   });
 
@@ -31,23 +31,21 @@ describe("Unit/functions/validateOptions", () => {
     const options = structuredClone(baseOptions);
     options.clientMetadata.client_secret = undefined;
 
-    expect(() => validateOptions.bind(options)()).toThrow(
-      "client_secret is required",
-    );
+    expect(() => validateOptions(options)).toThrow("client_secret is required");
   });
 
   test("Duplicate paths", () => {
     const options = structuredClone(baseOptions);
     options.settings.logoutPath = "/login";
 
-    expect(() => validateOptions.bind(options)()).toThrow("Duplicate path");
+    expect(() => validateOptions(options)).toThrow("Duplicate path");
   });
 
   test("`response_mode` is invalid", () => {
     const options = structuredClone(baseOptions);
     options.authParams.response_mode = "fragment";
 
-    expect(() => validateOptions.bind(options)()).toThrow(
+    expect(() => validateOptions(options)).toThrow(
       "response_mode must be query or undefined",
     );
   });
@@ -56,7 +54,7 @@ describe("Unit/functions/validateOptions", () => {
     const options = structuredClone(baseOptions);
     options.authParams.scope = undefined as string | undefined;
 
-    validateOptions.bind(options)();
+    validateOptions(options);
     expect(options.authParams.scope).toBe("openid");
   });
 
@@ -64,7 +62,7 @@ describe("Unit/functions/validateOptions", () => {
     const options = structuredClone(baseOptions);
     options.authParams.scope = "id_token" as string | undefined;
 
-    validateOptions.bind(options)();
+    validateOptions(options);
     expect(options.authParams.scope).toBe("openid id_token");
   });
 
@@ -72,7 +70,7 @@ describe("Unit/functions/validateOptions", () => {
     const options = structuredClone(baseOptions);
     options.clientMetadata.redirect_uris = ["https://localhost/redirect"];
 
-    validateOptions.bind(options)();
+    validateOptions(options);
     expect(options.clientMetadata.redirect_uris).toMatchObject([
       "https://localhost/redirect",
       "https://localhost/client/auth/callback",

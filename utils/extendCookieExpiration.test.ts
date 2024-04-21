@@ -4,7 +4,7 @@ import type { OidcClient } from "@/core/OidcClient";
 import type { Cookie } from "elysia";
 import { extendCookieExpiration } from "./extendCookieExpiration";
 
-describe("Unit/core/extendCookieExpiration", () => {
+describe("Unit/utils/extendCookieExpiration", () => {
   test("Default", () => {
     const ctx = {
       settings: { refreshExpiration: 3600000 },

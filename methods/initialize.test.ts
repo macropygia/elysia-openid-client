@@ -4,7 +4,7 @@ import { opMock } from "@/__test__/opMock";
 import { BaseOidcClient } from "@/core/BaseOidcClient";
 import { initialize } from "./initialize";
 
-describe("Unit/functions/initialize", async () => {
+describe("Unit/methods/initialize", async () => {
   const op = await opMock(opPort);
 
   afterAll(() => {

@@ -1,6 +1,6 @@
 import { describe, test } from "bun:test";
 
-describe("Unit/functions/getEndpoints", () => {
+describe("Unit/methods/getEndpoints", () => {
   // test.todo("Default");
   test.skip;
 });

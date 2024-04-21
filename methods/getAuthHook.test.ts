@@ -80,10 +80,6 @@ describe("Unit/endpoints/getAuthHook", () => {
 
   test("Failed (token missing)", async () => {
     const mc = mockClient(mockAuthSession);
-    mc.getClaimsFromIdToken = mock().mockReturnValue({
-      ...mockClaims,
-      exp: 100,
-    });
     const endpoints = getAuthHook.bind(mc)();
     const app = new Elysia()
       .guard((app) => app.use(endpoints).get("/", () => "home"))
@@ -96,10 +92,6 @@ describe("Unit/endpoints/getAuthHook", () => {
 
   test("Failed (expired, no-refresh)", async () => {
     const mc = mockClient(mockActiveSession);
-    mc.getClaimsFromIdToken = mock().mockReturnValue({
-      ...mockClaims,
-      exp: 100,
-    });
     const endpoints = getAuthHook.bind(mc)({
       autoRefresh: false,
     });
@@ -114,10 +106,6 @@ describe("Unit/endpoints/getAuthHook", () => {
 
   test("Succeeded (refresh)", async () => {
     const mc = mockClient(mockActiveSession);
-    mc.getClaimsFromIdToken = mock().mockReturnValue({
-      ...mockClaims,
-      exp: 100,
-    });
     const endpoints = getAuthHook.bind(mc)();
     const app = new Elysia()
       .guard((app) => app.use(endpoints).get("/", () => "home"))
@@ -131,10 +119,6 @@ describe("Unit/endpoints/getAuthHook", () => {
   test("Failed (refresh)", async () => {
     const mc = mockClient(mockActiveSession);
     mc.updateSession = mock().mockReturnValue(null);
-    mc.getClaimsFromIdToken = mock().mockReturnValue({
-      ...mockClaims,
-      exp: 100,
-    });
     const endpoints = getAuthHook.bind(mc)();
     const app = new Elysia()
       .guard((app) => app.use(endpoints).get("/", () => "home"))
@@ -149,10 +133,6 @@ describe("Unit/endpoints/getAuthHook", () => {
     const mc = mockClient(mockActiveSession);
     mc.updateSession = mock().mockImplementation(() => {
       throw "Unknown Error";
-    });
-    mc.getClaimsFromIdToken = mock().mockReturnValue({
-      ...mockClaims,
-      exp: 100,
     });
     const endpoints = getAuthHook.bind(mc)();
     const app = new Elysia()

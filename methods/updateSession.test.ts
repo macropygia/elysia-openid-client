@@ -11,7 +11,7 @@ import type { OIDCClientOptions } from "@/types";
 import type { TokenSet } from "openid-client";
 import { updateSession } from "./updateSession";
 
-describe("Unit/functions/updateSession", () => {
+describe("Unit/methods/updateSession", () => {
   const sessions = new LokiInMemoryAdapter();
   const currentSessionId = "updateSession";
   sessions.insert({

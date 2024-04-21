@@ -1,9 +1,9 @@
-import { createSession } from "@/functions/createSession";
-import { deleteSession } from "@/functions/deleteSession";
-import { fetchSession } from "@/functions/fetchSession";
-import { getAuthHook } from "@/functions/getAuthHook";
-import { getEndpoints } from "@/functions/getEndpoints";
-import { updateSession } from "@/functions/updateSession";
+import { createSession } from "@/methods/createSession";
+import { deleteSession } from "@/methods/deleteSession";
+import { fetchSession } from "@/methods/fetchSession";
+import { getAuthHook } from "@/methods/getAuthHook";
+import { getEndpoints } from "@/methods/getEndpoints";
+import { updateSession } from "@/methods/updateSession";
 import type {
   AuthHookOptions,
   OIDCClientActiveSession,

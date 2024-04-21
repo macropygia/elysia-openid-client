@@ -5,7 +5,7 @@ import type { OIDCClientSession } from "@/types";
 import loki from "lokijs";
 import { createSession } from "./createSession";
 
-describe("Unit/functions/createSession", () => {
+describe("Unit/methods/createSession", () => {
   test("Default", async () => {
     const db = new loki("in-memory.db");
     const sessions = db.addCollection<OIDCClientSession>("sessions");

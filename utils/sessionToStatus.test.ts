@@ -3,7 +3,7 @@ import { logger } from "@/__test__/const";
 import type { OIDCClientActiveSession } from "@/types";
 import { sessionToStatus } from "./sessionToStatus";
 
-describe("Unit/functions/sessionToStatus", () => {
+describe("Unit/utils/sessionToStatus", () => {
   test("Default", () => {
     const result = sessionToStatus(
       {

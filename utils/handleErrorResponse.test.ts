@@ -4,10 +4,10 @@ import {
   mockActiveSession,
   mockCookie,
 } from "@/__test__/const";
-import { defaultCookieSettings } from "./const";
+import { defaultCookieSettings } from "@/core/const";
 import { handleErrorResponse } from "./handleErrorResponse";
 
-describe("Unit/core/handleErrorResponse", () => {
+describe("Unit/utils/handleErrorResponse", () => {
   test("Session does not exist", () => {
     expect(
       handleErrorResponse(new Error(), null, baseMockClient, mockCookie).status,

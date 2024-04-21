@@ -4,7 +4,7 @@ import type { OidcClient } from "@/core/OidcClient";
 import { LokiInMemoryAdapter } from "@/dataAdapters/LokiInMemoryAdapter";
 import { deleteSession } from "./deleteSession";
 
-describe("Unit/functions/deleteSession", () => {
+describe("Unit/methods/deleteSession", () => {
   const sessions = new LokiInMemoryAdapter();
   const mockClient = {
     sessions,
