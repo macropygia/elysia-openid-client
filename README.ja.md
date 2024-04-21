@@ -108,11 +108,69 @@ const rp = await OidcClient.create(options);
 - [OIDCClientLogger](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientLogger.html)
   - 本文書の `ロガー` の項を参照
 - `ClientMetadata`
-  - `openid-client` の [型定義](https://github.com/panva/node-openid-client/blob/main/types/index.d.ts)
+  - `openid-client` の [`ClientMetadata` の型定義](https://github.com/panva/node-openid-client/blob/main/types/index.d.ts)
   - および `OpenID Connect Dynamic Client Registration 1.0` の [Client Metadata](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata) の章を参照
 - `AuthorizationParameters`
-  - `openid-client` の [型定義](https://github.com/panva/node-openid-client/blob/main/types/index.d.ts)
+  - `openid-client` の [`AuthorizationParameters` の型定義](https://github.com/panva/node-openid-client/blob/main/types/index.d.ts)
   - および `OpenID Connect Core 1.0` の [Authentication Request](https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest) の章を参照
+
+## エンドポイント
+
+- ElysiaJSプラグインとしてのメタデータ
+  - 名称: `elysia-openid-client-endpoints`
+  - [シード](https://elysiajs.com/essential/plugin#plugin-deduplication): `settings.pluginSeed` 、未指定なら `issuerUrl`
+- 参照: [openid-client API Documentation - Client](https://github.com/panva/node-openid-client/blob/main/docs/README.md#client)
+
+### 内訳
+
+- Login (GET: `/auth/login` )
+  - `openid-client` の `client.authorizationUrl` を呼び出す
+  - OPの認証エンドポイントにリダイレクトする
+- Callback (GET: `/auth/callback` )
+  - `openid-client` の `client.callbackParams` と `client.callback` を呼び出す
+  - OPからリダイレクトされた後、ログイン完了ページにリダイレクトする
+- Logout (GET: `/auth/logout` )
+  - `openid-client` の `client.endSessionUrl` を呼び出す
+  - OPのログアウトエンドポイントにリダイレクトする
+- UserInfo (ALL: `/auth/userinfo` )
+  - `openid-client` の `client.userinfo` を呼び出す
+  - レスポンス（ユーザー情報）をそのまま返す
+- Introspect  (ALL: `/auth/introspect` )
+  - `openid-client` の `client.introspect` を呼び出す
+  - レスポンスをそのまま返す
+- Refresh (ALL: `/auth/refresh` )
+  - `openid-client` の `client.refresh` を呼び出す
+  - ID Tokenに含まれるクレームを返す
+- Resource (GET: `/auth/resource?url=<resource-url>`)
+  - `openid-client` の `client.requestResource` を呼び出す
+  - リソースプロバイダーからのレスポンスを返す
+- Revoke (ALL: `/auth/revoke` )
+  - `openid-client` の `client.revoke` を呼び出す
+  - `204` を返す
+- Status (ALL: `/auth/status` )
+  - 内部データベースからセッションステータスを取得する
+  - OPにはアクセスしない
+- Claims (ALL: `/auth/claims` )
+  - ID Tokenに含まれるクレームを取得する
+  - OPにはアクセスしない
+
+## フック
+
+`onBeforeHandle` フックでCookieを元にセッションが有効かどうかを判断し、 [`resolve` フック](https://elysiajs.com/life-cycle/before-handle.html#resolve)から `sessionStatus` と `sessionClaims` を返す。
+
+- セッションが有効な場合
+  - `sessionStatus` : セッションステータス
+    - 参照: [OIDCClientSessionStatus](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientSessionStatus.html)
+  - `sessionClaims` : ID Token Claims
+    - 参照: [`IdTokenClaims` type definition](https://github.com/panva/node-openid-client/blob/main/types/index.d.ts) of `openid-client`.
+    - 参照: `OpenID Connect Core 1.0` の [Claims](https://openid.net/specs/openid-connect-core-1_0.html#Claims) 及び [IDToken](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) の章
+- セッションが無効な場合
+  - `loginRedirectUrl` にリダイレクト
+  - `disableRedirect` が `true` の場合は `sessionStatus` , `sessionClaims` 共に `null` になる
+- ElysiaJSプラグインとしてのメタデータ
+  - 名称: `elysia-openid-client-auth-hook`
+  - [シード](https://elysiajs.com/essential/plugin#plugin-deduplication): `settings.pluginSeed` 、未指定なら `issuerUrl`
+- 参照: [AuthHookOptions](https://macropygia.github.io/elysia-openid-client/interfaces/types.AuthHookOptions.html)
 
 ## データアダプター
 
@@ -293,61 +351,6 @@ const rp = await OidcClient.create({
 ### カスタムロガー
 
 [OIDCClientLogger](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientLogger.html)の型定義と `consoleLogger` の実装を参照のこと。
-
-## エンドポイント
-
-- ElysiaJSプラグインとしてのメタデータ
-  - 名称: `elysia-openid-client-endpoints`
-  - [シード](https://elysiajs.com/essential/plugin#plugin-deduplication): `settings.pluginSeed` 、未指定なら `issuerUrl`
-- 参照: [openid-client API Documentation - Client](https://github.com/panva/node-openid-client/blob/main/docs/README.md#client)
-
-### 内訳
-
-- Login (GET: `/auth/login` )
-  - `openid-client` の `client.authorizationUrl` を呼び出す
-  - OPの認証エンドポイントにリダイレクトする
-- Callback (GET: `/auth/callback` )
-  - `openid-client` の `client.callbackParams` と `client.callback` を呼び出す
-  - OPからリダイレクトされた後、ログイン完了ページにリダイレクトする
-- Logout (GET: `/auth/logout` )
-  - `openid-client` の `client.endSessionUrl` を呼び出す
-  - OPのログアウトエンドポイントにリダイレクトする
-- UserInfo (ALL: `/auth/userinfo` )
-  - `openid-client` の `client.userinfo` を呼び出す
-  - レスポンス（ユーザー情報）をそのまま返す
-- Introspect  (ALL: `/auth/introspect` )
-  - `openid-client` の `client.introspect` を呼び出す
-  - レスポンスをそのまま返す
-- Refresh (ALL: `/auth/refresh` )
-  - `openid-client` の `client.refresh` を呼び出す
-  - ID Tokenに含まれるクレームを返す
-- Resouce (GET: `/auth/resource?url=<resource-url>`)
-  - `openid-client` の `client.requestResource` を呼び出す
-  - リソースプロバイダーからのレスポンスを返す
-- Revoke (ALL: `/auth/revoke` )
-  - `openid-client` の `client.revoke` を呼び出す
-  - `204` を返す
-- Status (ALL: `/auth/status` )
-  - 内部データベースからセッションステータスを取得する
-  - OPにはアクセスしない
-- Claims (ALL: `/auth/claims` )
-  - ID Tokenに含まれるクレームを取得する
-  - OPにはアクセスしない
-
-## フック
-
-`onBeforeHandle` フックでCookieを元にセッションが有効かどうかを判断し、 [`resolve` フック](https://elysiajs.com/life-cycle/before-handle.html#resolve)から `sessionStatus` と `sessionClaims` を返す。
-
-- セッションが有効な場合
-  - `sessionStatus` : セッションステータス
-  - `sessionClaims` : ID Token Claims
-- セッションが無効な場合
-  - `loginRedirectUrl` にリダイレクト
-  - `disableRedirect` が `false` の場合は `sessionStatus` , `sessionClaims` 共に `null`
-- ElysiaJSプラグインとしてのメタデータ
-  - 名称: `elysia-openid-client-auth-hook`
-  - [シード](https://elysiajs.com/essential/plugin#plugin-deduplication): `settings.pluginSeed` 、未指定なら `issuerUrl`
-- 参照: [AuthHookOptions](https://macropygia.github.io/elysia-openid-client/interfaces/types.AuthHookOptions.html)
 
 ## Contributing
 

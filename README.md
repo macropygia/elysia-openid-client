@@ -108,11 +108,69 @@ const rp = await OidcClient.create(options);
 - [OIDCClientLogger](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientLogger.html)
   - See `Logger` section in this document.
 - `ClientMetadata`
-  - See [type definition](https://github.com/panva/node-openid-client/blob/main/types/index.d.ts) of `openid-client`.
+  - See [`ClientMetadata` type definition](https://github.com/panva/node-openid-client/blob/main/types/index.d.ts) of `openid-client`.
   - See [Client Metadata](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata) section in the `OpenID Connect Dynamic Client Registration 1.0`.
 - `AuthorizationParameters`
-  - See [type definition](https://github.com/panva/node-openid-client/blob/main/types/index.d.ts) of `openid-client`.
+  - See [`AuthorizationParameters` type definition](https://github.com/panva/node-openid-client/blob/main/types/index.d.ts) of `openid-client`.
   - See [Authentication Request](https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest) section in the `OpenID Connect Core 1.0`.
+
+## Endpoints
+
+- ElysiaJS plugin metadata
+  - name: `elysia-openid-client-endpoints`
+  - [seed](https://elysiajs.com/essential/plugin#plugin-deduplication): `settings.pluginSeed` or else `issuerUrl`
+- Ref: [openid-client API Documentation - Client](https://github.com/panva/node-openid-client/blob/main/docs/README.md#client)
+
+### Details
+
+- Login (GET: `/auth/login` )
+  - Calls `client.authorizationUrl` of openid-client.
+  - Redirect to authorization endpoint of the OP.
+- Callback (GET: `/auth/callback` )
+  - Calls `client.callbackParams` and `client.callback` of openid-client.
+  - Redirect from the OP and redirect to the login completed page.
+- Logout (GET: `/auth/logout` )
+  - Calls `client.endSessionUrl` of openid-client.
+  - Redirect to logout (end session) endpoint of the OP.
+- UserInfo (ALL: `/auth/userinfo` )
+  - Calls `client.userinfo` of openid-client.
+  - Returns response (UserInfo) directly.
+- Introspect  (ALL: `/auth/introspect` )
+  - Calls `client.introspect` of openid-client.
+  - Returns response directly.
+- Refresh (ALL: `/auth/refresh` )
+  - Calls `client.refresh` of openid-client.
+  - Returns ID Token Claims.
+- Resource (GET: `/auth/resource?url=<resource-url>`)
+  - Calls `client.requestResource` of openid-client.
+  - Through the response from the resource provider.
+- Revoke (ALL: `/auth/revoke` )
+  - Calls `client.revoke` of openid-client.
+  - Return `204`
+- Status (ALL: `/auth/status` )
+  - Fetches session status from internal database.
+  - Does not call any endpoint of the OP.
+- Claims (ALL: `/auth/claims` )
+  - Fetches ID Token Claims from internal database.
+  - Does not call any endpoint of the OP.
+
+## Hook
+
+Determine the validity of the session in `onBeforeHandle`, and return `sessionStatus` and `sessionClaims` from the [`resolve` hook](https://elysiajs.com/life-cycle/before-handle.html#resolve).
+
+- If the session is valid:
+  - `sessionStatus`: Session status
+    - Ref: [OIDCClientSessionStatus](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientSessionStatus.html)
+  - `sessionClaims`: ID Token Claims
+    - Ref: [`IdTokenClaims` type definition](https://github.com/panva/node-openid-client/blob/main/types/index.d.ts) of `openid-client`.
+    - Ref: [Claims](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) and [IDToken](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) section in the `OpenID Connect Core 1.0`.
+- If the session is invalid:
+  - Redirect to `loginRedirectUrl`.
+  - If `disableRedirect` is `true`, both `sessionStatus` and `sessionClaims` will be `null`.
+- ElysiaJS plugin metadata
+  - name: `elysia-openid-client-auth-hook`
+  - [seed](https://elysiajs.com/essential/plugin#plugin-deduplication): `settings.pluginSeed` or else `issuerUrl`
+- Ref: [AuthHookOptions](https://macropygia.github.io/elysia-openid-client/interfaces/types.AuthHookOptions.html)
 
 ## Data Adapter
 
@@ -292,61 +350,6 @@ const rp = await OidcClient.create({
 ### Custom logger
 
 See [OIDCClientLogger](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientLogger.html) and `consoleLogger` implementation.
-
-## Endpoints
-
-- ElysiaJS plugin metadata
-  - name: `elysia-openid-client-endpoints`
-  - [seed](https://elysiajs.com/essential/plugin#plugin-deduplication): `settings.pluginSeed` or else `issuerUrl`
-- Ref: [openid-client API Documentation - Client](https://github.com/panva/node-openid-client/blob/main/docs/README.md#client)
-
-### Details
-
-- Login (GET: `/auth/login` )
-  - Calls `client.authorizationUrl` of openid-client.
-  - Redirect to authorization endpoint of the OP.
-- Callback (GET: `/auth/callback` )
-  - Calls `client.callbackParams` and `client.callback` of openid-client.
-  - Redirect from the OP and redirect to the login completed page.
-- Logout (GET: `/auth/logout` )
-  - Calls `client.endSessionUrl` of openid-client.
-  - Redirect to logout (end session) endpoint of the OP.
-- UserInfo (ALL: `/auth/userinfo` )
-  - Calls `client.userinfo` of openid-client.
-  - Returns response (UserInfo) directly.
-- Introspect  (ALL: `/auth/introspect` )
-  - Calls `client.introspect` of openid-client.
-  - Returns response directly.
-- Refresh (ALL: `/auth/refresh` )
-  - Calls `client.refresh` of openid-client.
-  - Returns ID Token Claims.
-- Resouce (GET: `/auth/resource?url=<resource-url>`)
-  - Calls `client.requestResource` of openid-client.
-  - Through the response from the resource provider.
-- Revoke (ALL: `/auth/revoke` )
-  - Calls `client.revoke` of openid-client.
-  - Return `204`
-- Status (ALL: `/auth/status` )
-  - Fetches session status from internal database.
-  - Does not call any endpoint of the OP.
-- Claims (ALL: `/auth/claims` )
-  - Fetches ID Token Claims from internal database.
-  - Does not call any endpoint of the OP.
-
-## Hook
-
-Determine the validity of the session in `onBeforeHandle`, and return `sessionStatus` and `sessionClaims` from the [`resolve` hook](https://elysiajs.com/life-cycle/before-handle.html#resolve).
-
-- If the session is valid:
-  - `sessionStatus`: Session status
-  - `sessionClaims`: ID Token Claims
-- If the session is invalid:
-  - Redirect to `loginRedirectUrl`.
-  - If `disableRedirect` is `false`, both `sessionStatus` and `sessionClaims` will be `null`.
-- ElysiaJS plugin metadata
-  - name: `elysia-openid-client-auth-hook`
-  - [seed](https://elysiajs.com/essential/plugin#plugin-deduplication): `settings.pluginSeed` or else `issuerUrl`
-- Ref: [AuthHookOptions](https://macropygia.github.io/elysia-openid-client/interfaces/types.AuthHookOptions.html)
 
 ## Contributing
 
