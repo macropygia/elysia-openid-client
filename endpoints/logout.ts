@@ -1,6 +1,6 @@
 import type { OidcClient } from "@/core/OidcClient";
-import { deleteCookie } from "@/core/deleteCookie";
-import { handleErrorResponse } from "@/core/handleErrorResponse";
+import { deleteCookie } from "@/utils/deleteCookie";
+import { handleErrorResponse } from "@/utils/handleErrorResponse";
 import { Elysia } from "elysia";
 
 /**

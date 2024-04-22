@@ -1,11 +1,13 @@
 import type { OidcClient } from "@/core/OidcClient";
-import { deleteCookie } from "@/core/deleteCookie";
-import { extendCookieExpiration } from "@/core/extendCookieExpiration";
 import type {
   AuthHookOptions,
   OIDCClientActiveSession,
   OIDCClientSessionStatus,
 } from "@/types";
+import { deleteCookie } from "@/utils/deleteCookie";
+import { extendCookieExpiration } from "@/utils/extendCookieExpiration";
+import { getClaimsFromIdToken } from "@/utils/getClaimsFromIdToken";
+import { sessionToStatus } from "@/utils/sessionToStatus";
 import { type Cookie, Elysia } from "elysia";
 import type { IdTokenClaims } from "openid-client";
 
@@ -90,7 +92,7 @@ export function getAuthHook(
           return;
         }
 
-        resolvedClaims = this.getClaimsFromIdToken(idToken);
+        resolvedClaims = getClaimsFromIdToken(idToken, logger);
         const { exp } = resolvedClaims;
 
         // Expired (auto refresh disabled or refresh token does not exist)
@@ -119,9 +121,9 @@ export function getAuthHook(
             extendCookieExpiration(this, cookie);
 
             resolvedSession = newSession;
-            resolvedClaims = this.getClaimsFromIdToken(newSession.idToken);
+            resolvedClaims = getClaimsFromIdToken(newSession.idToken, logger);
           } catch (e: unknown) {
-            logger?.warn("Throw exception (authHook");
+            logger?.warn("Throw exception (authHook)");
             logger?.debug(e);
             await this.deleteSession(sessionId);
             deleteCookie(this, cookie);
@@ -133,7 +135,7 @@ export function getAuthHook(
         } else {
           resolvedSession = currentSession;
         }
-        resolvedStatus = this.sessionToStatus(resolvedSession);
+        resolvedStatus = sessionToStatus(resolvedSession, logger);
       },
     )
     .resolve({ as: "global" }, () => ({

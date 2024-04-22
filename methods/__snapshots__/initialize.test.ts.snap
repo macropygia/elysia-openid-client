@@ -1,6 +1,6 @@
 // Bun Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Unit/functions/initialize Default: issuer 1`] = `
+exports[`Unit/methods/initialize Default: issuer 1`] = `
 Issuer {
   "Client": [class Client],
   "FAPI1Client": [class FAPI1Client],
@@ -35,7 +35,7 @@ Issuer {
 }
 `;
 
-exports[`Unit/functions/initialize Default: issuerMetadata 1`] = `
+exports[`Unit/methods/initialize Default: issuerMetadata 1`] = `
 {
   "authorization_endpoint": "http://localhost:57829/oauth2/authorize",
   "claim_types_supported": [
@@ -155,7 +155,7 @@ exports[`Unit/functions/initialize Default: issuerMetadata 1`] = `
 }
 `;
 
-exports[`Unit/functions/initialize Default: client 1`] = `
+exports[`Unit/methods/initialize Default: client 1`] = `
 Client {
   "authorization_signed_response_alg": [native code],
   "client_id": [native code],

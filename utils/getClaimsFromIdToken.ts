@@ -1,12 +1,16 @@
-import type { OidcClient } from "@/core/OidcClient";
+import type { OIDCClientLogger } from "@/types";
 import { type IdTokenClaims, TokenSet } from "openid-client";
 
+/**
+ * Decode ID Token and output claims
+ * @param idToken ID Token
+ * @param logger Logger
+ * @returns Session claims
+ */
 export function getClaimsFromIdToken(
-  this: OidcClient,
   idToken: string,
+  logger?: OIDCClientLogger,
 ): IdTokenClaims {
-  const { logger } = this;
-
   logger?.trace("functions/getClaimsFromIdToken");
 
   const tokenSet = new TokenSet({

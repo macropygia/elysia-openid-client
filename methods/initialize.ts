@@ -1,4 +1,5 @@
 import type { BaseOidcClient } from "@/core/BaseOidcClient";
+import { validateOptions } from "@/utils/validateOptions";
 import { Issuer } from "openid-client";
 
 export async function initialize(this: BaseOidcClient) {
@@ -10,7 +11,7 @@ export async function initialize(this: BaseOidcClient) {
   this.issuer = await Issuer.discover(this.issuerUrl);
   this.issuerMetadata = this.issuer.metadata;
 
-  this.validateOptions();
+  validateOptions(this);
 
   // Initialize RP
   this.client = new this.issuer.Client(this.clientMetadata);

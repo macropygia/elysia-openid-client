@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { mockActiveSession, mockAuthSession } from "@/__test__/const";
+import { mockActiveSession, mockLoginSession } from "@/__mock__/const";
 import { RedisAdapter } from "./RedisAdapter";
 
 describe("Unit/dataAdapter/RedisAdapter", () => {
@@ -19,7 +19,7 @@ describe("Unit/dataAdapter/RedisAdapter", () => {
     expect((await db.fetch("session1"))?.sessionId).toBe("session1");
 
     await db.insert({
-      ...mockAuthSession,
+      ...mockLoginSession,
       sessionId: "session2",
     });
     expect((await db.fetch("session2"))?.sessionId).toBe("session2");

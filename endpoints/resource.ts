@@ -1,5 +1,5 @@
 import type { OidcClient } from "@/core/OidcClient";
-import { handleErrorResponse } from "@/core/handleErrorResponse";
+import { handleErrorResponse } from "@/utils/handleErrorResponse";
 import { Elysia, t } from "elysia";
 
 /**
@@ -18,11 +18,12 @@ export function resource(this: OidcClient) {
 
   return new Elysia().get(
     resourcePath,
-    async ({ query, cookie }) => {
+    async ({ query, cookie, set }) => {
       logger?.trace("endpoints/resource");
 
       if (!query.url) {
         logger?.warn("Resource URL not specified");
+        set.status = 400;
         return;
       }
 

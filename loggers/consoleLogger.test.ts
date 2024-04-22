@@ -9,7 +9,7 @@ import {
 } from "bun:test";
 import { consoleLogger } from "./consoleLogger";
 
-describe("consoleLogger", () => {
+describe("Unit/loggers/consoleLogger", () => {
   let logDebug: Mock<() => void>;
   let logInfo: Mock<() => void>;
   let logWarn: Mock<() => void>;

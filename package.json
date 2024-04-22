@@ -1,6 +1,6 @@
 {
   "name": "elysia-openid-client",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "OpenID Connect client plugin for ElysiaJS",
   "keywords": ["elysia", "elysiajs", "oidc", "openid", "OpenID Connect", "bun"],
   "homepage": "https://macropygia.github.io/elysia-openid-client/",
@@ -8,10 +8,9 @@
   "license": "MIT",
   "author": "macropygia",
   "files": [
-    "**/*.ts",
+    "*/**/*.ts",
     "tsconfig.json",
     "!**/*.test.ts",
-    "!**/*.config.ts",
     "!**/.*",
     "!**/__*__"
   ],
@@ -30,12 +29,11 @@
     "build": "bun ./__scripts__/build.ts && bun run dts",
     "dts": "tsup ./index.ts --dts-only --format esm --out-dir .",
     "docs": "bun ./__scripts__/docs.ts",
-    "test": "bun test --coverage",
     "prepare": "simple-git-hooks"
   },
   "dependencies": { "openid-client": "^5.6.5" },
   "peerDependencies": {
-    "elysia": "^1.0.13",
+    "elysia": "^1.0.14",
     "ioredis": "^5.4.1",
     "lokijs": "^1.5.12",
     "lowdb": "^7.0.1",
@@ -57,7 +55,7 @@
     "@types/bun": "latest",
     "@types/lokijs": "^1.5.14",
     "@types/set-cookie-parser": "^2.4.7",
-    "elysia": "^1.0.13",
+    "elysia": "^1.0.14",
     "ioredis": "^5.4.1",
     "jose": "^5.2.4",
     "lint-staged": "^15.2.2",
