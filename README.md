@@ -241,10 +241,10 @@ bun add lowdb
 import { LowdbAdapter } from 'elysia-openid-client/dataAdapters/LowdbAdapter';
 
 // In-memory
-const memoryAdapter = new LowdbAdapter();
+const memoryAdapter = await LowdbAdapter.create();
 
 // Persistence to file
-const fileAdapter = new LowdbAdapter({
+const fileAdapter = await LowdbAdapter.create({
   filename: "sessions.json",
 })
 ```

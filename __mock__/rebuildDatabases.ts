@@ -26,7 +26,7 @@ if (fs.existsSync(lowMockFile)) {
   fs.unlinkSync(lowMockFile);
 }
 
-const lowdb = new LowdbAdapter({
+const lowdb = await LowdbAdapter.create({
   filename: lowMockFile,
 });
 await lowdb.insert(mockActiveSession);

@@ -1,6 +1,6 @@
 import type { OIDCClientDataAdapter, OIDCClientSession } from "@/types";
 import { Low, Memory } from "lowdb";
-import { JSONFile } from "lowdb/node";
+import { JSONFilePreset } from "lowdb/node";
 
 export interface LowdbAdapterOptions {
   /**
@@ -23,22 +23,38 @@ const defaultOptions: LowdbAdapterOptions = {
  */
 export class LowdbAdapter implements OIDCClientDataAdapter {
   /** Database */
-  db: Low<OIDCClientSession[]>;
+  db!: Low<OIDCClientSession[]>;
   /** Options */
   options: LowdbAdapterOptions;
 
-  public constructor(options?: Partial<LowdbAdapterOptions>) {
+  protected constructor(options?: Partial<LowdbAdapterOptions>) {
     this.options = {
       ...defaultOptions,
       ...options,
     };
-
-    const { filename } = this.options;
-
-    this.db = filename
-      ? new Low<OIDCClientSession[]>(new JSONFile(filename), [])
-      : new Low<OIDCClientSession[]>(new Memory(), []);
   }
+
+  /**
+   * Async constructor
+   * @param options LokiFileAdapterOptions
+   * @returns LokiFileAdapter instance
+   */
+  static create = async (options?: Partial<LowdbAdapterOptions>) => {
+    const instance = new LowdbAdapter(options);
+    await instance.initialize();
+    return instance;
+  };
+
+  /**
+   * Part of async constructor
+   * @returns Promise<void>
+   */
+  protected initialize = async () => {
+    const { filename } = this.options;
+    this.db = filename
+      ? await JSONFilePreset<OIDCClientSession[]>(filename, [])
+      : new Low<OIDCClientSession[]>(new Memory(), []);
+  };
 
   /**
    * Fetch session
