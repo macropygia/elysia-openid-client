@@ -25,6 +25,7 @@
     "check": "biome check .",
     "check:apply": "biome check --apply .",
     "check:unsafe": "biome check --apply-unsafe .",
+    "mock:rebuild": "bun ./__scripts__/rebuildMockDatabases.ts",
     "type-check": "tsc --noEmit",
     "build": "bun ./__scripts__/build.ts && bun run dts",
     "dts": "tsup ./index.ts --dts-only --format esm --out-dir .",
