@@ -1,4 +1,4 @@
-import { logger, opPort } from "@/__mock__/const";
+import { consoleLogger } from "@/loggers/consoleLogger";
 import Elysia from "elysia";
 // biome-ignore lint/style/noNamespaceImport: <explanation>
 import * as jose from "jose";
@@ -11,7 +11,11 @@ import {
 } from "openid-client";
 import { mockIssuerMetadata } from "./issuerMetadata";
 
+const logger = consoleLogger();
+
 export const mockProvider = async (port: number) => {
+  const logger = consoleLogger();
+
   // JWT
   const keys = [];
   const { privateKey } = await jose.generateKeyPair("RS256", {
@@ -73,7 +77,7 @@ export const mockProvider = async (port: number) => {
       }
 
       const claims: IdTokenClaims = {
-        iss: `http://localhost:${opPort}`,
+        iss: `http://localhost:${port}`,
         sub: "elysia-openid-client",
         aud: client_id,
         exp: Math.floor(Date.now() / 1000) + 3600,
@@ -127,7 +131,7 @@ export const mockProvider = async (port: number) => {
     })
     .get("/.well-known/openid-configuration", ({ set }) => {
       set.headers["Content-Type"] = "application/json";
-      return mockIssuerMetadata;
+      return mockIssuerMetadata(port);
     })
     .listen(port);
 };

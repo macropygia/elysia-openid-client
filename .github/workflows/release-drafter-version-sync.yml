@@ -1,6 +1,7 @@
 name: Release Drafter with Version Sync (Push)
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -10,7 +11,7 @@ defaults:
     shell: bash
 
 jobs:
-  update_release_draft_and_version_sync:
+  update_release_draft:
     env:
       BLANCH: main
       CURRENT_VERSION: null

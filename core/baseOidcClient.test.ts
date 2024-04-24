@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { afterAll, describe, expect, test } from "bun:test";
 import { mockBaseOptions, opPort } from "@/__mock__/const";
 import { mockProvider } from "@/__mock__/mockProvider";
 import { BaseOidcClient } from "./BaseOidcClient";
@@ -9,8 +9,13 @@ describe("Unit/core/BaseOidcClient", () => {
     test("Default", async () => {
       const op = await mockProvider(opPort);
 
+      afterAll(async () => {
+        await op.stop();
+      });
+
+      const mockOptions = structuredClone(mockBaseOptions);
       const client = await BaseOidcClient.create({
-        ...mockBaseOptions,
+        ...mockOptions,
         issuerUrl: `http://localhost:${opPort}`,
         settings: defaultSettings,
         cookieSettings: defaultCookieSettings,
@@ -27,8 +32,6 @@ describe("Unit/core/BaseOidcClient", () => {
         status: `${pathPrefix}${defaultSettings.statusPath}`,
         userinfo: `${pathPrefix}${defaultSettings.userinfoPath}`,
       });
-
-      op.stop();
     });
   });
 });

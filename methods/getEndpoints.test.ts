@@ -1,18 +1,26 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { mockBaseOptions, opPort, rpPort } from "@/__mock__/const";
+import { mockBaseOptions } from "@/__mock__/const";
+import { getRandomPort } from "@/__mock__/getRandomPort";
 import { mockIssuerMetadata } from "@/__mock__/issuerMetadata";
+import { OidcClient } from "@/core/OidcClient";
 import Elysia from "elysia";
-import OidcClient from "..";
 
 describe("Unit/methods/getEndpoints", async () => {
+  const opPort = getRandomPort();
+  const rpPort = getRandomPort();
+
   const op = new Elysia()
     .get("/.well-known/openid-configuration", ({ set }) => {
       set.headers["Content-Type"] = "application/json";
-      return mockIssuerMetadata;
+      return mockIssuerMetadata(rpPort);
     })
     .listen(opPort);
+
+  const mockOptions = structuredClone(mockBaseOptions);
   const rp = await OidcClient.create({
-    ...mockBaseOptions,
+    ...mockOptions,
+    baseUrl: `http://localhost:${rpPort}`,
+    issuerUrl: `http://localhost:${opPort}`,
     logger: null,
   });
   const endpoints = rp.getEndpoints();
@@ -34,8 +42,8 @@ describe("Unit/methods/getEndpoints", async () => {
     }
   });
 
-  afterAll(() => {
-    app.stop();
-    op.stop();
+  afterAll(async () => {
+    await app.stop();
+    await op.stop();
   });
 });

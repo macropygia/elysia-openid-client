@@ -158,6 +158,12 @@ const rp = await OidcClient.create(options);
 
 `onBeforeHandle` フックでCookieを元にセッションが有効かどうかを判断し、 [`resolve` フック](https://elysiajs.com/life-cycle/before-handle.html#resolve)から `sessionStatus` と `sessionClaims` を返す。
 
+```typescript
+const rp = await OidcClient.create({ ... });
+const hookOptions: AuthHookOptions = { ... };
+const hook = rp.getAuthHook(hookOptions);
+```
+
 - セッションが有効な場合
   - `sessionStatus` : セッションステータス
     - 参照: [OIDCClientSessionStatus](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientSessionStatus.html)
@@ -310,6 +316,8 @@ const rp = await OidcClient.create({
   - 関数やメソッドの呼び出し時に名称を表示
 - `debug`:
   - デバッグ情報
+- `info`:
+  - (TBA)
 - `warn`:
   - 予期しない呼び出し・不正な操作・攻撃などの可能性がある操作の情報
 - `error`:

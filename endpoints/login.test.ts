@@ -25,7 +25,7 @@ describe("Unit/endpoints/login", () => {
 
     expect(response.status).toBe(303);
     expect(response.headers.get("location")).toBe(
-      "http://localhost:57829/authorization",
+      `http://localhost:${opPort}/authorization`,
     );
 
     const cookie = setCookie.parse(

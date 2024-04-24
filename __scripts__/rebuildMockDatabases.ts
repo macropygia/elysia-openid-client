@@ -1,14 +1,14 @@
 import fs from "node:fs";
-import { LowdbAdapter } from "@/dataAdapters/LowdbAdapter";
-import { sleep } from "bun";
-import { LokiFileAdapter } from "../dataAdapters/LokiFileAdapter";
-import { SQLiteAdapter } from "../dataAdapters/SQLiteAdapter";
 import {
   lokiMockFile,
   lowMockFile,
   mockActiveSession,
   sqliteMockFile,
-} from "./const";
+} from "@/__mock__/const";
+import { LokiFileAdapter } from "@/dataAdapters/LokiFileAdapter";
+import { LowdbAdapter } from "@/dataAdapters/LowdbAdapter";
+import { SQLiteAdapter } from "@/dataAdapters/SQLiteAdapter";
+import { sleep } from "bun";
 
 // SQLite
 if (fs.existsSync(sqliteMockFile)) {

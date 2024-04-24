@@ -1,0 +1,16 @@
+name: Fallback jobs for pull-request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Fallback job of \"$GITHUB_JOB\""

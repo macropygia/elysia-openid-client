@@ -7,6 +7,7 @@ import type {
   OIDCClientDataAdapter,
   OIDCClientLogger,
   OIDCClientOptions,
+  OIDCClientPaths,
   OIDCClientSettings,
 } from "@/types";
 import type {
@@ -109,7 +110,7 @@ export class BaseOidcClient {
    * @public
    * @returns Record<string, string>
    */
-  public getPaths = () => {
+  public getPaths = (): OIDCClientPaths => {
     const {
       settings,
       settings: { pathPrefix },

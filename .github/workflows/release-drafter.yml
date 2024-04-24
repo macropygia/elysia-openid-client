@@ -1,6 +1,7 @@
-name: Release Drafter (PR)
+name: Release Drafter (PR - Conditional)
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - main

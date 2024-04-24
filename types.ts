@@ -174,7 +174,11 @@ export interface OIDCClientSettings {
 }
 
 export interface OIDCClientCookieSettings {
-  /** Neme for session id @default "__Host-sid" */
+  /**
+   * Neme for session id
+   * @default "__Host-sid"
+   * @see Search for `Cookie Name Prefixes` in [RFX6265bis](https://datatracker.ietf.org/doc/draft-ietf-httpbis-rfc6265bis/)
+   */
   sessionIdName: string;
   /** httpOnly flag @default true */
   httpOnly: boolean;
@@ -215,6 +219,7 @@ export interface AuthHookOptions {
   disableRedirect: boolean;
   /**
    * Enable automatic refresh
+   * - If set to `true`, try to refresh session using refresh token when acecss token is expired.
    * @default true
    */
   autoRefresh: boolean;
@@ -274,4 +279,17 @@ export interface OIDCClientDataAdapter {
 export interface OIDCClientLogger extends Omit<BaseLogger, "level"> {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   [key: string]: any;
+}
+
+export interface OIDCClientPaths {
+  callback: string;
+  claims: string;
+  introspect: string;
+  login: string;
+  logout: string;
+  refresh: string;
+  resource: string;
+  revoke: string;
+  status: string;
+  userinfo: string;
 }
