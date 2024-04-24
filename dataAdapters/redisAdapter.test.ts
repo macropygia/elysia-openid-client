@@ -3,13 +3,11 @@ import { mockActiveSession, mockLoginSession } from "@/__mock__/const";
 import { RedisAdapter } from "./RedisAdapter";
 
 describe("Unit/dataAdapter/RedisAdapter", () => {
-  // biome-ignore lint/suspicious/noSkippedTests: <explanation>
-  test.skip("Default", async () => {
+  test.skipIf(!process.env.REDIS_HOST)("Default", async () => {
     const db = new RedisAdapter({
-      port: 6379,
-      host: "localhost",
+      port: Number(process.env.REDIS_PORT) || 6379,
+      host: process.env.REDIS_HOST || "localhost",
     });
-
     // Insert & fetch
     await db.insert({
       ...mockActiveSession,

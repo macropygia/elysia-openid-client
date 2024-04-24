@@ -1,0 +1,31 @@
+name: Test for Redis
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - '**/Redis*.ts'
+  #     - '**/redis*.ts'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+      - run: bun install
+      - run: bun test redis
+        env:
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
