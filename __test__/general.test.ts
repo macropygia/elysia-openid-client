@@ -1,11 +1,15 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { mockPostInit, opPort, rpPort } from "@/__mock__/const";
+import { mockPostInit } from "@/__mock__/const";
+import { getRandomPort } from "@/__mock__/getRandomPort";
 import { mockProvider } from "@/__mock__/mockProvider";
 import OidcClient from "@/index";
 import Elysia from "elysia";
 import setCookie from "set-cookie-parser";
 
 describe("Integration/general", async () => {
+  const opPort = getRandomPort();
+  const rpPort = getRandomPort();
+
   const baseUrl = `http://localhost:${rpPort}`;
   const issuerUrl = `http://localhost:${opPort}`;
 
@@ -40,9 +44,9 @@ describe("Integration/general", async () => {
     authorizationUrl?: string;
   } = {};
 
-  afterAll(() => {
-    app.stop();
-    op.stop();
+  afterAll(async () => {
+    await op.stop();
+    await app.stop();
   });
 
   test("login", async () => {

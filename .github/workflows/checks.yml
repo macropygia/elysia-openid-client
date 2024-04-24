@@ -36,7 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
-      - run: "[ \"$(cat yarn.lock | md5sum)\" == \"$(bun bun.lockb | md5sum)\" ]"
+      - run: diff <(bun bun.lockb) yarn.lock
       - run: bun install
       - run: bun check:apply
       - run: bun type-check

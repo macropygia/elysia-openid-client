@@ -280,3 +280,16 @@ export interface OIDCClientLogger extends Omit<BaseLogger, "level"> {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   [key: string]: any;
 }
+
+export interface OIDCClientPaths {
+  callback: string;
+  claims: string;
+  introspect: string;
+  login: string;
+  logout: string;
+  refresh: string;
+  resource: string;
+  revoke: string;
+  status: string;
+  userinfo: string;
+}

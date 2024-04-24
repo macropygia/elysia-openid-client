@@ -1,6 +1,4 @@
-import { opPort } from "./const";
-
-export const mockIssuerMetadata = {
+export const mockIssuerMetadata = (opPort: number) => ({
   issuer: `http://localhost:${opPort}`,
   authorization_endpoint: `http://localhost:${opPort}/oauth2/authorize`,
   token_endpoint: `http://localhost:${opPort}/oauth2/token`,
@@ -100,4 +98,4 @@ export const mockIssuerMetadata = {
     "ES384",
     "ES512",
   ],
-};
+});
