@@ -1,4 +1,5 @@
-import { logger, opPort } from "@/__mock__/const";
+import { opPort } from "@/__mock__/const";
+import { consoleLogger } from "@/loggers/consoleLogger";
 import Elysia from "elysia";
 // biome-ignore lint/style/noNamespaceImport: <explanation>
 import * as jose from "jose";
@@ -10,6 +11,8 @@ import {
   generators,
 } from "openid-client";
 import { mockIssuerMetadata } from "./issuerMetadata";
+
+const logger = consoleLogger();
 
 export const mockProvider = async (port: number) => {
   // JWT

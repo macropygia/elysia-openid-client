@@ -41,6 +41,7 @@ describe("Integration/general", async () => {
   } = {};
 
   afterAll(() => {
+    app.stop();
     op.stop();
   });
 
