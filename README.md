@@ -158,6 +158,12 @@ const rp = await OidcClient.create(options);
 
 Determine the validity of the session in `onBeforeHandle`, and return `sessionStatus` and `sessionClaims` from the [`resolve` hook](https://elysiajs.com/life-cycle/before-handle.html#resolve).
 
+```typescript
+const rp = await OidcClient.create({ ... });
+const hookOptions: AuthHookOptions = { ... };
+const hook = rp.getAuthHook(hookOptions);
+```
+
 - If the session is valid:
   - `sessionStatus`: Session status
     - Ref: [OIDCClientSessionStatus](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientSessionStatus.html)
@@ -298,7 +304,7 @@ const rp = await OidcClient.create({
 - Optimized for [pino](https://getpino.io/).
   - Other loggers can be used if converted.
 - If omitted, use `consoleLogger("info")`.
-- If set `null`, disable logging.
+- If set to `null`, disable logging.
 - Ref: [OIDCClientLogger](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientLogger.html)
 
 ### Log level policy
@@ -309,6 +315,8 @@ const rp = await OidcClient.create({
   - Functions and methods executed.
 - `debug`:
   - Debug info.
+- `info`:
+  - (TBA)
 - `warn`:
   - Outputs for unexpected calls, tampering, and possible attacks.
 - `error`:
