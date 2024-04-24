@@ -35,8 +35,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: "[ \"$(cat yarn.lock | md5sum)\" == \"$(./bun.lockb | md5sum)\" ]"
       - uses: oven-sh/setup-bun@v1
+      - run: "[ \"$(cat yarn.lock | md5sum)\" == \"$(bun bun.lockb | md5sum)\" ]"
       - run: bun install
       - run: bun check:apply
       - run: bun type-check
