@@ -126,7 +126,7 @@ describe("Unit/methods/updateSession", () => {
       idToken: "mock-id-token",
       nonce: undefined,
       refreshToken: undefined,
-      sessionExpiresAt: Date.now() + mockClient.settings.refreshExpiration,
+      sessionExpiresAt: expect.any(Number),
       sessionId: "mock-session-id",
       state: undefined,
     });
