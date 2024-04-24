@@ -1,6 +1,7 @@
-name: Checks (Push/PR)
+name: Checks (Push/PR - Conditional)
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main

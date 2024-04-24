@@ -1,4 +1,4 @@
-name: "CodeQL"
+name: CodeQL (Cron)
 
 on:
   workflow_dispatch:
@@ -6,6 +6,10 @@ on:
   #   types: [prereleased]
   schedule:
     - cron: '19 5 * * 6'
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   analyze:
