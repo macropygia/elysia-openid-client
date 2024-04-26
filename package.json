@@ -8,6 +8,8 @@
   "license": "MIT",
   "author": "macropygia",
   "files": [
+    "index.ts",
+    "types.ts",
     "*/**/*.ts",
     "tsconfig.json",
     "!**/*.test.ts",
