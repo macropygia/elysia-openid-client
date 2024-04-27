@@ -29,7 +29,7 @@ export function userinfo(this: OidcClient) {
         }
 
         logger?.trace("openid-client/userinfo");
-        const userinfo = await this.client.userinfo(currentSession.idToken);
+        const userinfo = await this.client.userinfo(currentSession.accessToken);
 
         set.headers["Content-Type"] = "application/json";
         return userinfo;
