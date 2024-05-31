@@ -1,8 +1,8 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { mockPostInit } from "@/__mock__/const";
-import { getRandomPort } from "@/__mock__/getRandomPort";
-import { mockProvider } from "@/__mock__/mockProvider";
 import OidcClient from "@/index";
+import { mockPostInit } from "@mock/const";
+import { getRandomPort } from "@mock/getRandomPort";
+import { mockProvider } from "@mock/mockProvider";
 import Elysia from "elysia";
 import setCookie from "set-cookie-parser";
 

@@ -16,10 +16,9 @@ jobs:
         with:
           registry-url: "https://registry.npmjs.org"
       - run: bun install
-      - run: bun check:apply
-      - run: bun type-check
+      - run: bun lint:fix
+      - run: bun typecheck
       - run: bun test --coverage
-      - run: bun docs
       - run: bun run build
       - run: npm publish --access public --dry-run
         env:

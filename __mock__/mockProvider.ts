@@ -11,8 +11,6 @@ import {
 } from "openid-client";
 import { mockIssuerMetadata } from "./issuerMetadata";
 
-const logger = consoleLogger();
-
 export const mockProvider = async (port: number) => {
   const logger = consoleLogger();
 

@@ -10,20 +10,20 @@ const external = [
 ];
 
 try {
-  fs.unlinkSync("../index.d.ts");
-  fs.unlinkSync("../index.js");
+  fs.unlinkSync("../src/index.d.ts");
+  fs.unlinkSync("../src/index.js");
 } catch {
   console.log("[Bun.build] Skip to delete some files.");
 }
 
 Bun.build({
-  root: "../",
+  root: "./src",
   entrypoints: ["./index.ts"],
   target: "bun",
   format: "esm",
-  outdir: "../",
+  outdir: "./src",
   external,
   minify: true,
 });
 
-console.log("[Bun.build] Create `../index.js`");
+console.log("[Bun.build] Create `./src/index.js`");

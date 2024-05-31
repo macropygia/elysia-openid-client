@@ -1,41 +1,43 @@
 {
   "name": "elysia-openid-client",
-  "version": "0.1.9",
+  "version": "0.1.8",
   "description": "OpenID Connect client plugin for ElysiaJS",
   "keywords": ["elysia", "elysiajs", "oidc", "openid", "OpenID Connect", "bun"],
   "homepage": "https://macropygia.github.io/elysia-openid-client/",
   "bugs": "https://github.com/macropygia/elysia-openid-client/discussions/new/choose",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/macropygia/elysia-openid-client"
+  },
   "license": "MIT",
   "author": "macropygia",
   "files": [
-    "index.ts",
-    "index.d.ts",
-    "types.ts",
-    "*/**/*.ts",
+    "src",
     "tsconfig.json",
+    "!src/dataAdapters/index.ts",
     "!**/*.test.ts",
     "!**/.*",
     "!**/__*__"
   ],
   "type": "module",
-  "module": "index.ts",
-  "types": "index.d.ts",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/macropygia/elysia-openid-client"
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*.ts",
+    "./package.json": "./package.json"
   },
   "scripts": {
-    "check": "biome check .",
-    "check:apply": "biome check --apply .",
-    "check:unsafe": "biome check --apply-unsafe .",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "lint:fix": "biome check --apply .",
+    "lint:unsafe": "biome check --apply-unsafe .",
     "mock:rebuild": "bun ./__scripts__/rebuildMockDatabases.ts",
-    "type-check": "tsc --noEmit",
     "build": "bun ./__scripts__/build.ts && bun run dts",
-    "dts": "tsup ./index.ts --dts-only --format esm --out-dir .",
-    "docs": "bun ./__scripts__/docs.ts",
+    "dts": "tsup ./src/index.ts --dts-only --format esm --out-dir ./src",
     "prepare": "simple-git-hooks"
   },
-  "dependencies": { "openid-client": "^5.6.5" },
+  "dependencies": {
+    "openid-client": "^5.6.5"
+  },
   "peerDependencies": {
     "elysia": "^1.0.14",
     "ioredis": "^5.4.1",
@@ -46,37 +48,55 @@
     "typescript": "^5.4.5"
   },
   "peerDependenciesMeta": {
-    "ioredis": { "optional": true },
-    "lokijs": { "optional": true },
-    "pino": { "optional": true },
-    "pino-pretty": { "optional": true },
-    "lowdb": { "optional": true }
+    "ioredis": {
+      "optional": true
+    },
+    "lokijs": {
+      "optional": true
+    },
+    "pino": {
+      "optional": true
+    },
+    "pino-pretty": {
+      "optional": true
+    },
+    "lowdb": {
+      "optional": true
+    }
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.7.1",
+    "@biomejs/biome": "^1.7.3",
+    "@changesets/cli": "^2.27.5",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@types/bun": "latest",
     "@types/lokijs": "^1.5.14",
     "@types/set-cookie-parser": "^2.4.7",
-    "elysia": "^1.0.14",
+    "elysia": "^1.0.22",
     "ioredis": "^5.4.1",
-    "jose": "^5.2.4",
-    "lint-staged": "^15.2.2",
+    "jose": "^5.3.0",
+    "lint-staged": "^15.2.5",
     "lokijs": "^1.5.12",
     "lowdb": "^7.0.1",
-    "pino": "^8.20.0",
-    "pino-pretty": "^11.0.0",
+    "pino": "^9.1.0",
+    "pino-pretty": "^11.1.0",
     "set-cookie-parser": "^2.6.0",
     "simple-git-hooks": "^2.11.1",
     "tsup": "^8.0.2",
-    "typedoc": "^0.25.13",
     "typescript": "^5.4.5"
   },
-  "engines": { "bun": "^1.0.0" },
+  "engines": {
+    "bun": "^1.1.10"
+  },
+  "packageManager": "bun@1.1.10",
   "simple-git-hooks": {
     "pre-commit": "bunx lint-staged",
     "commit-msg": "bunx commitlint -e"
   },
-  "lint-staged": { "*.{ts,json}": "biome check --apply" }
+  "lint-staged": {
+    "*.{ts,json}": "biome check --apply"
+  },
+  "publishConfig": {
+    "provenance": true
+  }
 }

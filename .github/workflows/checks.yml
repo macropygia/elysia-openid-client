@@ -2,17 +2,6 @@ name: Checks (Push/PR - Conditional)
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - '**.ts'
-      - 'biome.json'
-      - 'package.json'
-      - 'bun.lockb'
-      - 'yan.lock'
-      - '!**/__examples__/**'
-      - '!**/__scripts__/**'
   pull_request:
     branches:
       - main
@@ -38,6 +27,6 @@ jobs:
       - uses: oven-sh/setup-bun@v1
       - run: diff <(bun bun.lockb) yarn.lock
       - run: bun install
-      - run: bun check:apply
-      - run: bun type-check
+      - run: bun run lint:fix
+      - run: bun run typecheck
       - run: bun test

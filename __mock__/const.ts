@@ -1,6 +1,6 @@
 import { mock } from "bun:test";
+import { defaultCookieSettings, defaultSettings } from "@/const";
 import type { OidcClient } from "@/core/OidcClient";
-import { defaultCookieSettings, defaultSettings } from "@/core/const";
 import { consoleLogger } from "@/loggers/consoleLogger";
 import type {
   OIDCClientActiveSession,

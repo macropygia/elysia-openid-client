@@ -1,0 +1,16 @@
+name: Checks (Push/PR - Fallback)
+
+on:
+  pull_request:
+    branches:
+      - main
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Empty fallback job of \"$GITHUB_JOB\""

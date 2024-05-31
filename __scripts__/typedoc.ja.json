@@ -1,8 +1,0 @@
-{
-  "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["./docs.ts"],
-  "out": "../.temp",
-  "skipErrorChecking": true,
-  "includeVersion": true,
-  "readme": "../README.ja.md"
-}

@@ -1,13 +1,13 @@
 import fs from "node:fs";
+import { LokiFileAdapter } from "@/dataAdapters/LokiFileAdapter";
+import { LowdbAdapter } from "@/dataAdapters/LowdbAdapter";
+import { SQLiteAdapter } from "@/dataAdapters/SQLiteAdapter";
 import {
   lokiMockFile,
   lowMockFile,
   mockActiveSession,
   sqliteMockFile,
-} from "@/__mock__/const";
-import { LokiFileAdapter } from "@/dataAdapters/LokiFileAdapter";
-import { LowdbAdapter } from "@/dataAdapters/LowdbAdapter";
-import { SQLiteAdapter } from "@/dataAdapters/SQLiteAdapter";
+} from "@mock/const";
 import { sleep } from "bun";
 
 // SQLite
