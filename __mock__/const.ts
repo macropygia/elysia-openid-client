@@ -146,7 +146,7 @@ export const mockStatus = {
 
 export const mockBaseClient = {
   ...mockBaseOptions,
-  create: mock(),
+  factory: mock(),
   initialize: mock(),
   validateOptions: mock(),
   createSession: mock(),

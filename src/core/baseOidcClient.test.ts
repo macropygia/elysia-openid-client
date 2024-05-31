@@ -14,7 +14,7 @@ describe("Unit/core/BaseOidcClient", () => {
       });
 
       const mockOptions = structuredClone(mockBaseOptions);
-      const client = await BaseOidcClient.create({
+      const client = await BaseOidcClient.factory({
         ...mockOptions,
         issuerUrl: `http://localhost:${opPort}`,
         settings: defaultSettings,

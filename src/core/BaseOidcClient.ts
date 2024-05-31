@@ -34,11 +34,11 @@ export class BaseOidcClient {
   settings: OIDCClientSettings;
   /** Cookie settings */
   cookieSettings: OIDCClientCookieSettings;
-  /** OIDC Issuer (Initialize at create()) */
+  /** OIDC Issuer (Initialize at factory()) */
   issuer!: Issuer<BaseClient>;
-  /** OIDC Issuer metadata (Initialize at create()) */
+  /** OIDC Issuer metadata (Initialize at factory()) */
   issuerMetadata!: IssuerMetadata;
-  /** OIDC Client (Initialize at create()) */
+  /** OIDC Client (Initialize at factory()) */
   client!: BaseClient;
   /** Plugin database */
   sessions: OIDCClientDataAdapter;
@@ -93,7 +93,7 @@ export class BaseOidcClient {
    * @param options
    * @returns BaseOidcClient instance
    */
-  static async create(options: OIDCClientOptions) {
+  static async factory(options: OIDCClientOptions) {
     const instance = new BaseOidcClient(options);
     await instance.initialize();
     return instance;

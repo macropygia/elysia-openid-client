@@ -17,7 +17,7 @@ describe("Unit/methods/getEndpoints", async () => {
     .listen(opPort);
 
   const mockOptions = structuredClone(mockBaseOptions);
-  const rp = await OidcClient.create({
+  const rp = await OidcClient.factory({
     ...mockOptions,
     baseUrl: `http://localhost:${rpPort}`,
     issuerUrl: `http://localhost:${opPort}`,

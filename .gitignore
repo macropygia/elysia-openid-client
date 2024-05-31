@@ -1,7 +1,6 @@
 .env
 .temp
-docs
 *.js
-*.d.ts
+index.d.ts
 .vscode/settings.json
 node_modules

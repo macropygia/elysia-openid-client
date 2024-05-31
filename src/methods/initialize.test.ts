@@ -12,7 +12,7 @@ describe("Unit/methods/initialize", async () => {
 
   test("Default", async () => {
     const mockOptions = structuredClone(mockBaseOptions);
-    const mockClinet = await BaseOidcClient.create({
+    const mockClinet = await BaseOidcClient.factory({
       ...mockOptions,
       issuerUrl: `http://localhost:${opPort}`,
     });

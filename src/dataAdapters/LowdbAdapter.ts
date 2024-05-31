@@ -39,7 +39,7 @@ export class LowdbAdapter implements OIDCClientDataAdapter {
    * @param options LokiFileAdapterOptions
    * @returns LokiFileAdapter instance
    */
-  static create = async (options?: Partial<LowdbAdapterOptions>) => {
+  static factory = async (options?: Partial<LowdbAdapterOptions>) => {
     const instance = new LowdbAdapter(options);
     await instance.initialize();
     return instance;

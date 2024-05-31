@@ -17,7 +17,7 @@ describe("Integration/general", async () => {
 
   const client_id = "mock-client-id";
   const client_secret = "mock-client-secret";
-  const oidcClient = await OidcClient.create({
+  const oidcClient = await OidcClient.factory({
     baseUrl,
     issuerUrl,
     clientMetadata: {

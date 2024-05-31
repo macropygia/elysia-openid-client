@@ -5,7 +5,7 @@ import { LowdbAdapter } from "./LowdbAdapter";
 
 describe("Unit/dataAdapter/LowdbAdapter", () => {
   test("Default", async () => {
-    const db = await LowdbAdapter.create();
+    const db = await LowdbAdapter.factory();
 
     // Insert & fetch
     await db.insert({
@@ -45,7 +45,7 @@ describe("Unit/dataAdapter/LowdbAdapter", () => {
   // NOTES: Does not work only in test (due to Bun?)
   // biome-ignore lint/suspicious/noSkippedTests: <explanation>
   test.skip("Load existing database", async () => {
-    const db = await LowdbAdapter.create({
+    const db = await LowdbAdapter.factory({
       filename: lowMockFile,
     });
     expect(db.fetch(mockActiveSession.sessionId)).toMatchObject(

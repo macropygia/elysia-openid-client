@@ -6,7 +6,7 @@ import { LokiFileAdapter } from "./LokiFileAdapter";
 
 describe("Unit/dataAdapter/LokiFileAdapter", () => {
   test("Default", async () => {
-    const db = await LokiFileAdapter.create({
+    const db = await LokiFileAdapter.factory({
       filename: lokiTempFile,
       autosaveInterval: 1000,
     });
@@ -60,7 +60,7 @@ describe("Unit/dataAdapter/LokiFileAdapter", () => {
   });
 
   test("Load existing database", async () => {
-    const db = await LokiFileAdapter.create({
+    const db = await LokiFileAdapter.factory({
       filename: lokiMockFile,
     });
     expect(db.fetch(mockActiveSession.sessionId)).toMatchObject(

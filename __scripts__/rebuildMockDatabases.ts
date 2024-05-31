@@ -26,7 +26,7 @@ if (fs.existsSync(lowMockFile)) {
   fs.unlinkSync(lowMockFile);
 }
 
-const lowdb = await LowdbAdapter.create({
+const lowdb = await LowdbAdapter.factory({
   filename: lowMockFile,
 });
 await lowdb.insert(mockActiveSession);
@@ -38,7 +38,7 @@ if (fs.existsSync(lokiMockFile)) {
   fs.unlinkSync(lokiMockFile);
 }
 
-const loki = await LokiFileAdapter.create({
+const loki = await LokiFileAdapter.factory({
   filename: lokiMockFile,
   autosaveInterval: 500,
 });

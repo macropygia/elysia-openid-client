@@ -105,7 +105,7 @@ export interface OIDCClientOptions {
    * @example
    * ```
    * import pino from "pino";
-   * const rp = new OidcClient.create({ ..., logger: pino() });
+   * const rp = new OidcClient.factory({ ..., logger: pino() });
    * ```
    */
   logger?: OIDCClientLogger | null;

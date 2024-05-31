@@ -16,7 +16,7 @@ import { BaseOidcClient } from "./BaseOidcClient";
 /**
  * OpenID Connect client plugin for ElysiaJS
  * - Usage:
- *   - `const client = await BaseOidcClient.create(options);`
+ *   - `const client = await BaseOidcClient.factory(options);`
  *   - `const endpoints = client.getEndpoints();`
  *   - `const hook = client.getAuthHook();`
  */
@@ -27,7 +27,7 @@ export class OidcClient extends BaseOidcClient {
    * @static
    * @returns OidcClient instance
    */
-  static async create(options: OIDCClientOptions) {
+  static async factory(options: OIDCClientOptions) {
     const instance = new OidcClient(options);
     await instance.initialize();
     return instance;

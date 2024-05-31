@@ -29,7 +29,7 @@ const defaultOptions: LokiFileAdapterOptions = {
 
 /**
  * File-system data adapter using LokiJS
- * - Usage: `const dataAdapter = await LokiFileAdapter.create();`
+ * - Usage: `const dataAdapter = await LokiFileAdapter.factory();`
  * - Requires: `bun add lokijs` and `bun add -D @types/lokijs`
  * @see [LokiJS](https://techfort.github.io/LokiJS/)
  */
@@ -71,7 +71,7 @@ export class LokiFileAdapter extends BaseLokiAdapter {
    * @param options LokiFileAdapterOptions
    * @returns LokiFileAdapter instance
    */
-  static async create(options?: Partial<LokiFileAdapterOptions>) {
+  static async factory(options?: Partial<LokiFileAdapterOptions>) {
     const instance = new LokiFileAdapter(options);
     await instance.initialize();
     return instance;
