@@ -8,7 +8,7 @@ import { OidcClient } from "../src";
 // import { OidcClient } from "elysia-openid-client";
 
 // Callback URL: `https://app.example.com/auth/callback`
-const rp = await OidcClient.create({
+const rp = await OidcClient.factory({
   baseUrl: "https://app.example.com",
   issuerUrl: "https://issuer.exmaple.com",
   clientMetadata: {

@@ -15,7 +15,7 @@ const baseUrl = "https://app.example.com";
 const dataAdapter = new SQLiteAdapter();
 
 // Callback URL: `https://app.example.com/auth/callback`
-const rp1 = await OidcClient.create({
+const rp1 = await OidcClient.factory({
   baseUrl,
   issuerUrl: "https://issuer.exmaple.com",
   clientMetadata: {
@@ -29,7 +29,7 @@ const endpoints1 = rp1.getEndpoints();
 console.log(rp1.issuerMetadata);
 
 // Callback URL: `https://app.example.com/another/callback`
-const rp2 = await OidcClient.create({
+const rp2 = await OidcClient.factory({
   baseUrl,
   issuerUrl: "https://another-issuer.exmaple.com",
   clientMetadata: {

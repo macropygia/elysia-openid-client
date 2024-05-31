@@ -6,7 +6,7 @@ title: Logger
 Defines logger.
 
 ```typescript
-const rp = await OidcClient.create({
+const rp = await OidcClient.factory({
   //...
   logger: OIDCClientLogger | null,
   //...
@@ -46,7 +46,7 @@ bun add pino
 
 ```typescript
 import pino from "pino";
-const rp = await OidcClient.create({
+const rp = await OidcClient.factory({
   //...
   logger: pino(),
   //...
@@ -60,7 +60,7 @@ Using [Console](https://bun.sh/docs/api/console).
 ```typescript
 import { consoleLogger } from "elysia-openid-client/loggers/consoleLogger";
 const minimumLogLevel = "debug"; // same as pino
-const rp = await OidcClient.create({
+const rp = await OidcClient.factory({
   //...
   logger: consoleLogger(minimumLogLevel),
   //...

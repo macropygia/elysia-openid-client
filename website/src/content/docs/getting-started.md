@@ -11,7 +11,7 @@ bun add elysia-openid-client
 import Elysia from "elysia";
 import { OidcClient } from "elysia-openid-client";
 
-const rp = await OidcClient.create({
+const rp = await OidcClient.factory({
   baseUrl: "https://app.example.com", // RP URL
   issuerUrl: "https://issuer.example.com", // OP URL
   clientMetadata: {

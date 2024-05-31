@@ -6,7 +6,7 @@ title: Hooks
 Determine the validity of the session in `onBeforeHandle`, and return `sessionStatus` and `sessionClaims` from the [`resolve` hook](https://elysiajs.com/life-cycle/before-handle.html#resolve).
 
 ```typescript
-const rp = await OidcClient.create({ ... });
+const rp = await OidcClient.factory({ ... });
 const hookOptions: AuthHookOptions = { ... };
 const hook = rp.getAuthHook(hookOptions);
 ```

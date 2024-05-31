@@ -6,7 +6,7 @@ title: Data Adapter
 セッション情報の保存方法を定義したもの。
 
 ```typescript
-const rp = await OidcClient.create({
+const rp = await OidcClient.factory({
   //...
   dataAdapter: OIDCClientDataAdapter,
   //...
@@ -53,7 +53,7 @@ const memoryAdapter = new LokiInMemoryAdapter();
 
 // 永続化モード
 import { LokiFileAdapter } from 'elysia-openid-client/dataAdapters/LokiFileAdapter';
-const fileAdapter = await LokiFileAdapter.create({
+const fileAdapter = await LokiFileAdapter.factory({
   filename: "path/to/sessions.db"
 });
 ```
@@ -70,10 +70,10 @@ bun add lowdb
 import { LowdbAdapter } from 'elysia-openid-client/dataAdapters/LowdbAdapter';
 
 // インメモリーモード
-const memoryAdapter = await LowdbAdapter.create();
+const memoryAdapter = await LowdbAdapter.factory();
 
 // 永続化モード
-const fileAdapter = await LowdbAdapter.create({
+const fileAdapter = await LowdbAdapter.factory({
   filename: "sessions.json",
 })
 ```
@@ -105,7 +105,7 @@ export class MyDataAdapter implements OIDCClientDataAdapter {
 
 // app.ts
 import { MyDataAdapter } from 'path/to/MyDataAdapter';
-const rp = await OidcClient.create({
+const rp = await OidcClient.factory({
   //...
   dataAdapter: new MyDataAdapter(),
   //...

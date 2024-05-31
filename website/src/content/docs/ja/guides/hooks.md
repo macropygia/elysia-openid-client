@@ -1,12 +1,12 @@
 ---
-title: Endpoints
+title: Hooks
 # description:
 ---
 
 `onBeforeHandle` フックでCookieを元にセッションが有効かどうかを判断し、 [`resolve` フック](https://elysiajs.com/life-cycle/before-handle.html#resolve)から `sessionStatus` と `sessionClaims` を返す。
 
 ```typescript
-const rp = await OidcClient.create({ ... });
+const rp = await OidcClient.factory({ ... });
 const hookOptions: AuthHookOptions = { ... };
 const hook = rp.getAuthHook(hookOptions);
 ```

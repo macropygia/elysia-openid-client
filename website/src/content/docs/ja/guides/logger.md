@@ -6,7 +6,7 @@ title: Logger
 ロガーを定義する。
 
 ```typescript
-const rp = await OidcClient.create({
+const rp = await OidcClient.factory({
   //...
   logger: OIDCClientLogger | null,
   //...
@@ -47,7 +47,7 @@ bun add pino
 
 ```typescript
 import pino from "pino";
-const rp = await OidcClient.create({
+const rp = await OidcClient.factory({
   //...
   logger: pino(),
   //...
@@ -61,7 +61,7 @@ const rp = await OidcClient.create({
 ```typescript
 import { consoleLogger } from "elysia-openid-client/loggers/consoleLogger";
 const minimumLogLevel = "debug"; // pinoと同様
-const rp = await OidcClient.create({
+const rp = await OidcClient.factory({
   //...
   logger: consoleLogger(minimumLogLevel),
   //...
