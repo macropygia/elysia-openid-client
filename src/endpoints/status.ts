@@ -1,8 +1,8 @@
 import { sessionDataTypeBox } from "@/const";
 import type { OidcClient } from "@/core/OidcClient";
+import type { OIDCClientActiveSession } from "@/types";
 import { sessionToStatus } from "@/utils/sessionToStatus";
 import { Elysia } from "elysia";
-import type { OIDCClientActiveSession } from "..";
 
 /**
  * Session Status Endpoint

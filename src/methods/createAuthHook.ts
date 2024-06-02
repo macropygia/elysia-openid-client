@@ -128,7 +128,7 @@ export function createAuthHook(this: OidcClient) {
         resolvedStatus = sessionToStatus(resolvedSession, logger);
       },
     )
-    .resolve({ as: "global" }, () => ({
+    .resolve({ as: "scoped" }, () => ({
       // sessionData: resolvedSession,
       sessionStatus: resolvedStatus,
       sessionClaims: resolvedClaims,

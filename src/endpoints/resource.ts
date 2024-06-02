@@ -1,8 +1,8 @@
 import { sessionDataTypeBox } from "@/const";
 import type { OidcClient } from "@/core/OidcClient";
+import type { OIDCClientActiveSession } from "@/types";
 import { handleErrorResponse } from "@/utils/handleErrorResponse";
 import { Elysia, t } from "elysia";
-import type { OIDCClientActiveSession } from "..";
 
 /**
  * Resource Endpoint (GET)

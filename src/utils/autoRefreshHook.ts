@@ -107,7 +107,7 @@ export function autoRefreshHook(this: OidcClient) {
         }
       },
     )
-    .resolve({ as: "global" }, () => ({
+    .resolve({ as: "scoped" }, () => ({
       sessionData: resolvedSession,
     }));
 }

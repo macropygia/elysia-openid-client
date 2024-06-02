@@ -1,8 +1,8 @@
 import { sessionDataTypeBox } from "@/const";
 import type { OidcClient } from "@/core/OidcClient";
+import type { OIDCClientActiveSession } from "@/types";
 import { getClaimsFromIdToken } from "@/utils/getClaimsFromIdToken";
 import { Elysia } from "elysia";
-import type { OIDCClientActiveSession } from "..";
 
 /**
  * Id Token Claims Endpoint

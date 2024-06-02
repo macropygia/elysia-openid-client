@@ -1,4 +1,4 @@
-import type { OIDCClientOptions } from "../types.js";
+import type { OIDCClientOptions } from "@/types";
 
 export const defineConfig = (
   config?: OIDCClientOptions,
