@@ -1,5 +1,13 @@
 # elysia-openid-client
 
+## 0.1.10
+
+### Patch Changes
+
+- 775f1fd: Add auto refresh to `userinfo`, `introspect`, `resource`, `status` and `claims` endpoints
+- 775f1fd: (Breaking) Changed `getEndpoints()` and `getAuthHook()` to getter methods `endpoints` and `authHook`
+- 775f1fd: (Breaking) Move hook settings to client options
+
 ## 0.1.9
 
 ### Patch Changes
