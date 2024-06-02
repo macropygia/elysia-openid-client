@@ -27,7 +27,7 @@ export function refresh(this: OidcClient) {
 
       try {
         if (!currentSession) {
-          throw new Error("Session does not exist");
+          throw new Error("Session data does not exist");
         }
 
         const { sessionId, refreshToken } = currentSession;
@@ -55,7 +55,7 @@ export function refresh(this: OidcClient) {
       }
     },
     {
-      cookie: this.getCookieDefinition(),
+      cookie: this.cookieTypeBox,
     },
   );
 }

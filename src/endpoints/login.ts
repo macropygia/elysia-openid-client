@@ -52,7 +52,7 @@ export function login(this: OidcClient) {
       }
     },
     {
-      cookie: this.getCookieDefinition(),
+      cookie: this.cookieTypeBox,
     },
   );
 }

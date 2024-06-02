@@ -35,7 +35,7 @@ export function callback(this: OidcClient) {
 
       try {
         if (!currentSession) {
-          throw new Error("Session does not exist");
+          throw new Error("Session data does not exist");
         }
 
         const { sessionId, codeVerifier, state, nonce } = currentSession;
@@ -74,7 +74,7 @@ export function callback(this: OidcClient) {
       }
     },
     {
-      cookie: this.getCookieDefinition(),
+      cookie: this.cookieTypeBox,
     },
   );
 }

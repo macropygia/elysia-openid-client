@@ -7,7 +7,6 @@ import {
   mockResetRecursively,
 } from "@mock/const";
 import Elysia from "elysia";
-import type OidcClient from "..";
 import { userinfo } from "./userinfo";
 
 describe("Unit/endpoints/userinfo", () => {
@@ -18,12 +17,13 @@ describe("Unit/endpoints/userinfo", () => {
 
   beforeEach(() => {
     mockResetRecursively(mockBaseClient);
-    mockBaseClient.fetchSession = mock().mockReturnValue(mockActiveSession);
     mockBaseClient.client.userinfo = mock().mockResolvedValue(responseBody);
   });
 
   test("Succeeded", async () => {
-    const app = new Elysia().use(endpoint.call(mockBaseClient));
+    const app = new Elysia()
+      .resolve(() => ({ sessionData: mockActiveSession }))
+      .use(endpoint.call(mockBaseClient));
     const response = await app.handle(
       new Request(`http://localhost${path}`, mockGetInit()),
     );
@@ -37,19 +37,18 @@ describe("Unit/endpoints/userinfo", () => {
   });
 
   test("Session missing", async () => {
-    const app = new Elysia().use(
-      endpoint.call({
-        ...mockBaseClient,
-        fetchSession: mock().mockReturnValue(null),
-      } as unknown as OidcClient),
-    );
+    const app = new Elysia()
+      .resolve(() => ({ sessionData: null }))
+      .use(endpoint.call(mockBaseClient));
     const response = await app.handle(
       new Request(`http://localhost${path}`, mockGetInit()),
     );
 
     expect(mockBaseClient.client.userinfo).not.toHaveBeenCalled();
     expect(response.status).toBe(401);
-    expect(logger?.warn).toHaveBeenCalledTimes(1);
+    expect(logger?.warn).toHaveBeenCalledWith(
+      "endpoints/userinfo: Throw exception",
+    );
   });
 
   test("Exception", async () => {
@@ -57,12 +56,16 @@ describe("Unit/endpoints/userinfo", () => {
       throw "Unknown Error";
     };
 
-    const app = new Elysia().use(endpoint.call(mockBaseClient));
+    const app = new Elysia()
+      .resolve(() => ({ sessionData: mockActiveSession }))
+      .use(endpoint.call(mockBaseClient));
     const response = await app
       .handle(new Request(`http://localhost${path}`))
       .then((res) => res.status);
 
     expect(response).toBe(500);
-    expect(logger?.warn).toHaveBeenCalledTimes(1);
+    expect(logger?.warn).toHaveBeenCalledWith(
+      "endpoints/userinfo: Throw exception",
+    );
   });
 });

@@ -1,6 +1,8 @@
+import { sessionDataTypeBox } from "@/const";
 import type { OidcClient } from "@/core/OidcClient";
 import { handleErrorResponse } from "@/utils/handleErrorResponse";
 import { Elysia } from "elysia";
+import type { OIDCClientActiveSession } from "..";
 
 /**
  * OIDC Token Introspection Endpoint
@@ -10,36 +12,40 @@ import { Elysia } from "elysia";
 export function introspect(this: OidcClient) {
   const {
     settings: { introspectPath },
-    cookieSettings: { sessionIdName },
     logger,
   } = this;
 
-  return new Elysia().all(
-    introspectPath,
-    async ({ set, cookie }) => {
-      logger?.trace("endpoints/introspect");
+  return new Elysia()
+    .decorate({
+      sessionData: sessionDataTypeBox,
+    })
+    .all(
+      introspectPath,
+      async ({ set, cookie, sessionData }) => {
+        logger?.trace("endpoints/introspect");
 
-      const currentSession = await this.fetchSession(
-        cookie[sessionIdName].value,
-      );
+        const currentSession =
+          sessionData as unknown as OIDCClientActiveSession;
 
-      try {
-        if (!currentSession) {
-          throw new Error("Session does not exist");
+        try {
+          if (!currentSession) {
+            throw new Error("Session data does not exist");
+          }
+
+          logger?.trace("openid-client/introspect");
+          const introspect = await this.client.introspect(
+            currentSession.idToken,
+          );
+          set.headers["Content-Type"] = "application/json";
+          return introspect;
+        } catch (e: unknown) {
+          logger?.warn("endpoints/introspect: Throw exception");
+          logger?.debug(e);
+          return handleErrorResponse(e, currentSession, this, cookie);
         }
-
-        logger?.trace("openid-client/introspect");
-        const introspect = await this.client.introspect(currentSession.idToken);
-        set.headers["Content-Type"] = "application/json";
-        return introspect;
-      } catch (e: unknown) {
-        logger?.warn("endpoints/introspect: Throw exception");
-        logger?.debug(e);
-        return handleErrorResponse(e, currentSession, this, cookie);
-      }
-    },
-    {
-      cookie: this.getCookieDefinition(),
-    },
-  );
+      },
+      {
+        cookie: this.cookieTypeBox,
+      },
+    );
 }

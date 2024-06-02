@@ -5,7 +5,7 @@ import { getRandomPort } from "@mock/getRandomPort";
 import { mockIssuerMetadata } from "@mock/issuerMetadata";
 import Elysia from "elysia";
 
-describe("Unit/methods/getEndpoints", async () => {
+describe("Unit/methods/createEndpoints", async () => {
   const opPort = getRandomPort();
   const rpPort = getRandomPort();
 
@@ -23,8 +23,8 @@ describe("Unit/methods/getEndpoints", async () => {
     issuerUrl: `http://localhost:${opPort}`,
     logger: null,
   });
-  const endpoints = rp.getEndpoints();
-  const paths = rp.getPaths();
+  const endpoints = rp.endpoints;
+  const paths = rp.paths;
 
   const app = new Elysia().use(endpoints).listen(rpPort);
 
@@ -35,8 +35,6 @@ describe("Unit/methods/getEndpoints", async () => {
     console.log(path, res.status);
     if (path === paths.login) {
       expect(res.status).toBe(303);
-    } else if (path === paths.resource) {
-      expect(res.status).toBe(400);
     } else {
       expect(res.status).toBe(401);
     }

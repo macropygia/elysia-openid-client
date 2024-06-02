@@ -20,6 +20,7 @@ interface OIDCClientOptions {
   issuerUrl: string;
   baseUrl: string;
   settings?: Partial<OIDCClientSettings>;
+  authHookSettings?: Partial<OIDCClientAuthHookSettings>;
   cookieSettings?: Partial<OIDCClientCookieSettings>;
   dataAdapter?: OIDCClientDataAdapter;
   logger?: OIDCClientLogger | null;
@@ -39,6 +40,8 @@ interface OIDCClientOptions {
         - e.g. `https:/your-service.example.com`
 - [OIDCClientSettings](/elysia-openid-client/api/types/interfaces/oidcclientsettings/)
     - Settings about the client. Paths, durations, etc.
+- [OIDCClientAuthHookSettings](/elysia-openid-client/api/types/interfaces/oidcclientauthhooksettings/)
+    - Settings about before handle hook for auth.
 - [OIDCClientCookieSettings](/elysia-openid-client/api/types/interfaces/oidcclientcookiesettings/)
     - Settings about Cookie for session.
 - [OIDCClientDataAdapter](/elysia-openid-client/api/types/interfaces/oidcclientdataadapter/)

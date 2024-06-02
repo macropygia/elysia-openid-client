@@ -19,7 +19,7 @@ export function handleErrorResponse(
 ): Response {
   const { logger } = ctx;
 
-  logger?.trace("core/handleErrorResponse");
+  logger?.trace("utils/handleErrorResponse");
 
   if (currentSession) {
     ctx.deleteSession(currentSession.sessionId);

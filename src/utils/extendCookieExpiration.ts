@@ -22,7 +22,7 @@ export function extendCookieExpiration(
     },
     logger,
   } = ctx;
-  logger?.trace("core/extendCookieExpiration");
+  logger?.trace("utils/extendCookieExpiration");
 
   if (expires === 0) {
     return;

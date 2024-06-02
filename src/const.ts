@@ -1,4 +1,9 @@
-import type { OIDCClientCookieSettings, OIDCClientSettings } from "@/types";
+import type {
+  OIDCClientAuthHookSettings,
+  OIDCClientCookieSettings,
+  OIDCClientSettings,
+} from "@/types";
+import { t } from "elysia";
 import type { LoggerOptions } from "pino";
 
 /**
@@ -34,6 +39,19 @@ export const defaultCookieSettings: OIDCClientCookieSettings = {
 };
 
 /**
+ * Auth hook settings
+ */
+export const defaultAuthHookSettings: Omit<
+  OIDCClientAuthHookSettings,
+  "loginRedirectUrl"
+> = {
+  scope: "scoped",
+  // loginRedirectUrl: `${pathPrefix}${loginPath}`,
+  disableRedirect: false,
+  autoRefresh: true,
+};
+
+/**
  * Default pino options
  * - Do not add `never`
  */
@@ -66,3 +84,11 @@ export const defaultLoggerOptions: Record<string, LoggerOptions> = {
     },
   },
 };
+
+export const sessionDataTypeBox = t.Object({
+  sessionId: t.String(),
+  sessionExpiresAt: t.Number(),
+  idToken: t.String(),
+  accessToken: t.String(),
+  refreshToken: t.Optional(t.String()),
+});

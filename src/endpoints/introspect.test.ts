@@ -7,7 +7,6 @@ import {
   mockResetRecursively,
 } from "@mock/const";
 import Elysia from "elysia";
-import type OidcClient from "..";
 import { introspect } from "./introspect";
 
 describe("Unit/endpoints/introspect", () => {
@@ -18,12 +17,13 @@ describe("Unit/endpoints/introspect", () => {
 
   beforeEach(() => {
     mockResetRecursively(mockBaseClient);
-    mockBaseClient.fetchSession = mock().mockReturnValue(mockActiveSession);
     mockBaseClient.client.introspect = mock().mockResolvedValue(responseBody);
   });
 
   test("Succeeded", async () => {
-    const app = new Elysia().use(endpoint.call(mockBaseClient));
+    const app = new Elysia()
+      .resolve(() => ({ sessionData: mockActiveSession }))
+      .use(endpoint.call(mockBaseClient));
     const response = await app.handle(
       new Request(`http://localhost${path}`, mockGetInit()),
     );
@@ -35,19 +35,18 @@ describe("Unit/endpoints/introspect", () => {
   });
 
   test("Session missing", async () => {
-    const app = new Elysia().use(
-      endpoint.call({
-        ...mockBaseClient,
-        fetchSession: mock().mockReturnValue(null),
-      } as unknown as OidcClient),
-    );
+    const app = new Elysia()
+      .resolve(() => ({ sessionData: null }))
+      .use(endpoint.call(mockBaseClient));
     const response = await app.handle(
       new Request(`http://localhost${path}`, mockGetInit()),
     );
 
     expect(response.status).toBe(401);
     expect(mockBaseClient.client.introspect).not.toHaveBeenCalled();
-    expect(logger?.warn).toHaveBeenCalledTimes(1);
+    expect(logger?.warn).toHaveBeenCalledWith(
+      "endpoints/introspect: Throw exception",
+    );
   });
 
   test("Exception", async () => {
@@ -55,12 +54,16 @@ describe("Unit/endpoints/introspect", () => {
       throw "Unknown Error";
     };
 
-    const app = new Elysia().use(endpoint.call(mockBaseClient));
+    const app = new Elysia()
+      .resolve(() => ({ sessionData: mockActiveSession }))
+      .use(endpoint.call(mockBaseClient));
     const response = await app
       .handle(new Request(`http://localhost${path}`))
       .then((res) => res.status);
 
     expect(response).toBe(500);
-    expect(logger?.warn).toHaveBeenCalledTimes(1);
+    expect(logger?.warn).toHaveBeenCalledWith(
+      "endpoints/introspect: Throw exception",
+    );
   });
 });

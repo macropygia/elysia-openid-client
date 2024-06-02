@@ -7,8 +7,8 @@ Determine the validity of the session in `onBeforeHandle`, and return `sessionSt
 
 ```typescript
 const rp = await OidcClient.factory({ ... });
-const hookOptions: AuthHookOptions = { ... };
-const hook = rp.getAuthHook(hookOptions);
+const hookOptions: OIDCClientAuthHookSettings = { ... };
+const hook = rp.createAuthHook(hookOptions);
 ```
 
 - If the session is valid:
@@ -23,4 +23,4 @@ const hook = rp.getAuthHook(hookOptions);
 - ElysiaJS plugin metadata
     - name: `elysia-openid-client-auth-hook`
     - [seed](https://elysiajs.com/essential/plugin#plugin-deduplication): `settings.pluginSeed` or else `issuerUrl`
-- Ref: [AuthHookOptions](https://macropygia.github.io/elysia-openid-client/interfaces/types.AuthHookOptions.html)
+- Ref: [OIDCClientAuthHookSettings](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientAuthHookSettings.html)

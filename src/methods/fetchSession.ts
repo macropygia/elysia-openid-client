@@ -7,7 +7,7 @@ export async function fetchSession(
 ): Promise<OIDCClientActiveSession | null> {
   const { sessions, logger } = this;
 
-  logger?.trace("functions/fetchSession");
+  logger?.trace("methods/fetchSession");
 
   // Existence of Cookie
   if (!sessionId) {

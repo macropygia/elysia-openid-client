@@ -9,16 +9,17 @@ import { resource } from "@/endpoints/resource";
 import { revoke } from "@/endpoints/revoke";
 import { status } from "@/endpoints/status";
 import { userinfo } from "@/endpoints/userinfo";
+import { autoRefreshHook } from "@/utils/autoRefreshHook";
 import Elysia from "elysia";
 
-export function getEndpoints(this: OidcClient) {
+export function createEndpoints(this: OidcClient) {
   const {
     issuerUrl,
     settings: { pathPrefix, pluginSeed },
     logger,
   } = this;
 
-  logger?.trace("functions/getEndpoints");
+  logger?.trace("methods/createEndpoints");
 
   const app = new Elysia({
     name: "elysia-openid-client-endpoints",
@@ -30,13 +31,19 @@ export function getEndpoints(this: OidcClient) {
       .use(callback.call(this))
       .use(logout.call(this))
       .use(refresh.call(this))
-      .use(userinfo.call(this))
-      .use(introspect.call(this))
       .use(revoke.call(this))
-      .use(resource.call(this))
-      // Other endpoints
-      .use(status.call(this))
-      .use(claims.call(this)),
+      .guard((app) =>
+        // Auto Refresh
+        app
+          .use(autoRefreshHook.call(this))
+          // OIDC endpoints
+          .use(userinfo.call(this))
+          .use(introspect.call(this))
+          .use(resource.call(this))
+          // Other endpoints
+          .use(status.call(this))
+          .use(claims.call(this)),
+      ),
   );
 
   return app;

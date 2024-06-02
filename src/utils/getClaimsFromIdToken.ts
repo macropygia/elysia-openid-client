@@ -11,7 +11,7 @@ export function getClaimsFromIdToken(
   idToken: string,
   logger?: OIDCClientLogger,
 ): IdTokenClaims {
-  logger?.trace("functions/getClaimsFromIdToken");
+  logger?.trace("utils/getClaimsFromIdToken");
 
   const tokenSet = new TokenSet({
     id_token: idToken,

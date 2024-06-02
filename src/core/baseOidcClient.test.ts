@@ -21,7 +21,7 @@ describe("Unit/core/BaseOidcClient", () => {
         cookieSettings: defaultCookieSettings,
       });
       const { pathPrefix } = defaultSettings;
-      expect(client.getPaths()).toMatchObject({
+      expect(client.paths).toMatchObject({
         callback: `${pathPrefix}${defaultSettings.callbackPath}`,
         introspect: `${pathPrefix}${defaultSettings.introspectPath}`,
         login: `${pathPrefix}${defaultSettings.loginPath}`,

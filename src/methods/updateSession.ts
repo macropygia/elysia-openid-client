@@ -13,7 +13,7 @@ export async function updateSession(
     logger,
   } = this;
 
-  logger?.trace("functions/updateSession");
+  logger?.trace("methods/updateSession");
 
   try {
     if (tokenSet.expired()) {
@@ -23,7 +23,7 @@ export async function updateSession(
     }
     const now = Date.now();
     const { id_token, access_token, refresh_token } = tokenSet;
-    // biome-ignore lint/complexity/useSimplifiedLogicExpression: <explanation>
+    // biome-ignore lint/complexity/useSimplifiedLogicExpression: Short circuit
     if (!id_token || !access_token) {
       logger?.warn("Token missing (tokenSet)");
       await this.deleteSession(sessionId);

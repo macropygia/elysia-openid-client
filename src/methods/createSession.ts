@@ -10,7 +10,7 @@ export async function createSession(
     logger,
   } = this;
 
-  logger?.trace("functions/createSession");
+  logger?.trace("methods/createSession");
 
   const state = generators.state();
   const nonce = generators.nonce();

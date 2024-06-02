@@ -19,8 +19,8 @@ const rp = await OidcClient.factory({
     client_secret: "client-secret",
   },
 });
-const endpoints = rp.getEndpoints(); // Endpoints plugin
-const hook = rp.getAuthHook(); // Auth hook plugin
+const endpoints = rp.endpoints; // Endpoints plugin
+const authHook = rp.authHook; // Auth hook plugin
 
 console.log(rp.issuerMetadata); // Show OP metadata
 
@@ -28,7 +28,7 @@ new Elysia()
   .use(endpoints) // Add endpoints
   .guard((app) => // Define restricted area
     app
-      .use(hook) // Add onBeforeHandle hook for authentication/authorization
+      .use(authHook) // Add onBeforeHandle hook for authentication/authorization
       .onBeforeHandle(({ sessionStatus, sessionClaims }) => {
         // Authorization by name, mail, group, etc.
       })

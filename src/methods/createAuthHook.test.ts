@@ -1,19 +1,19 @@
 import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test";
-import type {} from "@/types";
-import { sessionToStatus } from "@/utils/sessionToStatus";
+import { sessionToStatus } from "@/utils";
 import {
   mockActiveSessionWithRealIdToken,
   mockActiveSessionWithRealIdTokenExpired,
   mockBaseClient,
+  mockGetInit,
   mockIdTokenClaims,
   mockLoginSession,
   mockResetRecursively,
   rpPort,
 } from "@mock/const";
 import Elysia from "elysia";
-import { getAuthHook } from "./getAuthHook";
+import { createAuthHook } from "./createAuthHook";
 
-describe("Unit/endpoints/getAuthHook", () => {
+describe("Unit/methods/createAuthHook", () => {
   const { logger } = mockBaseClient;
 
   beforeEach(() => {
@@ -25,7 +25,7 @@ describe("Unit/endpoints/getAuthHook", () => {
   });
 
   test("Method is not GET (authHook)", async () => {
-    const hook = getAuthHook.call(mockBaseClient);
+    const hook = createAuthHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).post("/", () => ""))
       .listen(rpPort);
@@ -40,8 +40,8 @@ describe("Unit/endpoints/getAuthHook", () => {
     app.stop();
   });
 
-  test("Session does not exist (authHook)", async () => {
-    const hook = getAuthHook.call(mockBaseClient);
+  test("Session ID does not exist (authHook)", async () => {
+    const hook = createAuthHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -50,28 +50,48 @@ describe("Unit/endpoints/getAuthHook", () => {
 
     expect(res.status).toBe(303);
     expect(logger?.debug).toHaveBeenCalledWith(
-      "Session does not exist (authHook)",
+      "Session ID does not exist (authHook)",
     );
 
     app.stop();
   });
 
-  test("Token does not exist (authHook)", async () => {
-    mockBaseClient.fetchSession = mock().mockReturnValue({
-      mockLoginSession,
-    });
-
-    const hook = getAuthHook.call(mockBaseClient);
+  test("Session data does not exist (authHook)", async () => {
+    const hook = createAuthHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
 
-    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+    const res = await app.handle(
+      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+    );
+
+    expect(res.status).toBe(303);
+    expect(logger?.debug).toHaveBeenCalledWith(
+      "Session data does not exist (authHook)",
+    );
+
+    app.stop();
+  });
+
+  test("ID Token or Access Token does not exist (authHook)", async () => {
+    mockBaseClient.fetchSession = mock().mockResolvedValue({
+      mockLoginSession,
+    });
+
+    const hook = createAuthHook.call(mockBaseClient);
+    const app = new Elysia()
+      .guard((app) => app.use(hook).get("/", () => ""))
+      .listen(rpPort);
+
+    const res = await app.handle(
+      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+    );
 
     expect(res.status).toBe(303);
     expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
     expect(logger?.warn).toHaveBeenCalledWith(
-      "Token does not exist (authHook)",
+      "ID Token or Access Token does not exist (authHook)",
     );
 
     app.stop();
@@ -82,18 +102,22 @@ describe("Unit/endpoints/getAuthHook", () => {
       mockActiveSessionWithRealIdTokenExpired,
     );
 
-    const hook = getAuthHook.call(mockBaseClient, { autoRefresh: false });
+    mockBaseClient.authHookSettings.autoRefresh = false;
+    const hook = createAuthHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
 
-    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+    const res = await app.handle(
+      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+    );
 
     expect(res.status).toBe(303);
     expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
     expect(logger?.warn).toHaveBeenCalledWith("Session expired (authHook)");
 
     app.stop();
+    mockBaseClient.authHookSettings.autoRefresh = true;
   });
 
   test("Session expired (authHook) Refresh token does not exist", async () => {
@@ -102,12 +126,14 @@ describe("Unit/endpoints/getAuthHook", () => {
       refreshToken: undefined,
     });
 
-    const hook = getAuthHook.call(mockBaseClient);
+    const hook = createAuthHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
 
-    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+    const res = await app.handle(
+      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+    );
 
     expect(res.status).toBe(303);
     expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
@@ -123,12 +149,14 @@ describe("Unit/endpoints/getAuthHook", () => {
     mockBaseClient.client.refresh = mock();
     mockBaseClient.updateSession = mock().mockReturnValue(null);
 
-    const hook = getAuthHook.call(mockBaseClient);
+    const hook = createAuthHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
 
-    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+    const res = await app.handle(
+      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+    );
 
     expect(res.status).toBe(303);
     expect(mockBaseClient.updateSession).toHaveBeenCalledTimes(1);
@@ -148,12 +176,14 @@ describe("Unit/endpoints/getAuthHook", () => {
     });
     mockBaseClient.updateSession = mock().mockReturnValue(null);
 
-    const hook = getAuthHook.call(mockBaseClient);
+    const hook = createAuthHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
 
-    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+    const res = await app.handle(
+      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+    );
 
     expect(res.status).toBe(401);
     expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
@@ -171,12 +201,14 @@ describe("Unit/endpoints/getAuthHook", () => {
     });
     mockBaseClient.updateSession = mock().mockReturnValue(null);
 
-    const hook = getAuthHook.call(mockBaseClient);
+    const hook = createAuthHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
 
-    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+    const res = await app.handle(
+      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+    );
 
     expect(res.status).toBe(500);
     expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
@@ -194,7 +226,7 @@ describe("Unit/endpoints/getAuthHook", () => {
       mockActiveSessionWithRealIdToken,
     );
 
-    const hook = getAuthHook.call(mockBaseClient);
+    const hook = createAuthHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) =>
         app.use(hook).get("/", ({ sessionStatus, sessionClaims }) =>
@@ -206,7 +238,9 @@ describe("Unit/endpoints/getAuthHook", () => {
       )
       .listen(rpPort);
 
-    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+    const res = await app.handle(
+      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+    );
 
     expect(res.status).toBe(200);
     expect(await res.json()).toMatchObject({
@@ -221,7 +255,7 @@ describe("Unit/endpoints/getAuthHook", () => {
       mockActiveSessionWithRealIdToken,
     );
 
-    const hook = getAuthHook.call(mockBaseClient);
+    const hook = createAuthHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) =>
         app.use(hook).get("/", ({ sessionStatus, sessionClaims }) =>
@@ -233,7 +267,9 @@ describe("Unit/endpoints/getAuthHook", () => {
       )
       .listen(rpPort);
 
-    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+    const res = await app.handle(
+      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+    );
 
     expect(res.status).toBe(200);
     expect(await res.json()).toMatchObject({

@@ -1,14 +1,11 @@
 import type { OidcClient } from "@/core/OidcClient";
-import type {
-  AuthHookOptions,
-  OIDCClientActiveSession,
-  OIDCClientSessionStatus,
-} from "@/types";
+import type { OIDCClientActiveSession, OIDCClientSessionStatus } from "@/types";
 import { deleteCookie } from "@/utils/deleteCookie";
 import { extendCookieExpiration } from "@/utils/extendCookieExpiration";
 import { getClaimsFromIdToken } from "@/utils/getClaimsFromIdToken";
 import { sessionToStatus } from "@/utils/sessionToStatus";
 import { type Cookie, Elysia } from "elysia";
+import type { Context } from "elysia/context";
 import type { IdTokenClaims } from "openid-client";
 
 /**
@@ -16,37 +13,28 @@ import type { IdTokenClaims } from "openid-client";
  * @param this OidcClient Instance
  * @returns ElysiaJS Plugin
  */
-export function getAuthHook(
-  this: OidcClient,
-  options?: Partial<AuthHookOptions>,
-) {
+export function createAuthHook(this: OidcClient) {
   const {
     issuerUrl,
-    settings: { pathPrefix, loginPath, pluginSeed },
+    settings: { pluginSeed },
     cookieSettings: { sessionIdName },
+    authHookSettings: { scope, loginRedirectUrl, disableRedirect, autoRefresh },
     logger,
   } = this;
 
-  logger?.trace("functions/getAuthHook");
-
-  const defaultOptions: AuthHookOptions = {
-    scope: "scoped",
-    loginRedirectUrl: `${pathPrefix}${loginPath}`,
-    disableRedirect: false,
-    autoRefresh: true,
-  };
-
-  const { scope, loginRedirectUrl, disableRedirect, autoRefresh } = {
-    ...defaultOptions,
-    ...options,
-  };
+  logger?.trace("methods/createAuthHook");
 
   let resolvedStatus: OIDCClientSessionStatus | null = null;
   let resolvedSession: OIDCClientActiveSession | null = null;
   let resolvedClaims: IdTokenClaims | null = null;
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const abort = (set: any, cookie: Record<string, Cookie<string>>) => {
+  /**
+   * Delete Cookie and set redirect to loginRedirectUrl
+   */
+  const abortSession = (
+    set: Context["set"],
+    cookie: Record<string, Cookie<string>>,
+  ) => {
     deleteCookie(this, cookie);
     if (!disableRedirect) {
       set.status = 303;
@@ -59,7 +47,7 @@ export function getAuthHook(
     seed: pluginSeed || issuerUrl,
   })
     .guard({
-      cookie: this.getCookieDefinition(),
+      cookie: this.cookieTypeBox,
     })
     .onBeforeHandle(
       {
@@ -73,22 +61,26 @@ export function getAuthHook(
           return;
         }
 
-        const sessionId = cookie[sessionIdName].value;
-        const currentSession = await this.fetchSession(sessionId);
+        const sessionId = cookie[sessionIdName].value as string | undefined;
+        if (!sessionId) {
+          logger?.debug("Session ID does not exist (authHook)");
+          abortSession(set, cookie);
+          return;
+        }
 
+        const currentSession = await this.fetchSession(sessionId);
         if (!currentSession) {
-          logger?.debug("Session does not exist (authHook)");
-          abort(set, cookie);
+          logger?.debug("Session data does not exist (authHook)");
+          abortSession(set, cookie);
           return;
         }
 
         const { idToken, accessToken, refreshToken } = currentSession;
-
-        // biome-ignore lint/complexity/useSimplifiedLogicExpression: <explanation>
+        // biome-ignore lint/complexity/useSimplifiedLogicExpression: Short circuit
         if (!idToken || !accessToken) {
-          logger?.warn("Token does not exist (authHook)");
+          logger?.warn("ID Token or Access Token does not exist (authHook)");
           await this.deleteSession(sessionId);
-          abort(set, cookie);
+          abortSession(set, cookie);
           return;
         }
 
@@ -96,11 +88,11 @@ export function getAuthHook(
         const { exp } = resolvedClaims;
 
         // Expired (auto refresh disabled or refresh token does not exist)
-        // biome-ignore lint/complexity/useSimplifiedLogicExpression: <explanation>
+        // biome-ignore lint/complexity/useSimplifiedLogicExpression: Short circuit
         if (exp * 1000 < Date.now() && (!autoRefresh || !refreshToken)) {
           logger?.warn("Session expired (authHook)");
           await this.deleteSession(sessionId);
-          abort(set, cookie);
+          abortSession(set, cookie);
           return;
         }
 
@@ -114,12 +106,10 @@ export function getAuthHook(
             if (!newSession) {
               logger?.warn("Session renew failed (authHook)");
               resolvedClaims = null;
-              abort(set, cookie);
+              abortSession(set, cookie);
               return;
             }
-
             extendCookieExpiration(this, cookie);
-
             resolvedSession = newSession;
             resolvedClaims = getClaimsFromIdToken(newSession.idToken, logger);
           } catch (e: unknown) {

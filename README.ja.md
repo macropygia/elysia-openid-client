@@ -22,7 +22,6 @@
 詳しい情報は[公式ドキュメント](https://macropygia.github.io/elysia-openid-client/ja/getting-started/)を参照
 
 - 仕様・機能・特徴: [Introduction](https://macropygia.github.io/elysia-openid-client/ja/getting-started/)
-- 出力サンプル: [Sample Output](https://macropygia.github.io/elysia-openid-client/ja/sample-output/)
 - クイックスタートガイド: [Getting Started](https://macropygia.github.io/elysia-openid-client/ja/getting-started/)
 
 ## Contributing

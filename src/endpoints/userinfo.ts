@@ -1,6 +1,8 @@
+import { sessionDataTypeBox } from "@/const";
 import type { OidcClient } from "@/core/OidcClient";
 import { handleErrorResponse } from "@/utils/handleErrorResponse";
 import { Elysia } from "elysia";
+import type { OIDCClientActiveSession } from "..";
 
 /**
  * OIDC Userinfo Endpoint
@@ -10,37 +12,41 @@ import { Elysia } from "elysia";
 export function userinfo(this: OidcClient) {
   const {
     settings: { userinfoPath },
-    cookieSettings: { sessionIdName },
     logger,
   } = this;
 
-  return new Elysia().all(
-    userinfoPath,
-    async ({ set, cookie }) => {
-      logger?.trace("endpoints/userinfo");
+  return new Elysia()
+    .decorate({
+      sessionData: sessionDataTypeBox,
+    })
+    .all(
+      userinfoPath,
+      async ({ set, cookie, sessionData }) => {
+        logger?.trace("endpoints/userinfo");
 
-      const currentSession = await this.fetchSession(
-        cookie[sessionIdName].value,
-      );
+        const currentSession =
+          sessionData as unknown as OIDCClientActiveSession;
 
-      try {
-        if (!currentSession) {
-          throw new Error("Session does not exist");
+        try {
+          if (!currentSession) {
+            throw new Error("Session data does not exist");
+          }
+
+          logger?.trace("openid-client/userinfo");
+          const userinfo = await this.client.userinfo(
+            currentSession.accessToken,
+          );
+
+          set.headers["Content-Type"] = "application/json";
+          return userinfo;
+        } catch (e: unknown) {
+          logger?.warn("endpoints/userinfo: Throw exception");
+          logger?.debug(e);
+          return handleErrorResponse(e, currentSession, this, cookie);
         }
-
-        logger?.trace("openid-client/userinfo");
-        const userinfo = await this.client.userinfo(currentSession.accessToken);
-
-        set.headers["Content-Type"] = "application/json";
-        return userinfo;
-      } catch (e: unknown) {
-        logger?.warn("endpoints/userinfo: Throw exception");
-        logger?.debug(e);
-        return handleErrorResponse(e, currentSession, this, cookie);
-      }
-    },
-    {
-      cookie: this.getCookieDefinition(),
-    },
-  );
+      },
+      {
+        cookie: this.cookieTypeBox,
+      },
+    );
 }

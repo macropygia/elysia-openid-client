@@ -16,8 +16,8 @@ const rp = await OidcClient.factory({
     client_secret: "client-secret",
   },
 });
-const endpoints = rp.getEndpoints();
-const hook = rp.getAuthHook();
+const endpoints = rp.endpoints;
+const authHook = rp.authHook;
 
 console.log(rp.issuerMetadata);
 
@@ -25,7 +25,7 @@ new Elysia()
   .use(endpoints)
   .guard((app) =>
     app
-      .use(hook)
+      .use(authHook)
       .get("/", ({ sessionStatus }) =>
         sessionStatus ? "Logged in" : "Restricted",
       )

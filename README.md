@@ -10,7 +10,7 @@
 
 - All authentication/authorization information is stored on the server side.
     - The status is passed to routing using the [resolve](https://elysiajs.com/life-cycle/before-handle.html#resolve) hook.
-- Use cookies to identify users.
+- Use Cookie to identify users.
 - Depends on [Bun](https://bun.sh/).
 - Only TypeScript files included.
 - [Only works as ESM](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c).
@@ -22,7 +22,6 @@
 Detailed information can be found in the [official documentation](https://macropygia.github.io/elysia-openid-client/).
 
 - List of features and specifications: [Introduction](https://macropygia.github.io/elysia-openid-client/)
-- [Sample Output](https://macropygia.github.io/elysia-openid-client/ja/sample-output/)
 - Quick start guide: [Getting Started](https://macropygia.github.io/elysia-openid-client/getting-started/)
 
 ## Contributing

@@ -7,8 +7,8 @@ title: Hooks
 
 ```typescript
 const rp = await OidcClient.factory({ ... });
-const hookOptions: AuthHookOptions = { ... };
-const hook = rp.getAuthHook(hookOptions);
+const hookOptions: OIDCClientAuthHookSettings = { ... };
+const hook = rp.createAuthHook(hookOptions);
 ```
 
 - セッションが有効な場合
@@ -23,4 +23,4 @@ const hook = rp.getAuthHook(hookOptions);
 - ElysiaJSプラグインとしてのメタデータ
     - 名称: `elysia-openid-client-auth-hook`
     - [シード](https://elysiajs.com/essential/plugin#plugin-deduplication): `settings.pluginSeed` 、未指定なら `issuerUrl`
-- 参照: [AuthHookOptions](https://macropygia.github.io/elysia-openid-client/interfaces/types.AuthHookOptions.html)
+- 参照: [OIDCClientAuthHookSettings](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientAuthHookSettings.html)

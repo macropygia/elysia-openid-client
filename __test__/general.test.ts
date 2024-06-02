@@ -26,7 +26,7 @@ describe("Integration/general", async () => {
     },
     authParams: {},
   });
-  const endpoints = oidcClient.getEndpoints();
+  const endpoints = oidcClient.endpoints;
   const app = new Elysia()
     .get("/", () => "home")
     .use(endpoints)
@@ -128,6 +128,6 @@ describe("Integration/general", async () => {
   });
 
   test("beforeHandle", () => {
-    expect(oidcClient.getAuthHook({ scope: "scoped" })).toBeTruthy();
+    expect(oidcClient.authHook).toBeTruthy();
   });
 });

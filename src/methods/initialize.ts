@@ -5,7 +5,7 @@ import { Issuer } from "openid-client";
 export async function initialize(this: BaseOidcClient) {
   const { logger } = this;
 
-  logger?.trace("functions/initialize");
+  logger?.trace("methods/initialize");
 
   // Discover IdP by discovery endpoint
   this.issuer = await Issuer.discover(this.issuerUrl);

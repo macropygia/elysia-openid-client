@@ -1,5 +1,9 @@
 import { mock } from "bun:test";
-import { defaultCookieSettings, defaultSettings } from "@/const";
+import {
+  defaultAuthHookSettings,
+  defaultCookieSettings,
+  defaultSettings,
+} from "@/const";
 import type { OidcClient } from "@/core/OidcClient";
 import { consoleLogger } from "@/loggers/consoleLogger";
 import type {
@@ -8,6 +12,7 @@ import type {
   OIDCClientSession,
 } from "@/types";
 import type { Cookie } from "elysia";
+import { t } from "elysia";
 import type { IdTokenClaims } from "openid-client";
 
 export type DeepPartial<T> = T extends object
@@ -46,6 +51,7 @@ export const mockBaseOptions = {
   },
   authParams: {},
   settings: defaultSettings,
+  authHookSettings: defaultAuthHookSettings,
   cookieSettings: {
     ...defaultCookieSettings,
     secure: false,
@@ -107,13 +113,18 @@ export const mockActiveSessionWithRealIdToken: OIDCClientActiveSession = {
   sessionExpiresAt: 5000000000000,
 };
 
+export const mockActiveSessionWithRealIdTokenRefreshed: OIDCClientActiveSession =
+  {
+    ...mockActiveSessionWithRealIdToken,
+    accessToken: "mock-access-token-refreshed",
+    refreshToken: "mock-refresh-token-refreshed",
+    sessionExpiresAt: 5000000000001,
+  };
+
 export const mockActiveSessionWithRealIdTokenExpired: OIDCClientActiveSession =
   {
-    sessionId: "mock-session-id",
+    ...mockActiveSessionWithRealIdToken,
     idToken: mockIdTokenExpired,
-    accessToken: "mock-access-token",
-    refreshToken: "mock-refresh-token",
-    sessionExpiresAt: 5000000000000,
   };
 
 export const mockPostInit = (sid?: string): RequestInit => ({
@@ -153,10 +164,9 @@ export const mockBaseClient = {
   updateSession: mock(),
   fetchSession: mock(),
   deleteSession: mock(),
-  getSessionIdCookieType: mock(),
-  getCookieDefinition: mock(),
-  getAuthHook: mock(),
-  getEndpoints: mock(),
+  cookieTypeBox: t.Cookie({ "mock-cookie-name": t.String() }),
+  createAuthHook: mock(),
+  createEndpoints: mock(),
   logger: mockLogger,
   initialized: true,
   client: {},

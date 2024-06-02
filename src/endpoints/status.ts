@@ -1,6 +1,8 @@
+import { sessionDataTypeBox } from "@/const";
 import type { OidcClient } from "@/core/OidcClient";
 import { sessionToStatus } from "@/utils/sessionToStatus";
 import { Elysia } from "elysia";
+import type { OIDCClientActiveSession } from "..";
 
 /**
  * Session Status Endpoint
@@ -11,31 +13,34 @@ import { Elysia } from "elysia";
 export function status(this: OidcClient) {
   const {
     settings: { statusPath },
-    cookieSettings: { sessionIdName },
     logger,
   } = this;
 
-  return new Elysia().all(
-    statusPath,
-    async ({ set, cookie }) => {
-      logger?.trace("endpoints/status");
+  return new Elysia()
+    .decorate({
+      sessionData: sessionDataTypeBox,
+    })
+    .all(
+      statusPath,
+      ({ set, sessionData }) => {
+        logger?.trace("endpoints/status");
 
-      const currentSession = await this.fetchSession(
-        cookie[sessionIdName].value,
-      );
-      if (!currentSession) {
-        logger?.warn("Session does not exist");
-        set.status = 401;
-        return;
-      }
+        const currentSession =
+          sessionData as unknown as OIDCClientActiveSession;
 
-      const status = sessionToStatus(currentSession, logger);
+        if (!currentSession) {
+          logger?.warn("Session data does not exist");
+          set.status = 401;
+          return;
+        }
 
-      set.headers["Content-Type"] = "application/json";
-      return status;
-    },
-    {
-      cookie: this.getCookieDefinition(),
-    },
-  );
+        const status = sessionToStatus(currentSession, logger);
+
+        set.headers["Content-Type"] = "application/json";
+        return status;
+      },
+      {
+        cookie: this.cookieTypeBox,
+      },
+    );
 }

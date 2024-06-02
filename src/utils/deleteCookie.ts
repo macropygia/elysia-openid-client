@@ -3,8 +3,8 @@ import type { Cookie } from "elysia";
 
 /**
  * Delete session cookie
- * @param cookie Cookie
  * @param ctx OIDCClient Instance
+ * @param cookie Cookie
  */
 export function deleteCookie(
   ctx: OidcClient,
@@ -14,7 +14,7 @@ export function deleteCookie(
     cookieSettings: { sessionIdName, httpOnly, secure, sameSite, path },
     logger,
   } = ctx;
-  logger?.trace("core/deleteCookie");
+  logger?.trace("utils/deleteCookie");
 
   // cookie[sessionIdName].remove(); // NOTE: No effect (2024-04-19)
 

@@ -1,6 +1,10 @@
 import type { LifeCycleType } from "elysia";
 import type { AuthorizationParameters, ClientMetadata } from "openid-client";
 
+// ===============================
+// Session
+// ===============================
+
 /** Session data */
 export interface OIDCClientSession {
   /** Session ID */
@@ -29,7 +33,7 @@ export interface OIDCClientActiveSession extends OIDCClientSession {
   accessToken: string;
 }
 
-/** Sessopm status */
+/** Session status */
 export interface OIDCClientSessionStatus {
   /** Session expires at (unixtime, ms) */
   sessionExpiresAt: number;
@@ -44,6 +48,10 @@ export interface OIDCClientSessionStatus {
   /** Sub claim */
   sub: string;
 }
+
+// ===============================
+// Configuration
+// ===============================
 
 /** Options */
 export interface OIDCClientOptions {
@@ -92,6 +100,11 @@ export interface OIDCClientOptions {
    * @see Type definition
    */
   cookieSettings?: Partial<OIDCClientCookieSettings>;
+
+  /**
+   * Auth Hook Settings
+   */
+  authHookSettings?: Partial<OIDCClientAuthHookSettings>;
 
   /**
    * Session Database
@@ -172,9 +185,12 @@ export interface OIDCClientSettings {
   pluginSeed?: string;
 }
 
+/** Cookie settings */
 export interface OIDCClientCookieSettings {
   /**
    * Neme for session id
+   * - Add type definition manually
+   *   - e.g. `t.Cookie({ "__Host-sid": t.Optional(t.String()) })`
    * @default "__Host-sid"
    * @see Search for `Cookie Name Prefixes` in [RFX6265bis](https://datatracker.ietf.org/doc/draft-ietf-httpbis-rfc6265bis/)
    */
@@ -198,8 +214,8 @@ export interface OIDCClientCookieSettings {
   expires?: number;
 }
 
-/** Before handle options */
-export interface AuthHookOptions {
+/** Before handle settings */
+export interface OIDCClientAuthHookSettings {
   /**
    * Scope
    * @default "scoped"
@@ -218,7 +234,8 @@ export interface AuthHookOptions {
   disableRedirect: boolean;
   /**
    * Enable automatic refresh
-   * - If set to `true`, try to refresh session using refresh token when acecss token is expired.
+   * - If set to `true`, try to refresh session using refresh token when access token is expired.
+   * - Applied to all endpoints covered by `authHook`, and to the `userinfo`, `introspect`, `resource`, `status` and `claims` endpoints.
    * @default true
    */
   autoRefresh: boolean;

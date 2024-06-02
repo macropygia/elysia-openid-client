@@ -20,6 +20,7 @@ interface OIDCClientOptions {
   issuerUrl: string;
   baseUrl: string;
   settings?: Partial<OIDCClientSettings>;
+  authHookSettings?: Partial<OIDCClientAuthHookSettings>;
   cookieSettings?: Partial<OIDCClientCookieSettings>;
   dataAdapter?: OIDCClientDataAdapter;
   logger?: OIDCClientLogger | null;
@@ -39,6 +40,8 @@ interface OIDCClientOptions {
         - 例: `https:/your-service.example.com`
 - [OIDCClientSettings](/elysia-openid-client/api/types/interfaces/oidcclientsettings/)
     - 全般設定（パスや有効期限など）
+- [OIDCClientAuthHookSettings](/elysia-openid-client/api/types/interfaces/oidcclientauthhooksettings/)
+    - 認証用フックの設定
 - [OIDCClientCookieSettings](/elysia-openid-client/api/types/interfaces/oidcclientcookiesettings/)
     - セッションIDを保管するCookieの設定
 - [OIDCClientDataAdapter](/elysia-openid-client/api/types/interfaces/oidcclientdataadapter/)

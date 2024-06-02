@@ -17,7 +17,7 @@ export function sessionToStatus(
 ): OIDCClientSessionStatus {
   const { idToken, sessionExpiresAt, refreshToken } = session;
 
-  logger?.trace("functions/sessionToStatus");
+  logger?.trace("utils/sessionToStatus");
 
   const { iss, exp, sub } = getClaimsFromIdToken(idToken, logger);
   return {

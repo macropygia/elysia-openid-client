@@ -33,5 +33,21 @@
   },
   "javascript": {
     "globals": ["Astro", "Bun"]
-  }
+  },
+  "overrides": [
+    {
+      "include": ["*.test.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noEmptyBlockStatements": "off",
+            "noExplicitAny": "off"
+          },
+          "performance": {
+            "noDelete": "off"
+          }
+        }
+      }
+    }
+  ]
 }

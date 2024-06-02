@@ -21,7 +21,7 @@ export function validateOptions(ctx: BaseOidcClient) {
     logger,
   } = ctx;
 
-  logger?.trace("functions/validateOptions");
+  logger?.trace("utils/validateOptions");
 
   if (!ctx.clientMetadata.client_secret) {
     throw new Error("client_secret is required");
@@ -54,7 +54,7 @@ export function validateOptions(ctx: BaseOidcClient) {
   ctx.authParams.code_challenge_method = "S256";
   ctx.authParams.response_type = "code";
 
-  // Scope check
+  // Check scope
   if (!ctx.authParams.scope) {
     ctx.authParams.scope = "openid";
   } else if (

@@ -18,13 +18,12 @@ describe("Unit/endpoints/claims", () => {
 
   beforeEach(() => {
     mockResetRecursively(mockBaseClient);
-    mockBaseClient.fetchSession = mock().mockReturnValue(
-      mockActiveSessionWithRealIdToken,
-    );
   });
 
   test("Succeeded", async () => {
-    const app = new Elysia().use(endpoint.call(mockBaseClient));
+    const app = new Elysia()
+      .resolve(() => ({ sessionData: mockActiveSessionWithRealIdToken }))
+      .use(endpoint.call(mockBaseClient));
     const response = await app
       .handle(new Request(`http://localhost${path}`, mockPostInit()))
       .then((res) => res);
@@ -33,29 +32,17 @@ describe("Unit/endpoints/claims", () => {
     expect(await response.json()).toMatchObject(mockIdTokenClaims);
   });
 
-  test("Session does not exist", async () => {
+  test("Session data does not exist", async () => {
     mockBaseClient.fetchSession = mock().mockReturnValue(null);
 
-    const app = new Elysia().use(endpoint.call(mockBaseClient));
+    const app = new Elysia()
+      .resolve(() => ({ sessionData: null }))
+      .use(endpoint.call(mockBaseClient));
     const response = await app
       .handle(new Request(`http://localhost${path}`, mockPostInit()))
       .then((res) => res.status);
 
     expect(response).toBe(401);
-    expect(logger?.warn).toHaveBeenCalledTimes(1);
-  });
-
-  test("Exception", async () => {
-    mockBaseClient.fetchSession = () => {
-      throw "Unknown Error";
-    };
-
-    const app = new Elysia().use(endpoint.call(mockBaseClient));
-    const response = await app
-      .handle(new Request(`http://localhost${path}`, mockPostInit()))
-      .then((res) => res.status);
-
-    expect(response).toBe(500);
-    expect(logger?.warn).not.toHaveBeenCalled();
+    expect(logger?.warn).toHaveBeenCalledWith("Session data does not exist");
   });
 });

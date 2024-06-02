@@ -23,8 +23,11 @@ const rp1 = await OidcClient.factory({
     client_secret: "client-secret",
   },
   dataAdapter,
+  authHookSettings: {
+    loginRedirectUrl: "/select",
+  },
 });
-const endpoints1 = rp1.getEndpoints();
+const endpoints1 = rp1.endpoints;
 
 console.log(rp1.issuerMetadata);
 
@@ -41,21 +44,19 @@ const rp2 = await OidcClient.factory({
     pathPrefix: "/another",
   },
 });
-const endpoints2 = rp2.getEndpoints();
+const endpoints2 = rp2.endpoints;
 
 console.log(rp2.issuerMetadata);
 
 // No matter which RP hook is used
-const hook = rp1.getAuthHook({
-  loginRedirectUrl: "/select",
-});
+const authHook = rp1.authHook;
 
 new Elysia()
   .use(endpoints1)
   .use(endpoints2)
   .guard((app) =>
     app
-      .use(hook)
+      .use(authHook)
       .get("/", ({ sessionStatus }) =>
         sessionStatus ? "Logged in" : "Restricted",
       )

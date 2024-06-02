@@ -25,7 +25,7 @@ export function revoke(this: OidcClient) {
 
       try {
         if (!currentSession) {
-          throw new Error("Session does not exist");
+          throw new Error("Session data does not exist");
         }
 
         logger?.trace("openid-client/revoke");
@@ -45,7 +45,7 @@ export function revoke(this: OidcClient) {
       }
     },
     {
-      cookie: this.getCookieDefinition(),
+      cookie: this.cookieTypeBox,
     },
   );
 }

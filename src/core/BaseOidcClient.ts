@@ -1,8 +1,13 @@
-import { defaultCookieSettings, defaultSettings } from "@/const";
+import {
+  defaultAuthHookSettings,
+  defaultCookieSettings,
+  defaultSettings,
+} from "@/const";
 import { SQLiteAdapter } from "@/dataAdapters/SQLiteAdapter";
 import { consoleLogger } from "@/loggers/consoleLogger";
 import { initialize } from "@/methods/initialize";
 import type {
+  OIDCClientAuthHookSettings,
   OIDCClientCookieSettings,
   OIDCClientDataAdapter,
   OIDCClientLogger,
@@ -34,6 +39,8 @@ export class BaseOidcClient {
   settings: OIDCClientSettings;
   /** Cookie settings */
   cookieSettings: OIDCClientCookieSettings;
+  /** Cookie settings */
+  authHookSettings: OIDCClientAuthHookSettings;
   /** OIDC Issuer (Initialize at factory()) */
   issuer!: Issuer<BaseClient>;
   /** OIDC Issuer metadata (Initialize at factory()) */
@@ -61,6 +68,7 @@ export class BaseOidcClient {
       dataAdapter,
       settings,
       cookieSettings,
+      authHookSettings,
       logger,
     } = options;
 
@@ -79,6 +87,11 @@ export class BaseOidcClient {
     this.cookieSettings = {
       ...defaultCookieSettings,
       ...cookieSettings,
+    };
+    this.authHookSettings = {
+      ...defaultAuthHookSettings,
+      loginRedirectUrl: `${this.settings.pathPrefix}${this.settings.loginPath}`,
+      ...authHookSettings,
     };
 
     this.sessions = dataAdapter || new SQLiteAdapter();
@@ -110,7 +123,7 @@ export class BaseOidcClient {
    * @public
    * @returns Record<string, string>
    */
-  public getPaths = (): OIDCClientPaths => {
+  public get paths(): OIDCClientPaths {
     const {
       settings,
       settings: { pathPrefix },
@@ -127,5 +140,5 @@ export class BaseOidcClient {
       status: `${pathPrefix}${settings.statusPath}`,
       userinfo: `${pathPrefix}${settings.userinfoPath}`,
     };
-  };
+  }
 }

@@ -1,7 +1,7 @@
 import { OidcClient } from "@/core/OidcClient";
 import type {
-  AuthHookOptions,
   OIDCClientActiveSession,
+  OIDCClientAuthHookSettings,
   OIDCClientCookieSettings,
   OIDCClientDataAdapter,
   OIDCClientOptions,
@@ -22,6 +22,6 @@ export type {
   OIDCClientOptions,
   OIDCClientSettings,
   OIDCClientCookieSettings,
-  AuthHookOptions,
+  OIDCClientAuthHookSettings,
   OIDCClientDataAdapter,
 };
