@@ -17,7 +17,7 @@ const rp = await OidcClient.factory({
 - カスタムデータアダプターを作成可能
 - 既定ではSQLiteのインメモリーモードが使用される
 - 複数のOPを使用する場合は一つのデータアダプターを共有する
-- 参照: [OIDCClientDataAdapter](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientDataAdapter.html)
+- 参照: [OIDCClientDataAdapter](/elysia-openid-client/ja/api/types/interfaces/oidcclientdataadapter/)
 
 ### SQLite
 

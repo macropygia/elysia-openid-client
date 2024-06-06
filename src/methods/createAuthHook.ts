@@ -18,7 +18,7 @@ export function createAuthHook(this: OidcClient) {
     issuerUrl,
     settings: { pluginSeed },
     cookieSettings: { sessionIdName },
-    authHookSettings: { scope, loginRedirectUrl, disableRedirect, autoRefresh },
+    authHookSettings: { loginRedirectUrl, disableRedirect, autoRefresh },
     logger,
   } = this;
 
@@ -51,7 +51,7 @@ export function createAuthHook(this: OidcClient) {
     })
     .onBeforeHandle(
       {
-        as: scope,
+        as: "scoped",
       },
       // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
       async ({ cookie, set, request: { method } }) => {
@@ -96,7 +96,7 @@ export function createAuthHook(this: OidcClient) {
           return;
         }
 
-        // Auto refresh
+        // Expired (try to refresh)
         if (exp * 1000 < Date.now() && autoRefresh && refreshToken) {
           logger?.debug("Auto refresh triggered (authHook)");
           try {
@@ -104,11 +104,12 @@ export function createAuthHook(this: OidcClient) {
             const tokenSet = await this.client.refresh(refreshToken);
             const newSession = await this.updateSession(sessionId, tokenSet);
             if (!newSession) {
-              logger?.warn("Session renew failed (authHook)");
+              logger?.warn("Auto refresh failed (authHook)");
               resolvedClaims = null;
               abortSession(set, cookie);
               return;
             }
+            logger?.debug("Auto refresh succeeded (authHook)");
             extendCookieExpiration(this, cookie);
             resolvedSession = newSession;
             resolvedClaims = getClaimsFromIdToken(newSession.idToken, logger);
@@ -125,11 +126,11 @@ export function createAuthHook(this: OidcClient) {
         } else {
           resolvedSession = currentSession;
         }
+
         resolvedStatus = sessionToStatus(resolvedSession, logger);
       },
     )
     .resolve({ as: "scoped" }, () => ({
-      // sessionData: resolvedSession,
       sessionStatus: resolvedStatus,
       sessionClaims: resolvedClaims,
     }));

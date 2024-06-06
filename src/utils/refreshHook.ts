@@ -10,21 +10,21 @@ import { type Cookie, Elysia } from "elysia";
  * @param this OidcClient Instance
  * @returns ElysiaJS Plugin
  */
-export function autoRefreshHook(this: OidcClient) {
+export function refreshHook(this: OidcClient) {
   const {
     issuerUrl,
     settings: { pluginSeed },
     cookieSettings: { sessionIdName },
-    authHookSettings: { scope, autoRefresh },
+    authHookSettings: { autoRefresh },
     logger,
   } = this;
 
-  logger?.trace("methods/createrefreshHook");
+  logger?.trace("utils/refreshHook");
 
   let resolvedSession: OIDCClientActiveSession | null = null;
 
   /**
-   * Delete Cookie and set redirect to loginRedirectUrl
+   * Delete Cookie and return response (401 or 500)
    */
   const abortSession = (
     cookie: Record<string, Cookie<string>>,
@@ -35,7 +35,7 @@ export function autoRefreshHook(this: OidcClient) {
   };
 
   return new Elysia({
-    name: "elysia-openid-client-auto-refresh-hook",
+    name: "elysia-openid-client-refresh-hook",
     seed: pluginSeed || issuerUrl,
   })
     .guard({
@@ -43,11 +43,11 @@ export function autoRefreshHook(this: OidcClient) {
     })
     .onBeforeHandle(
       {
-        as: scope,
+        as: "scoped",
       },
       // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
       async ({ cookie }) => {
-        logger?.trace("utils/autoRefreshHook");
+        logger?.trace("utils/refreshHook");
 
         const sessionId = cookie[sessionIdName].value as string | undefined;
         if (!sessionId) {
@@ -80,7 +80,7 @@ export function autoRefreshHook(this: OidcClient) {
           return abortSession(cookie, 401);
         }
 
-        // Auto refresh
+        // Expired (try to refresh)
         if (exp * 1000 < Date.now() && autoRefresh && refreshToken) {
           logger?.debug("Auto refresh triggered (refreshHook)");
           try {
@@ -88,9 +88,10 @@ export function autoRefreshHook(this: OidcClient) {
             const tokenSet = await this.client.refresh(refreshToken);
             const newSession = await this.updateSession(sessionId, tokenSet);
             if (!newSession) {
-              logger?.warn("Session renew failed (refreshHook)");
+              logger?.warn("Auto refresh failed (refreshHook)");
               return abortSession(cookie, 401);
             }
+            logger?.debug("Auto refresh succeeded (refreshHook)");
             extendCookieExpiration(this, cookie);
             resolvedSession = newSession;
           } catch (e: unknown) {

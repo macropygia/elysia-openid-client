@@ -17,7 +17,7 @@ const rp = await OidcClient.factory({
     - 変換すれば任意のロガーを使用可能
 - 省略すると `consoleLogger("info")` を使用する
 - `null` に設定するとログを出力しない
-- 参照: [OIDCClientLogger](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientLogger.html)
+- 参照: [OIDCClientLogger](/elysia-openid-client/ja/api/types/interfaces/oidcclientlogger/)
 
 ### ログレベルポリシー
 
@@ -70,4 +70,4 @@ const rp = await OidcClient.factory({
 
 ### カスタムロガー
 
-[OIDCClientLogger](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientLogger.html)の型定義と `consoleLogger` の実装を参照のこと。
+[OIDCClientLogger](/elysia-openid-client/ja/api/types/interfaces/oidcclientlogger/)の型定義と `consoleLogger` の実装を参照のこと。

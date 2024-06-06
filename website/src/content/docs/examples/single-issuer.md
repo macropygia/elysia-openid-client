@@ -4,8 +4,7 @@ title: Single Issuer
 
 ```typescript
 import Elysia from "elysia";
-import { OidcClient } from "../src";
-// import { OidcClient } from "elysia-openid-client";
+import { OidcClient } from "elysia-openid-client";
 
 // Callback URL: `https://app.example.com/auth/callback`
 const rp = await OidcClient.factory({

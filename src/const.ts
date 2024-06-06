@@ -45,7 +45,6 @@ export const defaultAuthHookSettings: Omit<
   OIDCClientAuthHookSettings,
   "loginRedirectUrl"
 > = {
-  scope: "scoped",
   // loginRedirectUrl: `${pathPrefix}${loginPath}`,
   disableRedirect: false,
   autoRefresh: true,

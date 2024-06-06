@@ -13,6 +13,19 @@ const options: OIDCClientOptions = defineConfig({
 const rp = await OidcClient.factory(options);
 ```
 
+## 最小構成
+
+```typescript
+{
+  issuerUrl: "https://issuer.example.com",
+  baseUrl: "https://your-service.example.com",
+  clientMetadata: {
+    client_id: "client-id",
+    client_secret: "client-secret",
+  },
+}
+```
+
 ## Reference
 
 ```typescript
@@ -37,7 +50,7 @@ interface OIDCClientOptions {
         - 例: `https://github.com`
     - `baseUrl`
         - このプラグインを使用するWebサイト/WebサービスのURL（OpenID Relying Partyとして機能する）
-        - 例: `https:/your-service.example.com`
+        - 例: `https://your-service.example.com`
 - [OIDCClientSettings](/elysia-openid-client/api/types/interfaces/oidcclientsettings/)
     - 全般設定（パスや有効期限など）
 - [OIDCClientAuthHookSettings](/elysia-openid-client/api/types/interfaces/oidcclientauthhooksettings/)
@@ -45,9 +58,9 @@ interface OIDCClientOptions {
 - [OIDCClientCookieSettings](/elysia-openid-client/api/types/interfaces/oidcclientcookiesettings/)
     - セッションIDを保管するCookieの設定
 - [OIDCClientDataAdapter](/elysia-openid-client/api/types/interfaces/oidcclientdataadapter/)
-    - 本文書の `データアダプター` の項を参照
+    - [`データアダプター`](/elysia-openid-client/ja/guide/data-adapter/) のページを参照
 - [OIDCClientLogger](/elysia-openid-client/api/types/interfaces/oidcclientlogger/)
-    - 本文書の `ロガー` の項を参照
+    - [`ロガー`](/elysia-openid-client/ja/guide/logger/) のページを参照
 - `ClientMetadata`
     - `openid-client` の [`ClientMetadata` の型定義](https://github.com/panva/node-openid-client/blob/main/types/index.d.ts)
     - および `OpenID Connect Dynamic Client Registration 1.0` の [Client Metadata](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata) の章を参照

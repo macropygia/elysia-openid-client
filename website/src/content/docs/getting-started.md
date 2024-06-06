@@ -40,3 +40,5 @@ new Elysia()
   .get("/logout", () => "Logout completed")
   .listen(80);
 ```
+
+And acccess `https://app.example.com/`.

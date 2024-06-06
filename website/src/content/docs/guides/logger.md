@@ -17,7 +17,7 @@ const rp = await OidcClient.factory({
     - Other loggers can be used if converted.
 - If omitted, use `consoleLogger("info")`.
 - If set to `null`, disable logging.
-- Ref: [OIDCClientLogger](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientLogger.html)
+- Ref: [OIDCClientLogger](/elysia-openid-client/api/types/interfaces/oidcclientlogger/)
 
 ### Log level policy
 
@@ -69,4 +69,4 @@ const rp = await OidcClient.factory({
 
 ### Custom logger
 
-See [OIDCClientLogger](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientLogger.html) and `consoleLogger` implementation.
+See [OIDCClientLogger](/elysia-openid-client/api/types/interfaces/oidcclientlogger/) and `consoleLogger` implementation.

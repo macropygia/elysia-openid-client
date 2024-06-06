@@ -160,9 +160,7 @@ describe("Unit/methods/createAuthHook", () => {
 
     expect(res.status).toBe(303);
     expect(mockBaseClient.updateSession).toHaveBeenCalledTimes(1);
-    expect(logger?.warn).toHaveBeenCalledWith(
-      "Session renew failed (authHook)",
-    );
+    expect(logger?.warn).toHaveBeenCalledWith("Auto refresh failed (authHook)");
 
     app.stop();
   });

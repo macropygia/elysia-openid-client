@@ -1,4 +1,3 @@
-import type { LifeCycleType } from "elysia";
 import type { AuthorizationParameters, ClientMetadata } from "openid-client";
 
 // ===============================
@@ -216,11 +215,6 @@ export interface OIDCClientCookieSettings {
 
 /** Before handle settings */
 export interface OIDCClientAuthHookSettings {
-  /**
-   * Scope
-   * @default "scoped"
-   */
-  scope: LifeCycleType;
   /**
    * URL to redirect when not logged in
    * @default `${pathPrefix}${loginPath}`

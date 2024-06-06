@@ -17,9 +17,9 @@ import {
   rpPort,
 } from "@mock/const";
 import Elysia from "elysia";
-import { autoRefreshHook } from "./autoRefreshHook";
+import { refreshHook } from "./refreshHook";
 
-describe("Unit/utils/autoRefreshHook", () => {
+describe("Unit/utils/refreshHook", () => {
   const { logger } = mockBaseClient;
 
   beforeEach(() => {
@@ -38,7 +38,7 @@ describe("Unit/utils/autoRefreshHook", () => {
   });
 
   test("Session ID does not exist (refreshHook)", async () => {
-    const hook = autoRefreshHook.call(mockBaseClient);
+    const hook = refreshHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -53,7 +53,7 @@ describe("Unit/utils/autoRefreshHook", () => {
   });
 
   test("Session data does not exist (refreshHook)", async () => {
-    const hook = autoRefreshHook.call(mockBaseClient);
+    const hook = refreshHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -72,7 +72,7 @@ describe("Unit/utils/autoRefreshHook", () => {
   });
 
   test("ID Token does not exist", async () => {
-    const hook = autoRefreshHook.call(mockBaseClient);
+    const hook = refreshHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -94,7 +94,7 @@ describe("Unit/utils/autoRefreshHook", () => {
   });
 
   test("Access Token does not exist", async () => {
-    const hook = autoRefreshHook.call(mockBaseClient);
+    const hook = refreshHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -116,7 +116,7 @@ describe("Unit/utils/autoRefreshHook", () => {
   });
 
   test("Expired/Refresh Token does not exist", async () => {
-    const hook = autoRefreshHook.call(mockBaseClient);
+    const hook = refreshHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -138,7 +138,7 @@ describe("Unit/utils/autoRefreshHook", () => {
 
   test("Expired/Auto refresh is disabled", async () => {
     mockBaseClient.authHookSettings.autoRefresh = false;
-    const hook = autoRefreshHook.call(mockBaseClient);
+    const hook = refreshHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -159,7 +159,7 @@ describe("Unit/utils/autoRefreshHook", () => {
   });
 
   test("Succeeded", async () => {
-    const hook = autoRefreshHook.call(mockBaseClient);
+    const hook = refreshHook.call(mockBaseClient);
     let result: any;
     const app = new Elysia()
       .guard((app) =>
@@ -182,7 +182,7 @@ describe("Unit/utils/autoRefreshHook", () => {
   });
 
   test("Session renew failed", async () => {
-    const hook = autoRefreshHook.call(mockBaseClient);
+    const hook = refreshHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -198,12 +198,12 @@ describe("Unit/utils/autoRefreshHook", () => {
 
     expect(res.status).toBe(401);
     expect(logger?.warn).toHaveBeenCalledWith(
-      "Session renew failed (refreshHook)",
+      "Auto refresh failed (refreshHook)",
     );
   });
 
   test("Refresh failed", async () => {
-    const hook = autoRefreshHook.call(mockBaseClient);
+    const hook = refreshHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -224,7 +224,7 @@ describe("Unit/utils/autoRefreshHook", () => {
   });
 
   test("Refresh failed (Unknown error)", async () => {
-    const hook = autoRefreshHook.call(mockBaseClient);
+    const hook = refreshHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);

@@ -13,6 +13,19 @@ const options: OIDCClientOptions = defineConfig({
 const rp = await OidcClient.factory(options);
 ```
 
+## Minumum requirements
+
+```typescript
+{
+  issuerUrl: "https://issuer.example.com/",
+  baseUrl: "https://your-service.example.com",
+  clientMetadata: {
+    client_id: "client-id",
+    client_secret: "client-secret",
+  },
+}
+```
+
 ## Reference
 
 ```typescript
@@ -37,7 +50,7 @@ interface OIDCClientOptions {
         - e.g. `https://github.com`
     - `baseUrl`
         - URL of your apps as OpenID Relying Party
-        - e.g. `https:/your-service.example.com`
+        - e.g. `https://your-service.example.com`
 - [OIDCClientSettings](/elysia-openid-client/api/types/interfaces/oidcclientsettings/)
     - Settings about the client. Paths, durations, etc.
 - [OIDCClientAuthHookSettings](/elysia-openid-client/api/types/interfaces/oidcclientauthhooksettings/)
@@ -45,9 +58,9 @@ interface OIDCClientOptions {
 - [OIDCClientCookieSettings](/elysia-openid-client/api/types/interfaces/oidcclientcookiesettings/)
     - Settings about Cookie for session.
 - [OIDCClientDataAdapter](/elysia-openid-client/api/types/interfaces/oidcclientdataadapter/)
-    - See `Data Adapter` section in this document.
+    - See [`Data Adapter`](/elysia-openid-client/guide/data-adapter/) page.
 - [OIDCClientLogger](/elysia-openid-client/api/types/interfaces/oidcclientlogger/)
-    - See `Logger` section in this document.
+    - See [`Logger`](/elysia-openid-client/guide/logger/) page.
 - `ClientMetadata`
     - See [`ClientMetadata` type definition](https://github.com/panva/node-openid-client/blob/main/types/index.d.ts) of `openid-client`.
     - See [Client Metadata](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata) section in the `OpenID Connect Dynamic Client Registration 1.0`.

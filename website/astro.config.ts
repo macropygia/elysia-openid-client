@@ -67,8 +67,8 @@ export default defineConfig({
               link: "/guides/endpoints/",
             },
             {
-              label: "Hooks",
-              link: "/guides/hooks/",
+              label: "Auth Hook",
+              link: "/guides/auth-hook/",
             },
             {
               label: "Data Adapter",

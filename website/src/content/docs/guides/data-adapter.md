@@ -17,7 +17,7 @@ const rp = await OidcClient.factory({
 - You can make your own adapters.
 - SQLite with in-memory option is used by default.
 - When using multiple OP, share a single data adapter.
-- Ref: [OIDCClientDataAdapter](https://macropygia.github.io/elysia-openid-client/interfaces/types.OIDCClientDataAdapter.html)
+- Ref: [OIDCClientDataAdapter](/elysia-openid-client/api/types/interfaces/oidcclientdataadapter/)
 
 ### SQLite
 

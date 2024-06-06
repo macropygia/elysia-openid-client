@@ -9,7 +9,7 @@ import { resource } from "@/endpoints/resource";
 import { revoke } from "@/endpoints/revoke";
 import { status } from "@/endpoints/status";
 import { userinfo } from "@/endpoints/userinfo";
-import { autoRefreshHook } from "@/utils/autoRefreshHook";
+import { refreshHook } from "@/utils/refreshHook";
 import Elysia from "elysia";
 
 export function createEndpoints(this: OidcClient) {
@@ -33,9 +33,9 @@ export function createEndpoints(this: OidcClient) {
       .use(refresh.call(this))
       .use(revoke.call(this))
       .guard((app) =>
-        // Auto Refresh
         app
-          .use(autoRefreshHook.call(this))
+          // Refresh hook (try to refresh if needed)
+          .use(refreshHook.call(this))
           // OIDC endpoints
           .use(userinfo.call(this))
           .use(introspect.call(this))

@@ -4,10 +4,8 @@ title: Multiple Issuer
 
 ```typescript
 import Elysia from "elysia";
-import { OidcClient } from "../src";
-import { SQLiteAdapter } from "../src/dataAdapters/SQLiteAdapter";
-// import { OidcClient } from "elysia-openid-client";
-// import { SQLiteAdapter } from "elysia-openid-client/dataAdapters/SQLiteAdapter";
+import { OidcClient } from "elysia-openid-client";
+import { SQLiteAdapter } from "elysia-openid-client/dataAdapters/SQLiteAdapter";
 
 const baseUrl = "https://app.example.com";
 
