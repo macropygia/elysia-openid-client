@@ -7,17 +7,17 @@ import {
   mockResetRecursively,
 } from "@mock/const";
 import Elysia from "elysia";
-import { introspect } from "./introspect";
+import { userinfoEndpoint } from "./userinfoEndpoint";
 
-describe("Unit/endpoints/introspect", () => {
-  const endpoint = introspect;
-  const responseBody = { type: "introspect" };
-  const path = defaultSettings.introspectPath;
+describe("Unit/endpoints/userinfoEndpoint", () => {
+  const endpoint = userinfoEndpoint;
+  const responseBody = { type: "userinfo" };
+  const path = defaultSettings.userinfoPath;
   const { logger } = mockBaseClient;
 
   beforeEach(() => {
     mockResetRecursively(mockBaseClient);
-    mockBaseClient.client.introspect = mock().mockResolvedValue(responseBody);
+    mockBaseClient.client.userinfo = mock().mockResolvedValue(responseBody);
   });
 
   test("Succeeded", async () => {
@@ -28,10 +28,12 @@ describe("Unit/endpoints/introspect", () => {
       new Request(`http://localhost${path}`, mockGetInit()),
     );
 
+    expect(mockBaseClient.client.userinfo).toHaveBeenCalledWith(
+      "mock-access-token",
+    );
     expect(response.status).toBe(200);
     expect(response.headers.get("content-type")).toBe("application/json");
     expect(await response.json()).toMatchObject(responseBody);
-    expect(mockBaseClient.client.introspect).toHaveBeenCalledTimes(1);
   });
 
   test("Session missing", async () => {
@@ -42,15 +44,15 @@ describe("Unit/endpoints/introspect", () => {
       new Request(`http://localhost${path}`, mockGetInit()),
     );
 
+    expect(mockBaseClient.client.userinfo).not.toHaveBeenCalled();
     expect(response.status).toBe(401);
-    expect(mockBaseClient.client.introspect).not.toHaveBeenCalled();
     expect(logger?.warn).toHaveBeenCalledWith(
-      "endpoints/introspect: Throw exception",
+      "endpoints/userinfo: Throw exception",
     );
   });
 
   test("Exception", async () => {
-    mockBaseClient.client.introspect = () => {
+    mockBaseClient.client.userinfo = () => {
       throw "Unknown Error";
     };
 
@@ -63,7 +65,7 @@ describe("Unit/endpoints/introspect", () => {
 
     expect(response).toBe(500);
     expect(logger?.warn).toHaveBeenCalledWith(
-      "endpoints/introspect: Throw exception",
+      "endpoints/userinfo: Throw exception",
     );
   });
 });

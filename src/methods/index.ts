@@ -1,10 +1,10 @@
 import { createAuthHook } from "./createAuthHook";
 import { createEndpoints } from "./createEndpoints";
-import { createSession } from "./createSession";
-import { deleteSession } from "./deleteSession";
-import { fetchSession } from "./fetchSession";
 import { initialize } from "./initialize";
-import { updateSession } from "./updateSession";
+import { createSession } from "./session/createSession";
+import { deleteSession } from "./session/deleteSession";
+import { fetchSession } from "./session/fetchSession";
+import { updateSession } from "./session/updateSession";
 
 export {
   createSession,

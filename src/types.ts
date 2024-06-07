@@ -1,3 +1,4 @@
+import type { Cookie } from "elysia";
 import type { AuthorizationParameters, ClientMetadata } from "openid-client";
 
 // ===============================
@@ -42,9 +43,9 @@ export interface OIDCClientSessionStatus {
   isExpired: boolean;
   /** Access token expires at (unixtime, ms) */
   expiresAt: number;
-  /** Issuer url */
-  issuerUrl: string;
-  /** Sub claim */
+  /** `iss` claim */
+  iss: string;
+  /** `sub` claim */
   sub: string;
 }
 
@@ -235,6 +236,10 @@ export interface OIDCClientAuthHookSettings {
   autoRefresh: boolean;
 }
 
+// ===============================
+// Extras
+// ===============================
+
 /**
  * Data adapter
  */
@@ -305,6 +310,21 @@ interface OIDCClientLoggerFn {
   (obj: unknown, msg?: string, ...args: unknown[]): void;
   (msg: string, ...args: unknown[]): void;
 }
+
+// ===============================
+// Client methods
+// ===============================
+
+export interface OIDCClientMethodArgs {
+  cookie: Record<string, Cookie<string>>;
+  staleSession: OIDCClientActiveSession;
+  forceRefresh?: boolean;
+  isRevoke?: boolean;
+}
+
+// ===============================
+// Const
+// ===============================
 
 export interface OIDCClientPaths {
   callback: string;

@@ -17,22 +17,22 @@ export async function refreshSession(
 
   logger?.trace("methods/refreshSession");
 
-  const currentSession = await this.fetchSession(sessionId);
+  const staleSession = await this.fetchSession(sessionId);
 
-  if (!currentSession) {
+  if (!staleSession) {
     return null;
   }
 
-  const { idToken, refreshToken } = currentSession;
+  const { idToken, refreshToken } = staleSession;
   const tokenSet = new TokenSet({ id_token: idToken });
   if (tokenSet.expired()) {
     if (refreshToken) {
       logger?.trace("openid-client/refresh");
       const tokenSet = await this.client.refresh(refreshToken);
-      const newSession = await this.updateSession(sessionId, tokenSet);
-      if (newSession) {
+      const renewedSession = await this.updateSession(sessionId, tokenSet);
+      if (renewedSession) {
         extendCookieExpiration(this, cookie);
-        return newSession;
+        return renewedSession;
       }
     }
     await this.deleteSession(sessionId);
@@ -40,5 +40,5 @@ export async function refreshSession(
     return null;
   }
 
-  return currentSession;
+  return staleSession;
 }

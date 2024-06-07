@@ -8,7 +8,7 @@ import { Elysia } from "elysia";
  * @param this OidcClient Instance
  * @returns ElysiaJS Plugin
  */
-export function login(this: OidcClient) {
+export function loginEndpoint(this: OidcClient) {
   const {
     settings: { loginPath, loginExpiration },
     cookieSettings: {

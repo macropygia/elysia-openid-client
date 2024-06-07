@@ -1,5 +1,5 @@
 import { describe, test } from "bun:test";
 
-describe("Unit/endpoints/resource", () => {
+describe("Unit/endpoints/resourceEndpoint", () => {
   test.todo;
 });

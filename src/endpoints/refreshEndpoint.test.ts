@@ -8,10 +8,10 @@ import {
   mockResetRecursively,
 } from "@mock/const";
 import Elysia from "elysia";
-import { refresh } from "./refresh";
+import { refreshEndpoint } from "./refreshEndpoint";
 
-describe("Unit/endpoints/refresh", () => {
-  const endpoint = refresh;
+describe("Unit/endpoints/refreshEndpoint", () => {
+  const endpoint = refreshEndpoint;
   const responseBody = { type: "refresh" };
   const path = defaultSettings.refreshPath;
   const { logger } = mockBaseClient;

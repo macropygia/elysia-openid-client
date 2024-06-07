@@ -3,10 +3,10 @@ import { defaultSettings } from "@/const";
 import { mockBaseClient, mockResetRecursively, opPort } from "@mock/const";
 import Elysia from "elysia";
 import setCookie from "set-cookie-parser";
-import { login } from "./login";
+import { loginEndpoint } from "./loginEndpoint";
 
-describe("Unit/endpoints/login", () => {
-  const endpoint = login;
+describe("Unit/endpoints/loginEndpoint", () => {
+  const endpoint = loginEndpoint;
   const path = defaultSettings.loginPath;
   const { logger } = mockBaseClient;
 

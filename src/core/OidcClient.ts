@@ -1,12 +1,28 @@
+import type * as http from "node:http";
+import { introspect } from "@/methods/client/introspect";
+import { refresh } from "@/methods/client/refresh";
+import { resource } from "@/methods/client/resource";
+import { revoke } from "@/methods/client/revoke";
+import { userinfo } from "@/methods/client/userinfo";
 import { createAuthHook } from "@/methods/createAuthHook";
 import { createEndpoints } from "@/methods/createEndpoints";
-import { createSession } from "@/methods/createSession";
-import { deleteSession } from "@/methods/deleteSession";
-import { fetchSession } from "@/methods/fetchSession";
-import { updateSession } from "@/methods/updateSession";
-import type { OIDCClientActiveSession, OIDCClientOptions } from "@/types";
+import { createSession } from "@/methods/session/createSession";
+import { deleteSession } from "@/methods/session/deleteSession";
+import { fetchSession } from "@/methods/session/fetchSession";
+import { updateSession } from "@/methods/session/updateSession";
+import type {
+  OIDCClientActiveSession,
+  OIDCClientMethodArgs,
+  OIDCClientOptions,
+} from "@/types";
 import { t } from "elysia";
-import type { TokenSet } from "openid-client";
+import type {
+  IdTokenClaims,
+  IntrospectionResponse,
+  TokenSet,
+  UnknownObject,
+  UserinfoResponse,
+} from "openid-client";
 import { BaseOidcClient } from "./BaseOidcClient";
 
 /**
@@ -19,6 +35,12 @@ import { BaseOidcClient } from "./BaseOidcClient";
 export class OidcClient extends BaseOidcClient {
   protected constructor(options: OIDCClientOptions) {
     super(options);
+
+    this.refresh = refresh.bind(this);
+    this.revoke = revoke.bind(this);
+    this.userinfo = userinfo.bind(this);
+    this.introspect = introspect.bind(this);
+    this.resource = resource.bind(this);
 
     this.createSession = createSession.bind(this);
     this.updateSession = updateSession.bind(this);
@@ -37,6 +59,27 @@ export class OidcClient extends BaseOidcClient {
     await instance.initialize();
     return instance;
   }
+
+  /** Use refresh endpoint directly */
+  public refresh: (args: OIDCClientMethodArgs) => Promise<IdTokenClaims | null>;
+
+  /** Use revoke endpoint directly */
+  public revoke: (args: OIDCClientMethodArgs) => Promise<undefined | null>;
+
+  /** Use userinfo endpoint directly */
+  public userinfo: (
+    args: OIDCClientMethodArgs,
+  ) => Promise<UserinfoResponse<UnknownObject, UnknownObject> | null>;
+
+  /** Use introspect endpoint directly */
+  public introspect: (
+    args: OIDCClientMethodArgs,
+  ) => Promise<IntrospectionResponse | null>;
+
+  /** Use resource endpoint directly */
+  public resource: (
+    args: OIDCClientMethodArgs & { resourceUrl: string },
+  ) => Promise<({ body?: Buffer } & http.IncomingMessage) | null>;
 
   /**
    * Create session and insert to DB

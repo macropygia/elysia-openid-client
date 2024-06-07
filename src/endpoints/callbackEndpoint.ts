@@ -10,7 +10,7 @@ import { Elysia } from "elysia";
  * @param this OidcClient Instance
  * @returns ElysiaJS Plugin
  */
-export function callback(this: OidcClient) {
+export function callbackEndpoint(this: OidcClient) {
   const {
     baseUrl,
     settings,
@@ -29,17 +29,17 @@ export function callback(this: OidcClient) {
       logger?.trace("endpoints/callback");
 
       logger?.debug(`Session ID (Cookie): ${cookie[sessionIdName].value}`);
-      const currentSession = await this.fetchSession(
+      const pendingSession = await this.fetchSession(
         cookie[sessionIdName].value,
       );
 
       try {
-        if (!currentSession) {
+        if (!pendingSession) {
           throw new Error("Session data does not exist");
         }
 
-        const { sessionId, codeVerifier, state, nonce } = currentSession;
-        logger?.silent(currentSession);
+        const { sessionId, codeVerifier, state, nonce } = pendingSession;
+        logger?.silent(pendingSession);
 
         // biome-ignore lint/complexity/useSimplifiedLogicExpression: Short circuit
         if (!codeVerifier || !state || !nonce) {
@@ -70,7 +70,7 @@ export function callback(this: OidcClient) {
       } catch (e: unknown) {
         logger?.warn("endpoints/callback: Throw exception");
         logger?.debug(e);
-        return handleErrorResponse(e, currentSession, this, cookie);
+        return handleErrorResponse(e, pendingSession, this, cookie);
       }
     },
     {

@@ -24,9 +24,9 @@ export function createAuthHook(this: OidcClient) {
 
   logger?.trace("methods/createAuthHook");
 
-  let resolvedStatus: OIDCClientSessionStatus | null = null;
-  let resolvedSession: OIDCClientActiveSession | null = null;
-  let resolvedClaims: IdTokenClaims | null = null;
+  let currentStatus: OIDCClientSessionStatus | null = null;
+  let currentSession: OIDCClientActiveSession | null = null;
+  let currentClaims: IdTokenClaims | null = null;
 
   /**
    * Delete Cookie and set redirect to loginRedirectUrl
@@ -68,14 +68,14 @@ export function createAuthHook(this: OidcClient) {
           return;
         }
 
-        const currentSession = await this.fetchSession(sessionId);
-        if (!currentSession) {
+        const staleSession = await this.fetchSession(sessionId);
+        if (!staleSession) {
           logger?.debug("Session data does not exist (authHook)");
           abortSession(set, cookie);
           return;
         }
 
-        const { idToken, accessToken, refreshToken } = currentSession;
+        const { idToken, accessToken, refreshToken } = staleSession;
         // biome-ignore lint/complexity/useSimplifiedLogicExpression: Short circuit
         if (!idToken || !accessToken) {
           logger?.warn("ID Token or Access Token does not exist (authHook)");
@@ -84,8 +84,8 @@ export function createAuthHook(this: OidcClient) {
           return;
         }
 
-        resolvedClaims = getClaimsFromIdToken(idToken, logger);
-        const { exp } = resolvedClaims;
+        currentClaims = getClaimsFromIdToken(idToken);
+        const { exp } = currentClaims;
 
         // Expired (auto refresh disabled or refresh token does not exist)
         // biome-ignore lint/complexity/useSimplifiedLogicExpression: Short circuit
@@ -105,14 +105,14 @@ export function createAuthHook(this: OidcClient) {
             const newSession = await this.updateSession(sessionId, tokenSet);
             if (!newSession) {
               logger?.warn("Auto refresh failed (authHook)");
-              resolvedClaims = null;
+              currentClaims = null;
               abortSession(set, cookie);
               return;
             }
             logger?.debug("Auto refresh succeeded (authHook)");
             extendCookieExpiration(this, cookie);
-            resolvedSession = newSession;
-            resolvedClaims = getClaimsFromIdToken(newSession.idToken, logger);
+            currentSession = newSession;
+            currentClaims = getClaimsFromIdToken(newSession.idToken);
           } catch (e: unknown) {
             logger?.warn("Throw exception (authHook)");
             logger?.debug(e);
@@ -124,14 +124,15 @@ export function createAuthHook(this: OidcClient) {
             return new Response(null, { status: 500 });
           }
         } else {
-          resolvedSession = currentSession;
+          currentSession = staleSession;
         }
 
-        resolvedStatus = sessionToStatus(resolvedSession, logger);
+        currentStatus = sessionToStatus(currentSession, logger);
       },
     )
     .resolve({ as: "scoped" }, () => ({
-      sessionStatus: resolvedStatus,
-      sessionClaims: resolvedClaims,
+      session: currentSession,
+      sessionStatus: currentStatus,
+      sessionClaims: currentClaims,
     }));
 }

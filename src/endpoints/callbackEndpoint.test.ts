@@ -8,10 +8,10 @@ import {
   rpPort,
 } from "@mock/const";
 import Elysia from "elysia";
-import { callback } from "./callback";
+import { callbackEndpoint } from "./callbackEndpoint";
 
-describe("Unit/endpoints/callback", () => {
-  const endpoint = callback;
+describe("Unit/endpoints/callbackEndpoint", () => {
+  const endpoint = callbackEndpoint;
   const responseBody = {
     expired: mock().mockReturnValue(false),
   };

@@ -7,7 +7,7 @@ import { Elysia } from "elysia";
  * @param this OidcClient Instance
  * @returns ElysiaJS Plugin
  */
-export function revoke(this: OidcClient) {
+export function revokeEndpoint(this: OidcClient) {
   const {
     settings: { revokePath },
     cookieSettings: { sessionIdName },
@@ -19,19 +19,17 @@ export function revoke(this: OidcClient) {
     async ({ set, cookie }) => {
       logger?.trace("endpoints/revoke");
 
-      const currentSession = await this.fetchSession(
-        cookie[sessionIdName].value,
-      );
+      const staleSession = await this.fetchSession(cookie[sessionIdName].value);
 
       try {
-        if (!currentSession) {
+        if (!staleSession) {
           throw new Error("Session data does not exist");
         }
 
         logger?.trace("openid-client/revoke");
-        await this.client.revoke(currentSession.idToken);
+        await this.client.revoke(staleSession.idToken);
 
-        const { sessionId } = currentSession;
+        const { sessionId } = staleSession;
         logger?.debug(`Revoke complete: ${sessionId}`);
         this.deleteSession(sessionId);
         // deleteCookie(this, cookie);
@@ -41,7 +39,7 @@ export function revoke(this: OidcClient) {
       } catch (e: unknown) {
         logger?.warn("endpoints/revoke: Throw exception");
         logger?.debug(e);
-        return handleErrorResponse(e, currentSession, this, cookie);
+        return handleErrorResponse(e, staleSession, this, cookie);
       }
     },
     {

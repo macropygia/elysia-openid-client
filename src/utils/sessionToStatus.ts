@@ -19,13 +19,14 @@ export function sessionToStatus(
 
   logger?.trace("utils/sessionToStatus");
 
-  const { iss, exp, sub } = getClaimsFromIdToken(idToken, logger);
+  const { iss, exp, sub } = getClaimsFromIdToken(idToken);
+
   return {
     sessionExpiresAt,
     hasRefreshToken: !!refreshToken,
     isExpired: exp * 1000 < Date.now(),
     expiresAt: exp * 1000,
-    issuerUrl: iss,
+    iss,
     sub,
   };
 }

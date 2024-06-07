@@ -9,7 +9,7 @@ import { Elysia } from "elysia";
  * @param this OidcClient Instance
  * @returns ElysiaJS Plugin
  */
-export function refresh(this: OidcClient) {
+export function refreshEndpoint(this: OidcClient) {
   const {
     settings: { refreshPath },
     cookieSettings: { sessionIdName },
@@ -21,16 +21,14 @@ export function refresh(this: OidcClient) {
     async ({ set, cookie }) => {
       logger?.trace("endpoints/refresh");
 
-      const currentSession = await this.fetchSession(
-        cookie[sessionIdName].value,
-      );
+      const staleSession = await this.fetchSession(cookie[sessionIdName].value);
 
       try {
-        if (!currentSession) {
+        if (!staleSession) {
           throw new Error("Session data does not exist");
         }
 
-        const { sessionId, refreshToken } = currentSession;
+        const { sessionId, refreshToken } = staleSession;
         if (!refreshToken) {
           throw new Error("Refresh token does not exist");
         }
@@ -51,7 +49,7 @@ export function refresh(this: OidcClient) {
       } catch (e: unknown) {
         logger?.warn("endpoints/refresh: Throw exception");
         logger?.debug(e);
-        return handleErrorResponse(e, currentSession, this, cookie);
+        return handleErrorResponse(e, staleSession, this, cookie);
       }
     },
     {

@@ -9,7 +9,7 @@ import { Elysia } from "elysia";
  * @param this OidcClient Instance
  * @returns ElysiaJS Plugin
  */
-export function logout(this: OidcClient) {
+export function logoutEndpoint(this: OidcClient) {
   const {
     baseUrl,
     settings: { logoutPath, logoutCompletedPath },
@@ -26,22 +26,20 @@ export function logout(this: OidcClient) {
     async ({ set, cookie }) => {
       logger?.trace("endpoints/logout");
 
-      const currentSession = await this.fetchSession(
-        cookie[sessionIdName].value,
-      );
+      const staleSession = await this.fetchSession(cookie[sessionIdName].value);
 
       try {
-        if (!currentSession) {
+        if (!staleSession) {
           throw new Error("Session data does not exist");
         }
 
-        const { sessionId } = currentSession;
+        const { sessionId } = staleSession;
         await this.deleteSession(sessionId);
         deleteCookie(this, cookie);
 
         logger?.trace("openid-client/endSessionUrl");
         const endSessionUrl = this.client.endSessionUrl({
-          id_token_hint: currentSession.idToken,
+          id_token_hint: staleSession.idToken,
           post_logout_redirect_uri: logoutCompletedUrl,
         });
 
@@ -51,7 +49,7 @@ export function logout(this: OidcClient) {
       } catch (e: unknown) {
         logger?.warn("endpoints/logout: Throw exception");
         logger?.debug(e);
-        return handleErrorResponse(e, currentSession, this, cookie);
+        return handleErrorResponse(e, staleSession, this, cookie);
       }
     },
     {

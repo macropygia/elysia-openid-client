@@ -27,7 +27,7 @@ const rp1 = await OidcClient.factory({
 });
 const endpoints1 = rp1.endpoints;
 
-console.log(rp1.issuerMetadata);
+console.log(rp1.issuer.metadata);
 
 // Callback URL: `https://app.example.com/another/callback`
 const rp2 = await OidcClient.factory({
@@ -44,7 +44,7 @@ const rp2 = await OidcClient.factory({
 });
 const endpoints2 = rp2.endpoints;
 
-console.log(rp2.issuerMetadata);
+console.log(rp2.issuer.metadata);
 
 // No matter which RP hook is used
 const authHook = rp1.authHook;

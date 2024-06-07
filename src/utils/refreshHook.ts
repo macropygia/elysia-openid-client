@@ -21,7 +21,7 @@ export function refreshHook(this: OidcClient) {
 
   logger?.trace("utils/refreshHook");
 
-  let resolvedSession: OIDCClientActiveSession | null = null;
+  let currentSession: OIDCClientActiveSession | null = null;
 
   /**
    * Delete Cookie and return response (401 or 500)
@@ -55,13 +55,13 @@ export function refreshHook(this: OidcClient) {
           return abortSession(cookie, 401);
         }
 
-        const currentSession = await this.fetchSession(sessionId);
-        if (!currentSession) {
+        const staleSession = await this.fetchSession(sessionId);
+        if (!staleSession) {
           logger?.debug("Session data does not exist (refreshHook)");
           return abortSession(cookie, 401);
         }
 
-        const { idToken, accessToken, refreshToken } = currentSession;
+        const { idToken, accessToken, refreshToken } = staleSession;
         // biome-ignore lint/complexity/useSimplifiedLogicExpression: Short circuit
         if (!idToken || !accessToken) {
           logger?.warn("ID Token or Access Token does not exist (refreshHook)");
@@ -69,8 +69,7 @@ export function refreshHook(this: OidcClient) {
           return abortSession(cookie, 401);
         }
 
-        const claims = getClaimsFromIdToken(idToken, logger);
-        const { exp } = claims;
+        const { iss, exp } = getClaimsFromIdToken(idToken);
 
         // Expired (auto refresh disabled or refresh token does not exist)
         // biome-ignore lint/complexity/useSimplifiedLogicExpression: Short circuit
@@ -84,8 +83,8 @@ export function refreshHook(this: OidcClient) {
         if (exp * 1000 < Date.now() && autoRefresh && refreshToken) {
           logger?.debug("Auto refresh triggered (refreshHook)");
           try {
-            logger?.trace("openid-client/refresh");
-            const tokenSet = await this.client.refresh(refreshToken);
+            logger?.trace("openid-client(iss)/refresh");
+            const tokenSet = await this.clients[iss].refresh(refreshToken);
             const newSession = await this.updateSession(sessionId, tokenSet);
             if (!newSession) {
               logger?.warn("Auto refresh failed (refreshHook)");
@@ -93,7 +92,7 @@ export function refreshHook(this: OidcClient) {
             }
             logger?.debug("Auto refresh succeeded (refreshHook)");
             extendCookieExpiration(this, cookie);
-            resolvedSession = newSession;
+            currentSession = newSession;
           } catch (e: unknown) {
             logger?.warn("Throw exception (refreshHook)");
             logger?.debug(e);
@@ -104,11 +103,11 @@ export function refreshHook(this: OidcClient) {
             return abortSession(cookie, 500);
           }
         } else {
-          resolvedSession = currentSession;
+          currentSession = staleSession;
         }
       },
     )
     .resolve({ as: "scoped" }, () => ({
-      sessionData: resolvedSession,
+      sessionData: currentSession,
     }));
 }

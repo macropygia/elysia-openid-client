@@ -20,7 +20,6 @@ import type {
   BaseClient,
   ClientMetadata,
   Issuer,
-  IssuerMetadata,
 } from "openid-client";
 
 /**
@@ -43,10 +42,10 @@ export class BaseOidcClient {
   authHookSettings: OIDCClientAuthHookSettings;
   /** OIDC Issuer (Initialize at factory()) */
   issuer!: Issuer<BaseClient>;
-  /** OIDC Issuer metadata (Initialize at factory()) */
-  issuerMetadata!: IssuerMetadata;
   /** OIDC Client (Initialize at factory()) */
   client!: BaseClient;
+  /** OIDC Clients for multiple issuers (Initialize at factory()) */
+  clients!: Record<string, BaseClient>;
   /** Plugin database */
   sessions: OIDCClientDataAdapter;
   /** Logger */
@@ -117,6 +116,15 @@ export class BaseOidcClient {
    * @protected
    */
   protected initialize = async () => initialize.call(this);
+
+  /**
+   * Add another client to client list
+   * - For multiple issuers
+   * @param client Client
+   */
+  public registerClient(client: BaseClient): void {
+    this.clients[client.issuer.metadata.issuer] = client;
+  }
 
   /**
    * Get list of endpoint paths

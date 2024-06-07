@@ -5,13 +5,13 @@ import { handleErrorResponse } from "@/utils/handleErrorResponse";
 import { Elysia } from "elysia";
 
 /**
- * OIDC Userinfo Endpoint
+ * OIDC Token Introspection Endpoint
  * @param this OidcClient Instance
  * @returns ElysiaJS Plugin
  */
-export function userinfo(this: OidcClient) {
+export function introspectEndpoint(this: OidcClient) {
   const {
-    settings: { userinfoPath },
+    settings: { introspectPath },
     logger,
   } = this;
 
@@ -20,9 +20,9 @@ export function userinfo(this: OidcClient) {
       sessionData: sessionDataTypeBox,
     })
     .all(
-      userinfoPath,
+      introspectPath,
       async ({ set, cookie, sessionData }) => {
-        logger?.trace("endpoints/userinfo");
+        logger?.trace("endpoints/introspect");
 
         const currentSession =
           sessionData as unknown as OIDCClientActiveSession;
@@ -32,15 +32,14 @@ export function userinfo(this: OidcClient) {
             throw new Error("Session data does not exist");
           }
 
-          logger?.trace("openid-client/userinfo");
-          const userinfo = await this.client.userinfo(
-            currentSession.accessToken,
+          logger?.trace("openid-client/introspect");
+          const introspect = await this.client.introspect(
+            currentSession.idToken,
           );
-
           set.headers["Content-Type"] = "application/json";
-          return userinfo;
+          return introspect;
         } catch (e: unknown) {
-          logger?.warn("endpoints/userinfo: Throw exception");
+          logger?.warn("endpoints/introspect: Throw exception");
           logger?.debug(e);
           return handleErrorResponse(e, currentSession, this, cookie);
         }

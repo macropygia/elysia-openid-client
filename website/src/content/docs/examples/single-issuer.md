@@ -18,7 +18,7 @@ const rp = await OidcClient.factory({
 const endpoints = rp.endpoints;
 const authHook = rp.authHook;
 
-console.log(rp.issuerMetadata);
+console.log(rp.issuer.metadata);
 
 new Elysia()
   .use(endpoints)

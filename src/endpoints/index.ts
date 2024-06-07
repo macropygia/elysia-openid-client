@@ -1,23 +1,23 @@
-import { callback } from "./callback";
-import { claims } from "./claims";
-import { introspect } from "./introspect";
-import { login } from "./login";
-import { logout } from "./logout";
-import { refresh } from "./refresh";
-import { resource } from "./resource";
-import { revoke } from "./revoke";
-import { status } from "./status";
-import { userinfo } from "./userinfo";
+import { callbackEndpoint } from "./callbackEndpoint";
+import { claimsEndpoint } from "./claimsEndpoint";
+import { introspectEndpoint } from "./introspectEndpoint";
+import { loginEndpoint } from "./loginEndpoint";
+import { logoutEndpoint } from "./logoutEndpoint";
+import { refreshEndpoint } from "./refreshEndpoint";
+import { resourceEndpoint } from "./resourceEndpoint";
+import { revokeEndpoint } from "./revokeEndpoint";
+import { statusEndpoint } from "./statusEndpoint";
+import { userinfoEndpoint } from "./userinfoEndpoint";
 
 export {
-  callback,
-  claims,
-  introspect,
-  login,
-  logout,
-  refresh,
-  resource,
-  revoke,
-  status,
-  userinfo,
+  callbackEndpoint,
+  claimsEndpoint,
+  introspectEndpoint,
+  loginEndpoint,
+  logoutEndpoint,
+  refreshEndpoint,
+  resourceEndpoint,
+  revokeEndpoint,
+  statusEndpoint,
+  userinfoEndpoint,
 };

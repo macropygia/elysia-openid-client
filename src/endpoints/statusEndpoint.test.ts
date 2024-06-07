@@ -1,19 +1,19 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test";
+import { beforeEach, describe, expect, test } from "bun:test";
 import { defaultSettings } from "@/const";
 import type {} from "@/types";
+import { sessionToStatus } from "@/utils/sessionToStatus";
 import {
   mockActiveSessionWithRealIdToken,
   mockBaseClient,
-  mockIdTokenClaims,
   mockPostInit,
   mockResetRecursively,
 } from "@mock/const";
 import { Elysia } from "elysia";
-import { claims } from "./claims";
+import { statusEndpoint } from "./statusEndpoint";
 
-describe("Unit/endpoints/claims", () => {
-  const endpoint = claims;
-  const path = defaultSettings.claimsPath;
+describe("Unit/endpoints/statusEndpoint", () => {
+  const endpoint = statusEndpoint;
+  const path = defaultSettings.statusPath;
   const { logger } = mockBaseClient;
 
   beforeEach(() => {
@@ -24,17 +24,18 @@ describe("Unit/endpoints/claims", () => {
     const app = new Elysia()
       .resolve(() => ({ sessionData: mockActiveSessionWithRealIdToken }))
       .use(endpoint.call(mockBaseClient));
+
     const response = await app
       .handle(new Request(`http://localhost${path}`, mockPostInit()))
       .then((res) => res);
 
     expect(response.status).toBe(200);
-    expect(await response.json()).toMatchObject(mockIdTokenClaims);
+    expect(await response.json()).toMatchObject(
+      sessionToStatus(mockActiveSessionWithRealIdToken),
+    );
   });
 
   test("Session data does not exist", async () => {
-    mockBaseClient.fetchSession = mock().mockReturnValue(null);
-
     const app = new Elysia()
       .resolve(() => ({ sessionData: null }))
       .use(endpoint.call(mockBaseClient));

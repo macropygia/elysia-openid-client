@@ -1,14 +1,14 @@
 import type { OidcClient } from "@/core/OidcClient";
-import { callback } from "@/endpoints/callback";
-import { claims } from "@/endpoints/claims";
-import { introspect } from "@/endpoints/introspect";
-import { login } from "@/endpoints/login";
-import { logout } from "@/endpoints/logout";
-import { refresh } from "@/endpoints/refresh";
-import { resource } from "@/endpoints/resource";
-import { revoke } from "@/endpoints/revoke";
-import { status } from "@/endpoints/status";
-import { userinfo } from "@/endpoints/userinfo";
+import { callbackEndpoint } from "@/endpoints/callbackEndpoint";
+import { claimsEndpoint } from "@/endpoints/claimsEndpoint";
+import { introspectEndpoint } from "@/endpoints/introspectEndpoint";
+import { loginEndpoint } from "@/endpoints/loginEndpoint";
+import { logoutEndpoint } from "@/endpoints/logoutEndpoint";
+import { refreshEndpoint } from "@/endpoints/refreshEndpoint";
+import { resourceEndpoint } from "@/endpoints/resourceEndpoint";
+import { revokeEndpoint } from "@/endpoints/revokeEndpoint";
+import { statusEndpoint } from "@/endpoints/statusEndpoint";
+import { userinfoEndpoint } from "@/endpoints/userinfoEndpoint";
 import { refreshHook } from "@/utils/refreshHook";
 import Elysia from "elysia";
 
@@ -27,22 +27,22 @@ export function createEndpoints(this: OidcClient) {
   }).group(pathPrefix, (app) =>
     app
       // OIDC endpoints
-      .use(login.call(this))
-      .use(callback.call(this))
-      .use(logout.call(this))
-      .use(refresh.call(this))
-      .use(revoke.call(this))
+      .use(loginEndpoint.call(this))
+      .use(callbackEndpoint.call(this))
+      .use(logoutEndpoint.call(this))
+      .use(refreshEndpoint.call(this))
+      .use(revokeEndpoint.call(this))
       .guard((app) =>
         app
           // Refresh hook (try to refresh if needed)
           .use(refreshHook.call(this))
           // OIDC endpoints
-          .use(userinfo.call(this))
-          .use(introspect.call(this))
-          .use(resource.call(this))
+          .use(userinfoEndpoint.call(this))
+          .use(introspectEndpoint.call(this))
+          .use(resourceEndpoint.call(this))
           // Other endpoints
-          .use(status.call(this))
-          .use(claims.call(this)),
+          .use(statusEndpoint.call(this))
+          .use(claimsEndpoint.call(this)),
       ),
   );
 

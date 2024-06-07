@@ -1,21 +1,11 @@
-import { beforeEach, describe, expect, test } from "bun:test";
-import {
-  mockClearRecursively,
-  mockIdToken,
-  mockIdTokenClaims,
-  mockLogger,
-} from "@mock/const";
+import { describe, expect, test } from "bun:test";
+import { mockIdToken, mockIdTokenClaims } from "@mock/const";
 import { getClaimsFromIdToken } from "./getClaimsFromIdToken";
 
 describe("Unit/utils/getClaimsFromIdToken", () => {
-  beforeEach(() => {
-    mockClearRecursively(mockLogger);
-  });
-
   test("Default", () => {
-    const result = getClaimsFromIdToken(mockIdToken, mockLogger);
+    const result = getClaimsFromIdToken(mockIdToken);
 
     expect(result).toMatchObject(mockIdTokenClaims);
-    expect(mockLogger.trace).toHaveBeenCalledTimes(1);
   });
 });

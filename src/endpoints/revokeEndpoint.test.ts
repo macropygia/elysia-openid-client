@@ -8,10 +8,10 @@ import {
   mockResetRecursively,
 } from "@mock/const";
 import Elysia from "elysia";
-import { revoke } from "./revoke";
+import { revokeEndpoint } from "./revokeEndpoint";
 
-describe("Unit/endpoints/revoke", () => {
-  const endpoint = revoke;
+describe("Unit/endpoints/revokeEndpoint", () => {
+  const endpoint = revokeEndpoint;
   const responseBody = { type: "revoke" };
   const path = defaultSettings.revokePath;
   const { logger } = mockBaseClient;

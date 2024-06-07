@@ -11,7 +11,7 @@ import { Elysia, t } from "elysia";
  * @returns ElysiaJS Plugin
  * @experimental
  */
-export function resource(this: OidcClient) {
+export function resourceEndpoint(this: OidcClient) {
   const {
     settings: { resourcePath },
     logger,

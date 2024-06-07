@@ -1,18 +1,18 @@
 import { sessionDataTypeBox } from "@/const";
 import type { OidcClient } from "@/core/OidcClient";
 import type { OIDCClientActiveSession } from "@/types";
-import { sessionToStatus } from "@/utils/sessionToStatus";
+import { getClaimsFromIdToken } from "@/utils/getClaimsFromIdToken";
 import { Elysia } from "elysia";
 
 /**
- * Session Status Endpoint
+ * Id Token Claims Endpoint
  * - No access to IdP
  * @param this OidcClient Instance
  * @returns ElysiaJS Plugin
  */
-export function status(this: OidcClient) {
+export function claimsEndpoint(this: OidcClient) {
   const {
-    settings: { statusPath },
+    settings: { claimsPath },
     logger,
   } = this;
 
@@ -21,9 +21,9 @@ export function status(this: OidcClient) {
       sessionData: sessionDataTypeBox,
     })
     .all(
-      statusPath,
+      claimsPath,
       ({ set, sessionData }) => {
-        logger?.trace("endpoints/status");
+        logger?.trace("endpoints/claims");
 
         const currentSession =
           sessionData as unknown as OIDCClientActiveSession;
@@ -34,10 +34,11 @@ export function status(this: OidcClient) {
           return;
         }
 
-        const status = sessionToStatus(currentSession, logger);
+        const { idToken } = currentSession;
+        const claims = getClaimsFromIdToken(idToken);
 
         set.headers["Content-Type"] = "application/json";
-        return status;
+        return claims;
       },
       {
         cookie: this.cookieTypeBox,

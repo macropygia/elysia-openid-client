@@ -6,10 +6,10 @@ import {
   mockResetRecursively,
 } from "@mock/const";
 import Elysia from "elysia";
-import { logout } from "./logout";
+import { logoutEndpoint } from "./logoutEndpoint";
 
-describe("Unit/endpoints/logout", () => {
-  const endpoint = logout;
+describe("Unit/endpoints/logoutEndpoint", () => {
+  const endpoint = logoutEndpoint;
   const path = defaultSettings.logoutPath;
   const redirectPath = "/path/to/logout";
   const { logger } = mockBaseClient;
