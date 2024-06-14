@@ -1,5 +1,6 @@
 import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test";
 import { sessionToStatus } from "@/utils";
+import { addShortId } from "@/utils/addShortId";
 import {
   mockActiveSessionWithRealIdToken,
   mockActiveSessionWithRealIdTokenExpired,
@@ -8,6 +9,7 @@ import {
   mockIdTokenClaims,
   mockLoginSession,
   mockResetRecursively,
+  mockSessionId,
   rpPort,
 } from "@mock/const";
 import Elysia from "elysia";
@@ -67,8 +69,9 @@ describe("Unit/methods/createAuthHook", () => {
     );
 
     expect(res.status).toBe(303);
-    expect(logger?.debug).toHaveBeenCalledWith(
-      "Session data does not exist (authHook)",
+    expect(logger?.debug).toHaveBeenNthCalledWith(
+      1,
+      addShortId("Session data does not exist (authHook)", mockSessionId),
     );
 
     app.stop();
@@ -91,7 +94,10 @@ describe("Unit/methods/createAuthHook", () => {
     expect(res.status).toBe(303);
     expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
     expect(logger?.warn).toHaveBeenCalledWith(
-      "ID Token or Access Token does not exist (authHook)",
+      addShortId(
+        "ID Token or Access Token does not exist (authHook)",
+        mockSessionId,
+      ),
     );
 
     app.stop();
@@ -114,7 +120,9 @@ describe("Unit/methods/createAuthHook", () => {
 
     expect(res.status).toBe(303);
     expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
-    expect(logger?.warn).toHaveBeenCalledWith("Session expired (authHook)");
+    expect(logger?.info).toHaveBeenCalledWith(
+      addShortId("Session expired (authHook)", mockSessionId),
+    );
 
     app.stop();
     mockBaseClient.authHookSettings.autoRefresh = true;
@@ -137,7 +145,9 @@ describe("Unit/methods/createAuthHook", () => {
 
     expect(res.status).toBe(303);
     expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
-    expect(logger?.warn).toHaveBeenCalledWith("Session expired (authHook)");
+    expect(logger?.info).toHaveBeenCalledWith(
+      addShortId("Session expired (authHook)", mockSessionId),
+    );
 
     app.stop();
   });
@@ -160,7 +170,9 @@ describe("Unit/methods/createAuthHook", () => {
 
     expect(res.status).toBe(303);
     expect(mockBaseClient.updateSession).toHaveBeenCalledTimes(1);
-    expect(logger?.warn).toHaveBeenCalledWith("Auto refresh failed (authHook)");
+    expect(logger?.warn).toHaveBeenCalledWith(
+      addShortId("Auto refresh failed (authHook)", mockSessionId),
+    );
 
     app.stop();
   });
@@ -185,7 +197,9 @@ describe("Unit/methods/createAuthHook", () => {
 
     expect(res.status).toBe(401);
     expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
-    expect(logger?.warn).toHaveBeenCalledWith("Throw exception (authHook)");
+    expect(logger?.warn).toHaveBeenCalledWith(
+      addShortId("Throw exception (authHook)", mockSessionId),
+    );
 
     app.stop();
   });
@@ -210,7 +224,9 @@ describe("Unit/methods/createAuthHook", () => {
 
     expect(res.status).toBe(500);
     expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
-    expect(logger?.warn).toHaveBeenCalledWith("Throw exception (authHook)");
+    expect(logger?.warn).toHaveBeenCalledWith(
+      addShortId("Throw exception (authHook)", mockSessionId),
+    );
 
     app.stop();
   });

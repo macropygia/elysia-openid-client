@@ -1,4 +1,4 @@
-import { sessionDataTypeBox } from "@/const";
+import { sessionTypeBox } from "@/const";
 import type { OidcClient } from "@/core/OidcClient";
 import type { OIDCClientActiveSession } from "@/types";
 import { getClaimsFromIdToken } from "@/utils/getClaimsFromIdToken";
@@ -16,17 +16,20 @@ export function claimsEndpoint(this: OidcClient) {
     logger,
   } = this;
 
+  if (!claimsPath) {
+    return new Elysia();
+  }
+
   return new Elysia()
     .decorate({
-      sessionData: sessionDataTypeBox,
+      session: sessionTypeBox,
     })
     .all(
       claimsPath,
-      ({ set, sessionData }) => {
+      ({ set, session }) => {
         logger?.trace("endpoints/claims");
 
-        const currentSession =
-          sessionData as unknown as OIDCClientActiveSession;
+        const currentSession = session as unknown as OIDCClientActiveSession;
 
         if (!currentSession) {
           logger?.warn("Session data does not exist");

@@ -27,7 +27,7 @@ export async function refreshSession(
   const tokenSet = new TokenSet({ id_token: idToken });
   if (tokenSet.expired()) {
     if (refreshToken) {
-      logger?.trace("openid-client/refresh");
+      logger?.debug("openid-client/refresh: self");
       const tokenSet = await this.client.refresh(refreshToken);
       const renewedSession = await this.updateSession(sessionId, tokenSet);
       if (renewedSession) {

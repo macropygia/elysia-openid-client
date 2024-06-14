@@ -22,7 +22,7 @@ describe("Unit/endpoints/introspectEndpoint", () => {
 
   test("Succeeded", async () => {
     const app = new Elysia()
-      .resolve(() => ({ sessionData: mockActiveSession }))
+      .resolve(() => ({ session: mockActiveSession }))
       .use(endpoint.call(mockBaseClient));
     const response = await app.handle(
       new Request(`http://localhost${path}`, mockGetInit()),
@@ -36,7 +36,7 @@ describe("Unit/endpoints/introspectEndpoint", () => {
 
   test("Session missing", async () => {
     const app = new Elysia()
-      .resolve(() => ({ sessionData: null }))
+      .resolve(() => ({ session: null }))
       .use(endpoint.call(mockBaseClient));
     const response = await app.handle(
       new Request(`http://localhost${path}`, mockGetInit()),
@@ -55,7 +55,7 @@ describe("Unit/endpoints/introspectEndpoint", () => {
     };
 
     const app = new Elysia()
-      .resolve(() => ({ sessionData: mockActiveSession }))
+      .resolve(() => ({ session: mockActiveSession }))
       .use(endpoint.call(mockBaseClient));
     const response = await app
       .handle(new Request(`http://localhost${path}`))

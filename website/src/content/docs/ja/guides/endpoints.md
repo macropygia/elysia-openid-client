@@ -9,6 +9,7 @@ const endpoints = rp.endpoints;
 ```
 
 - `authHook` の外側に配置する必要がある
+- パスが `null` に設定されたエンドポイントは無効化される
 - 参照: [openid-client API Documentation - Client](https://github.com/panva/node-openid-client/blob/main/docs/README.md#client)
 - ElysiaJSプラグインとしてのメタデータ
     - 名称: `elysia-openid-client-endpoints`

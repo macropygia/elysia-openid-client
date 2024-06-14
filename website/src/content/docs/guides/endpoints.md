@@ -9,6 +9,7 @@ const endpoints = rp.endpoints;
 ```
 
 - Must be placed outside of `authHook`.
+- If path is set to `null`, the endpoint is disabled.
 - Ref: [openid-client API Documentation - Client](https://github.com/panva/node-openid-client/blob/main/docs/README.md#client)
 - ElysiaJS plugin metadata
     - name: `elysia-openid-client-endpoints`

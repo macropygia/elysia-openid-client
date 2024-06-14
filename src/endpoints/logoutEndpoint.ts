@@ -17,6 +17,10 @@ export function logoutEndpoint(this: OidcClient) {
     logger,
   } = this;
 
+  if (!logoutPath) {
+    return new Elysia();
+  }
+
   const logoutCompletedUrl = logoutCompletedPath.startsWith("/")
     ? `${baseUrl}${logoutCompletedPath}`
     : logoutCompletedPath;

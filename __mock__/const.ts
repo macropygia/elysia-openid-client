@@ -82,8 +82,10 @@ export const mockIdTokenExpiredClaims = {
   sub: "mock-sub",
 };
 
+export const mockSessionId = "mock-session-id";
+
 export const mockLoginSession: OIDCClientSession = {
-  sessionId: "mock-session-id",
+  sessionId: mockSessionId,
   codeVerifier: "mock-code-verifier",
   state: "mock-state",
   nonce: "mock-nonce",
@@ -91,7 +93,7 @@ export const mockLoginSession: OIDCClientSession = {
 };
 
 export const mockActiveSession: OIDCClientActiveSession = {
-  sessionId: "mock-session-id",
+  sessionId: mockSessionId,
   idToken: "mock-id-token",
   accessToken: "mock-access-token",
   refreshToken: "mock-refresh-token",
@@ -99,14 +101,14 @@ export const mockActiveSession: OIDCClientActiveSession = {
 };
 
 export const mockActiveSessionWithoutRefreshToken: OIDCClientActiveSession = {
-  sessionId: "mock-session-id",
+  sessionId: mockSessionId,
   idToken: "mock-id-token",
   accessToken: "mock-access-token",
   sessionExpiresAt: 5000000000000,
 };
 
 export const mockActiveSessionWithRealIdToken: OIDCClientActiveSession = {
-  sessionId: "mock-session-id",
+  sessionId: mockSessionId,
   idToken: mockIdToken,
   accessToken: "mock-access-token",
   refreshToken: "mock-refresh-token",
@@ -130,13 +132,13 @@ export const mockActiveSessionWithRealIdTokenExpired: OIDCClientActiveSession =
 export const mockPostInit = (sid?: string): RequestInit => ({
   method: "POST",
   headers: {
-    Cookie: `${defaultCookieSettings.sessionIdName}=${sid || "mock-sid"}`,
+    Cookie: `${defaultCookieSettings.sessionIdName}=${sid || mockSessionId}`,
   },
 });
 
 export const mockGetInit = (sid?: string): RequestInit => ({
   headers: {
-    Cookie: `${defaultCookieSettings.sessionIdName}=${sid || "mock-sid"}`,
+    Cookie: `${defaultCookieSettings.sessionIdName}=${sid || mockSessionId}`,
   },
 });
 
@@ -170,8 +172,11 @@ export const mockBaseClient = {
   logger: mockLogger,
   initialized: true,
   client: {},
+  clients: {},
   sessions: mock(),
 } as DeepPartial<OidcClient> as OidcClient;
+mockBaseClient.clients["https://op.example.com"] = mockBaseClient.client;
+mockBaseClient.clients[`http://localhost:${opPort}`] = mockBaseClient.client;
 
 export const mockCookie = {
   [defaultCookieSettings.sessionIdName]: {

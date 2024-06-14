@@ -46,7 +46,15 @@ const endpoints2 = rp2.endpoints;
 
 console.log(rp2.issuer.metadata);
 
-// No matter which RP hook is used
+// Use one of the RP as the main RP
+// In this case, RP1 is the main RP
+
+// Register additional RP client to main RP instance to handle all clients in main RP auth hook
+rp1.registerClient(rp2.client);
+
+console.log(Object.keys(rp1.clients));
+
+// Use the main RP auth hook
 const authHook = rp1.authHook;
 
 new Elysia()
@@ -60,7 +68,14 @@ new Elysia()
       )
       .get("/status", ({ sessionStatus }) => sessionStatus)
       // Issuer can be identified from `sessionClaims.iss`
-      .get("/claims", ({ sessionClaims }) => sessionClaims),
+      .get("/claims", ({ sessionClaims }) => sessionClaims)
+      // Get UserInfo internally
+      .get(
+        "/userinfo",
+        async ({ cookie, session }) =>
+          // Use the main PR instance
+          await rp1.userinfo({ cookie, session }),
+      ),
   )
   .get("/select", ({ set }) => {
     set.headers["Content-Type"] = "text/html";

@@ -1,5 +1,6 @@
 import type { OidcClient } from "@/core/OidcClient";
 import type { Cookie } from "elysia";
+import { addShortId } from "./addShortId";
 
 /**
  * Extend cookie expiration
@@ -36,9 +37,13 @@ export function extendCookieExpiration(
     expires:
       expires === 0 ? undefined : new Date(Date.now() + refreshExpiration),
   });
+
   logger?.debug(
-    `Cookie expiration has been extended: ${cookie[
-      sessionIdName
-    ].expires?.toLocaleString()}`,
+    addShortId(
+      `Cookie expiration has been extended: ${cookie[
+        sessionIdName
+      ].expires?.toLocaleString()}`,
+      cookie[sessionIdName].value,
+    ),
   );
 }

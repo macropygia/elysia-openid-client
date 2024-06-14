@@ -22,6 +22,10 @@ export function loginEndpoint(this: OidcClient) {
     logger,
   } = this;
 
+  if (!loginPath) {
+    return new Elysia();
+  }
+
   return new Elysia().get(
     loginPath,
     async ({ cookie, set }) => {

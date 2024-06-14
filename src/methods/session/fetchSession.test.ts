@@ -1,9 +1,11 @@
 import { afterAll, beforeEach, describe, expect, test } from "bun:test";
 import type { OIDCClientDataAdapter, OIDCClientSession } from "@/types";
+import { addShortId } from "@/utils/addShortId";
 import {
   mockActiveSession,
   mockBaseClient,
   mockResetRecursively,
+  mockSessionId,
 } from "@mock/const";
 import { fetchSession } from "./fetchSession";
 
@@ -40,7 +42,7 @@ describe("Unit/methods/fetchSession", () => {
 
     expect(result).toBeNull();
     expect(logger?.debug).toHaveBeenCalledWith(
-      "Session data does not exist (fetch)",
+      addShortId("Session data does not exist (fetch)", mockSessionId),
     );
   });
 
@@ -54,7 +56,7 @@ describe("Unit/methods/fetchSession", () => {
 
     expect(result).toBeNull();
     expect(logger?.debug).toHaveBeenCalledWith(
-      "Session expired internally (fetch)",
+      addShortId("Session expired internally (fetch)", mockSessionId),
     );
     expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
   });
@@ -92,7 +94,10 @@ describe("Unit/methods/fetchSession", () => {
     expect(result).toBeNull();
     expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
     expect(logger?.debug).toHaveBeenCalledWith(
-      "Either tokens and hashes do not exist, or both do exist (fetch)",
+      addShortId(
+        "Either tokens and hashes do not exist, or both do exist (fetch)",
+        mockSessionId,
+      ),
     );
   });
 

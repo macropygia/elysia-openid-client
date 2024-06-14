@@ -5,6 +5,7 @@ import {
   extendCookieExpiration,
   getClaimsFromIdToken,
 } from "@/utils";
+import { addShortId } from "@/utils/addShortId";
 import type { BaseClient } from "openid-client";
 
 export async function revalidateSession(
@@ -18,64 +19,78 @@ export async function revalidateSession(
     authHookSettings: { autoRefresh },
     logger,
   } = this;
-  const { cookie, staleSession, forceRefresh, isRevoke } = args;
+  const { cookie, session, forceRefresh, isRevoke } = args;
 
   logger?.trace("revalidateSession");
 
-  const { iss, exp } = getClaimsFromIdToken(staleSession.idToken);
+  if (!session) {
+    logger?.debug("Session does not exist (revalidateSession)");
+    return null;
+  }
+
+  const { sessionId, idToken, refreshToken } = session;
+
+  const { iss, exp } = getClaimsFromIdToken(idToken);
 
   if (!this.clients[iss]) {
     logger?.warn(
       `Client for the specified issuer does not exist (revalidateSession): ${iss}`,
     );
-    await this.deleteSession(staleSession.sessionId);
+    await this.deleteSession(sessionId);
     deleteCookie(this, cookie);
     return null;
   }
 
   if (exp * 1000 < Date.now()) {
-    if (
-      !isRevoke &&
-      (forceRefresh || autoRefresh) &&
-      staleSession.refreshToken
-    ) {
-      logger?.debug("Auto refresh triggered (revalidateSession)");
-
-      logger?.trace("openid-client(iss)/refresh");
-      const tokenSet = await this.clients[iss].refresh(
-        staleSession.refreshToken,
+    if (!isRevoke && (forceRefresh || autoRefresh) && refreshToken) {
+      logger?.debug(
+        addShortId("Auto refresh triggered (revalidateSession)", sessionId),
       );
 
-      const renewedSession = await this.updateSession(
-        staleSession.sessionId,
-        tokenSet,
-      );
+      try {
+        logger?.debug(`openid-client/refresh: ${iss}`);
+        const tokenSet = await this.clients[iss].refresh(refreshToken);
 
-      if (!renewedSession) {
-        logger?.warn("Auto refresh failed (revalidateSession)");
+        const renewedSession = await this.updateSession(sessionId, tokenSet);
+
+        if (!renewedSession) {
+          logger?.warn(
+            addShortId("Auto refresh failed (revalidateSession)", sessionId),
+          );
+          deleteCookie(this, cookie);
+          return null;
+        }
+
+        logger?.debug(
+          addShortId("Auto refresh succeeded (revalidateSession)", sessionId),
+        );
+        extendCookieExpiration(this, cookie);
+
+        return {
+          currentSession: renewedSession,
+          resolvedClient: this.clients[iss],
+        };
+      } catch (e: unknown) {
+        logger?.warn(
+          addShortId("Throw exception (revalidateSession)", sessionId),
+        );
+        logger?.debug(e);
+        await this.deleteSession(sessionId);
         deleteCookie(this, cookie);
         return null;
       }
-
-      logger?.debug("Auto refresh succeeded (revalidateSession)");
-      extendCookieExpiration(this, cookie);
-
-      return {
-        currentSession: renewedSession,
-        resolvedClient: this.clients[iss],
-      };
     }
 
-    logger?.debug("Expired (revalidateSession)");
-    await this.deleteSession(staleSession.sessionId);
+    logger?.info(addShortId("Session expired (revalidateSession)", sessionId));
+    await this.deleteSession(sessionId);
     deleteCookie(this, cookie);
 
     return null;
   }
 
-  logger?.debug("Alive (revalidateSession)");
+  logger?.debug(addShortId("Session alive (revalidateSession)", sessionId));
   return {
-    currentSession: staleSession,
+    currentSession: session,
     resolvedClient: this.clients[iss],
   };
 }

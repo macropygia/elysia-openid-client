@@ -1,5 +1,6 @@
 import type { OidcClient } from "@/core/OidcClient";
 import type { OIDCClientActiveSession } from "@/types";
+import { addShortId } from "@/utils/addShortId";
 import type { TokenSet } from "openid-client";
 
 export async function updateSession(
@@ -17,7 +18,7 @@ export async function updateSession(
 
   try {
     if (tokenSet.expired()) {
-      logger?.info("Session expired (tokenSet)");
+      logger?.info(addShortId("Session expired (tokenSet)", sessionId));
       await this.deleteSession(sessionId);
       return null;
     }
@@ -25,7 +26,7 @@ export async function updateSession(
     const { id_token, access_token, refresh_token } = tokenSet;
     // biome-ignore lint/complexity/useSimplifiedLogicExpression: Short circuit
     if (!id_token || !access_token) {
-      logger?.warn("Token missing (tokenSet)");
+      logger?.warn(addShortId("Token missing (tokenSet)", sessionId));
       await this.deleteSession(sessionId);
       return null;
     }
@@ -43,9 +44,9 @@ export async function updateSession(
     return newSession;
   } catch (e: unknown) {
     if (e instanceof Error) {
-      logger?.warn(e.message);
+      logger?.warn(addShortId(e.message, sessionId));
     } else {
-      logger?.warn("Unknown error (update)");
+      logger?.warn(addShortId("Unknown error (update)", sessionId));
     }
   }
   return null;

@@ -1,5 +1,6 @@
 import type { OidcClient } from "@/core/OidcClient";
 import type { OIDCClientActiveSession } from "@/types";
+import { addShortId } from "@/utils/addShortId";
 
 export async function fetchSession(
   this: OidcClient,
@@ -18,7 +19,7 @@ export async function fetchSession(
   // Existence of Session in DB
   const currentSession = await sessions.fetch(sessionId);
   if (!currentSession) {
-    logger?.debug("Session data does not exist (fetch)");
+    logger?.debug(addShortId("Session data does not exist (fetch)", sessionId));
     return null;
   }
 
@@ -27,7 +28,7 @@ export async function fetchSession(
 
   // Check internal expiration
   if (sessionExpiresAt < Date.now()) {
-    logger?.debug("Session expired internally (fetch)");
+    logger?.debug(addShortId("Session expired internally (fetch)", sessionId));
     await this.deleteSession(sessionId);
     return null;
   }
@@ -37,7 +38,10 @@ export async function fetchSession(
 
   if (hasHash === hasToken) {
     logger?.debug(
-      "Either tokens and hashes do not exist, or both do exist (fetch)",
+      addShortId(
+        "Either tokens and hashes do not exist, or both do exist (fetch)",
+        sessionId,
+      ),
     );
     await this.deleteSession(sessionId);
     return null;

@@ -4,7 +4,8 @@
 
 [OpenID Connect](https://openid.net/) client (RP, Relying Party) plugin for [ElysiaJS](https://elysiajs.com/), wrapping [openid-client](https://github.com/panva/node-openid-client).
 
-**Currently under early development. All specifications are subject to change without notice, including those involving breaking changes.**
+**Currently under early development.  
+All specifications are subject to change without notice, including those involving breaking changes.**
 
 ## Overview
 

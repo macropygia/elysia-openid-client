@@ -19,7 +19,9 @@ export async function initialize(this: BaseOidcClient) {
   // - For multiple issuers
   // - Identical to iss claim in the ID token
   // Ref. https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
-  this.clients[this.issuer.metadata.issuer] = this.client;
+  this.clients = {
+    [this.issuer.metadata.issuer]: this.client,
+  };
 
   this.initialized = true;
 }

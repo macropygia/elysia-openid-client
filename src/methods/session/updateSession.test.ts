@@ -2,11 +2,13 @@ import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test";
 import type { OidcClient } from "@/core/OidcClient";
 import { SQLiteAdapter } from "@/dataAdapters/SQLiteAdapter";
 import type { OIDCClientOptions } from "@/types";
+import { addShortId } from "@/utils/addShortId";
 import {
   type DeepPartial,
   mockActiveSession,
   mockBaseClient,
   mockResetRecursively,
+  mockSessionId,
 } from "@mock/const";
 import type { TokenSet } from "openid-client";
 import { updateSession } from "./updateSession";
@@ -46,7 +48,9 @@ describe("Unit/methods/updateSession", () => {
 
     expect(result).toBeNull();
     expect(mockClient.deleteSession).toHaveBeenCalledTimes(1);
-    expect(logger?.info).toHaveBeenCalledWith("Session expired (tokenSet)");
+    expect(logger?.info).toHaveBeenCalledWith(
+      addShortId("Session expired (tokenSet)", mockSessionId),
+    );
   });
 
   test.each([
@@ -68,7 +72,9 @@ describe("Unit/methods/updateSession", () => {
 
     expect(result).toBeNull();
     expect(mockClient.deleteSession).toHaveBeenCalledTimes(1);
-    expect(logger?.warn).toHaveBeenCalledWith("Token missing (tokenSet)");
+    expect(logger?.warn).toHaveBeenCalledWith(
+      addShortId("Token missing (tokenSet)", mockSessionId),
+    );
   });
 
   test("Error", async () => {
@@ -87,7 +93,9 @@ describe("Unit/methods/updateSession", () => {
     );
 
     expect(result).toBeNull();
-    expect(logger?.warn).toHaveBeenCalledWith("Error");
+    expect(logger?.warn).toHaveBeenCalledWith(
+      addShortId("Error", mockSessionId),
+    );
   });
 
   test("Unknown error", async () => {
@@ -106,7 +114,9 @@ describe("Unit/methods/updateSession", () => {
     );
 
     expect(result).toBeNull();
-    expect(logger?.warn).toHaveBeenCalledWith("Unknown error (update)");
+    expect(logger?.warn).toHaveBeenCalledWith(
+      addShortId("Unknown error (update)", mockSessionId),
+    );
   });
 
   test("Succeeded", async () => {

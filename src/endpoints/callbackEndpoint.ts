@@ -19,6 +19,11 @@ export function callbackEndpoint(this: OidcClient) {
     authParams: { redirect_uri },
     logger,
   } = this;
+
+  if (!callbackPath) {
+    return new Elysia();
+  }
+
   const callbackCompletedPath = settings.callbackCompletedPath.startsWith("/")
     ? `${baseUrl}${settings.callbackCompletedPath}`
     : settings.callbackCompletedPath;
@@ -64,8 +69,10 @@ export function callbackEndpoint(this: OidcClient) {
         }
 
         extendCookieExpiration(this, cookie);
+
         logger?.debug(`Redirect to: ${callbackCompletedPath}`);
         set.redirect = callbackCompletedPath;
+
         return;
       } catch (e: unknown) {
         logger?.warn("endpoints/callback: Throw exception");

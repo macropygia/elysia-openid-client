@@ -142,30 +142,76 @@ export interface OIDCClientSettings {
   logoutCompletedPath: string;
   /** Path prefix @default "/auth" */
   pathPrefix: string;
-  /** Login path (GET) @default "/login" */
-  loginPath: string;
-  /** Callback path (GET) @default "/callback" */
-  callbackPath: string;
-  /** Logout path (GET) @default "/logout" */
-  logoutPath: string;
-  /** Userinfo path (ALL) @default "/userinfo" */
-  userinfoPath: string;
-  /** Refresh path (ALL) @default "/refresh" */
-  refreshPath: string;
-  /** Intropect path (ALL) @default "/introspect" */
-  introspectPath: string;
-  /** Revoke path (ALL) @default "/revoke" */
-  revokePath: string;
-  /** Info path (ALL) @default "/info" */
-  statusPath: string;
-  /** Claims path (ALL) @default "/claims" */
-  claimsPath: string;
   /**
-   * Resource path (GET)
+   * Path of login endpoint
+   * - Method: GET
+   * - If set to `null`, the endpoint is disabled.
+   * @default "/login"
+   */
+  loginPath: string | null;
+  /**
+   * Path of callback endpoint
+   * - Method: GET
+   * - If set to `null`, the endpoint is disabled.
+   * @default "/callback"
+   */
+  callbackPath: string | null;
+  /**
+   * Path of logout endpoint
+   * - Method: GET
+   * - If set to `null`, the endpoint is disabled.
+   * @default "/logout"
+   */
+  logoutPath: string | null;
+  /**
+   * Path of userinfo endpoint
+   * - Method: ALL
+   * - If set to `null`, the endpoint is disabled.
+   * @default "/userinfo"
+   */
+  userinfoPath: string | null;
+  /**
+   * Path of refresh endpoint
+   * - Method: ALL
+   * - If set to `null`, the endpoint is disabled.
+   * @default "/refresh"
+   */
+  refreshPath: string | null;
+  /**
+   * Path of intropect endpoint
+   * - Method: ALL
+   * - If set to `null`, the endpoint is disabled.
+   * @default "/introspect"
+   */
+  introspectPath: string | null;
+  /**
+   * Path of revoke endpoint
+   * - Method: ALL
+   * - If set to `null`, the endpoint is disabled.
+   * @default "/revoke"
+   */
+  revokePath: string | null;
+  /**
+   * Path of resource endpoint
+   * - Method: GET
    * - Usage: `/resource?url=<resource-url>`
    * @default "/resource"
    */
   resourcePath: string;
+  /**
+   * Path of status endpoint
+   * - Method: ALL
+   * - If set to `null`, the endpoint is disabled.
+   * @default "/status"
+   */
+  statusPath: string | null;
+  /**
+   * Path of claims endpoint
+   * - Method: ALL
+   * - If set to `null`, the endpoint is disabled.
+   * @default "/claims"
+   */
+  claimsPath: string | null;
 
   /**
    * Login expiration (ms)
@@ -316,9 +362,21 @@ interface OIDCClientLoggerFn {
 // ===============================
 
 export interface OIDCClientMethodArgs {
+  /**
+   * Cookie object of ElysiaJS
+   */
   cookie: Record<string, Cookie<string>>;
-  staleSession: OIDCClientActiveSession;
+  /**
+   * Session object received from auth hook
+   */
+  session: OIDCClientActiveSession | null;
+  /**
+   * For internal use
+   */
   forceRefresh?: boolean;
+  /**
+   * For internal use
+   */
   isRevoke?: boolean;
 }
 

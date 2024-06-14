@@ -22,7 +22,7 @@ describe("Unit/endpoints/statusEndpoint", () => {
 
   test("Succeeded", async () => {
     const app = new Elysia()
-      .resolve(() => ({ sessionData: mockActiveSessionWithRealIdToken }))
+      .resolve(() => ({ session: mockActiveSessionWithRealIdToken }))
       .use(endpoint.call(mockBaseClient));
 
     const response = await app
@@ -37,7 +37,7 @@ describe("Unit/endpoints/statusEndpoint", () => {
 
   test("Session data does not exist", async () => {
     const app = new Elysia()
-      .resolve(() => ({ sessionData: null }))
+      .resolve(() => ({ session: null }))
       .use(endpoint.call(mockBaseClient));
     const response = await app
       .handle(new Request(`http://localhost${path}`, mockPostInit()))

@@ -1,4 +1,4 @@
-import { sessionDataTypeBox } from "@/const";
+import { sessionTypeBox } from "@/const";
 import type { OidcClient } from "@/core/OidcClient";
 import type { OIDCClientActiveSession } from "@/types";
 import { handleErrorResponse } from "@/utils/handleErrorResponse";
@@ -17,13 +17,17 @@ export function resourceEndpoint(this: OidcClient) {
     logger,
   } = this;
 
+  if (!resourcePath) {
+    return new Elysia();
+  }
+
   return new Elysia()
     .decorate({
-      sessionData: sessionDataTypeBox,
+      session: sessionTypeBox,
     })
     .get(
       resourcePath,
-      ({ query, cookie, set, sessionData }) => {
+      ({ query, cookie, set, session }) => {
         logger?.trace("endpoints/resource");
 
         if (!query.url) {
@@ -32,8 +36,7 @@ export function resourceEndpoint(this: OidcClient) {
           return;
         }
 
-        const currentSession =
-          sessionData as unknown as OIDCClientActiveSession;
+        const currentSession = session as unknown as OIDCClientActiveSession;
 
         try {
           if (!currentSession) {

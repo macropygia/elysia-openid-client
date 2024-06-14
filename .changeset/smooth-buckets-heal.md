@@ -2,4 +2,4 @@
 "elysia-openid-client": patch
 ---
 
-Remove `scope` option and fix scope to `scoped`
+**[BREAKING CHANGE]** Remove `scope` option and fix scope to `scoped`

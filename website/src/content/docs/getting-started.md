@@ -34,7 +34,13 @@ new Elysia()
       })
       .get("/", ({ sessionStatus }) => sessionStatus ? "Logged in" : "Restricted")
       .get("/status", ({ sessionStatus }) => sessionStatus)
-      .get("/claims", ({ sessionClaims }) => sessionClaims),
+      .get("/claims", ({ sessionClaims }) => sessionClaims)
+      // Get UserInfo internally
+      .get(
+        "/userinfo",
+        async ({ cookie, session }) =>
+          await rp.userinfo({ cookie, session }),
+      ),
   )
   .get("/free", () => "Not restricted")
   .get("/logout", () => "Logout completed")

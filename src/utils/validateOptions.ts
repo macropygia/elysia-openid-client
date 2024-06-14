@@ -38,7 +38,7 @@ export function validateOptions(ctx: BaseOidcClient) {
     revokePath,
     statusPath,
   ];
-  if (paths.length !== new Set(paths).size) {
+  if (paths.filter(Boolean).length !== new Set(paths.filter(Boolean)).size) {
     throw new Error("Duplicate path");
   }
 

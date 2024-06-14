@@ -1,5 +1,6 @@
 import type { OidcClient } from "@/core/OidcClient";
 import type { Cookie } from "elysia";
+import { addShortId } from "./addShortId";
 
 /**
  * Delete session cookie
@@ -19,7 +20,12 @@ export function deleteCookie(
   // cookie[sessionIdName].remove(); // NOTE: No effect (2024-04-19)
 
   if (cookie[sessionIdName].value) {
-    logger?.debug(`Session ID Cookie deleted: ${cookie[sessionIdName].value}`);
+    logger?.debug(
+      addShortId(
+        `Session ID Cookie deleted: ${cookie[sessionIdName].value}`,
+        cookie[sessionIdName].value,
+      ),
+    );
     cookie[sessionIdName].update({
       httpOnly,
       secure,

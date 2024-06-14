@@ -2,12 +2,12 @@ import { deleteCookie } from "./deleteCookie";
 import { extendCookieExpiration } from "./extendCookieExpiration";
 import { getClaimsFromIdToken } from "./getClaimsFromIdToken";
 import { handleErrorResponse } from "./handleErrorResponse";
-import { refreshHook } from "./refreshHook";
+import { revalidateHook } from "./revalidateHook";
 import { sessionToStatus } from "./sessionToStatus";
 import { validateOptions } from "./validateOptions";
 
 export {
-  refreshHook,
+  revalidateHook,
   deleteCookie,
   extendCookieExpiration,
   getClaimsFromIdToken,

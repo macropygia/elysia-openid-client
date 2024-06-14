@@ -5,6 +5,7 @@ import {
   mockBaseClient,
   mockLoginSession,
   mockResetRecursively,
+  mockSessionId,
   rpPort,
 } from "@mock/const";
 import Elysia from "elysia";
@@ -48,17 +49,17 @@ describe("Unit/endpoints/callbackEndpoint", () => {
 
   test.each([
     {
-      sessionId: "mock-sid",
+      sessionId: mockSessionId,
       state: "mock-state",
       nonce: "mock-nonce",
     },
     {
-      sessionId: "mock-sid",
+      sessionId: mockSessionId,
       codeVerifier: "mock-verifier",
       nonce: "mock-nonce",
     },
     {
-      sessionId: "mock-sid",
+      sessionId: mockSessionId,
       codeVerifier: "mock-verifier",
       state: "mock-state",
     },

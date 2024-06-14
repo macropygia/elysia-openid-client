@@ -9,7 +9,7 @@ import { resourceEndpoint } from "@/endpoints/resourceEndpoint";
 import { revokeEndpoint } from "@/endpoints/revokeEndpoint";
 import { statusEndpoint } from "@/endpoints/statusEndpoint";
 import { userinfoEndpoint } from "@/endpoints/userinfoEndpoint";
-import { refreshHook } from "@/utils/refreshHook";
+import { revalidateHook } from "@/utils/revalidateHook";
 import Elysia from "elysia";
 
 export function createEndpoints(this: OidcClient) {
@@ -35,7 +35,7 @@ export function createEndpoints(this: OidcClient) {
       .guard((app) =>
         app
           // Refresh hook (try to refresh if needed)
-          .use(refreshHook.call(this))
+          .use(revalidateHook.call(this))
           // OIDC endpoints
           .use(userinfoEndpoint.call(this))
           .use(introspectEndpoint.call(this))

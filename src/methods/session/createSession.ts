@@ -1,4 +1,5 @@
 import type { OidcClient } from "@/core/OidcClient";
+import { addShortId } from "@/utils/addShortId";
 import { generators } from "openid-client";
 
 export async function createSession(
@@ -17,7 +18,7 @@ export async function createSession(
   const codeVerifier = generators.codeVerifier();
   const codeChallenge = generators.codeChallenge(codeVerifier);
 
-  logger?.trace("openid-client/authorizationUrl");
+  logger?.debug("openid-client/authorizationUrl: self");
 
   const authorizationUrl = this.client.authorizationUrl({
     ...this.authParams,
@@ -28,6 +29,7 @@ export async function createSession(
   const sessionId = generators.random();
   const now = Date.now();
 
+  logger?.debug(addShortId("Try to create session (insert)", sessionId));
   await sessions.insert({
     sessionId,
     sessionExpiresAt: now + loginExpiration,

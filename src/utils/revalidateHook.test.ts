@@ -14,12 +14,14 @@ import {
   mockBaseClient,
   mockGetInit,
   mockResetRecursively,
+  mockSessionId,
   rpPort,
 } from "@mock/const";
 import Elysia from "elysia";
-import { refreshHook } from "./refreshHook";
+import { addShortId } from "./addShortId";
+import { revalidateHook } from "./revalidateHook";
 
-describe("Unit/utils/refreshHook", () => {
+describe("Unit/utils/revalidateHook", () => {
   const { logger } = mockBaseClient;
 
   beforeEach(() => {
@@ -37,8 +39,8 @@ describe("Unit/utils/refreshHook", () => {
     mockResetRecursively(mockBaseClient);
   });
 
-  test("Session ID does not exist (refreshHook)", async () => {
-    const hook = refreshHook.call(mockBaseClient);
+  test("Session ID does not exist (revalidateHook)", async () => {
+    const hook = revalidateHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -47,13 +49,13 @@ describe("Unit/utils/refreshHook", () => {
 
     expect(res.status).toBe(401);
     expect(logger?.debug).toHaveBeenCalledWith(
-      "Session ID does not exist (refreshHook)",
+      "Session ID does not exist (revalidateHook)",
     );
     app.stop();
   });
 
-  test("Session data does not exist (refreshHook)", async () => {
-    const hook = refreshHook.call(mockBaseClient);
+  test("Session data does not exist (revalidateHook)", async () => {
+    const hook = revalidateHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -66,13 +68,13 @@ describe("Unit/utils/refreshHook", () => {
 
     expect(res.status).toBe(401);
     expect(logger?.debug).toHaveBeenCalledWith(
-      "Session data does not exist (refreshHook)",
+      addShortId("Session data does not exist (revalidateHook)", mockSessionId),
     );
     app.stop();
   });
 
   test("ID Token does not exist", async () => {
-    const hook = refreshHook.call(mockBaseClient);
+    const hook = revalidateHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -88,13 +90,16 @@ describe("Unit/utils/refreshHook", () => {
 
     expect(res.status).toBe(401);
     expect(logger?.warn).toHaveBeenCalledWith(
-      "ID Token or Access Token does not exist (refreshHook)",
+      addShortId(
+        "ID Token or Access Token does not exist (revalidateHook)",
+        mockSessionId,
+      ),
     );
     app.stop();
   });
 
   test("Access Token does not exist", async () => {
-    const hook = refreshHook.call(mockBaseClient);
+    const hook = revalidateHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -110,13 +115,16 @@ describe("Unit/utils/refreshHook", () => {
 
     expect(res.status).toBe(401);
     expect(logger?.warn).toHaveBeenCalledWith(
-      "ID Token or Access Token does not exist (refreshHook)",
+      addShortId(
+        "ID Token or Access Token does not exist (revalidateHook)",
+        mockSessionId,
+      ),
     );
     app.stop();
   });
 
   test("Expired/Refresh Token does not exist", async () => {
-    const hook = refreshHook.call(mockBaseClient);
+    const hook = revalidateHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -132,13 +140,15 @@ describe("Unit/utils/refreshHook", () => {
 
     expect(res.status).toBe(401);
     expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
-    expect(logger?.warn).toHaveBeenCalledWith("Session expired (refreshHook)");
+    expect(logger?.info).toHaveBeenCalledWith(
+      addShortId("Session expired (revalidateHook)", mockSessionId),
+    );
     app.stop();
   });
 
   test("Expired/Auto refresh is disabled", async () => {
     mockBaseClient.authHookSettings.autoRefresh = false;
-    const hook = refreshHook.call(mockBaseClient);
+    const hook = revalidateHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -153,18 +163,21 @@ describe("Unit/utils/refreshHook", () => {
 
     expect(res.status).toBe(401);
     expect(mockBaseClient.deleteSession).toHaveBeenCalledTimes(1);
-    expect(logger?.warn).toHaveBeenCalledWith("Session expired (refreshHook)");
+    expect(logger?.info).toHaveBeenCalledWith(
+      addShortId("Session expired (revalidateHook)", mockSessionId),
+    );
     app.stop();
     mockBaseClient.authHookSettings.autoRefresh = true;
   });
 
   test("Succeeded", async () => {
-    const hook = refreshHook.call(mockBaseClient);
+    const hook = revalidateHook.call(mockBaseClient);
     let result: any;
     const app = new Elysia()
       .guard((app) =>
-        app.use(hook).get("/", ({ sessionData }) => {
-          result = sessionData;
+        app.use(hook).get("/", ({ session }) => {
+          console.log();
+          result = session;
         }),
       )
       .listen(rpPort);
@@ -182,7 +195,7 @@ describe("Unit/utils/refreshHook", () => {
   });
 
   test("Session renew failed", async () => {
-    const hook = refreshHook.call(mockBaseClient);
+    const hook = revalidateHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -198,12 +211,12 @@ describe("Unit/utils/refreshHook", () => {
 
     expect(res.status).toBe(401);
     expect(logger?.warn).toHaveBeenCalledWith(
-      "Auto refresh failed (refreshHook)",
+      addShortId("Auto refresh failed (revalidateHook)", mockSessionId),
     );
   });
 
   test("Refresh failed", async () => {
-    const hook = refreshHook.call(mockBaseClient);
+    const hook = revalidateHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -220,11 +233,13 @@ describe("Unit/utils/refreshHook", () => {
     );
 
     expect(res.status).toBe(401);
-    expect(logger?.warn).toHaveBeenCalledWith("Throw exception (refreshHook)");
+    expect(logger?.warn).toHaveBeenCalledWith(
+      addShortId("Throw exception (revalidateHook)", mockSessionId),
+    );
   });
 
   test("Refresh failed (Unknown error)", async () => {
-    const hook = refreshHook.call(mockBaseClient);
+    const hook = revalidateHook.call(mockBaseClient);
     const app = new Elysia()
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
@@ -241,6 +256,8 @@ describe("Unit/utils/refreshHook", () => {
     );
 
     expect(res.status).toBe(500);
-    expect(logger?.warn).toHaveBeenCalledWith("Throw exception (refreshHook)");
+    expect(logger?.warn).toHaveBeenCalledWith(
+      addShortId("Throw exception (revalidateHook)", mockSessionId),
+    );
   });
 });

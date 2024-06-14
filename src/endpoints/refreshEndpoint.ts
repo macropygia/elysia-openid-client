@@ -16,6 +16,10 @@ export function refreshEndpoint(this: OidcClient) {
     logger,
   } = this;
 
+  if (!refreshPath) {
+    return new Elysia();
+  }
+
   return new Elysia().all(
     refreshPath,
     async ({ set, cookie }) => {

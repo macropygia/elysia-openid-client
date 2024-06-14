@@ -16,7 +16,7 @@ export async function userinfo(this: OidcClient, args: OIDCClientMethodArgs) {
 
     const { currentSession, resolvedClient } = resolved;
 
-    logger?.trace("openid-client(iss)/userinfo");
+    logger?.debug("openid-client/userinfo: (inherit from revalidateSession)");
 
     return await resolvedClient.userinfo(currentSession.accessToken);
   } catch (e: unknown) {

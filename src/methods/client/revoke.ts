@@ -22,7 +22,7 @@ export async function revoke(this: OidcClient, args: OIDCClientMethodArgs) {
 
     const { currentSession, resolvedClient } = resolved;
 
-    logger?.trace("openid-client(iss)/revoke");
+    logger?.debug("openid-client/revoke: (inherit from revalidateSession)");
 
     await resolvedClient.revoke(currentSession.idToken);
     this.deleteSession(currentSession.sessionId);

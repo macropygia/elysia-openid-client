@@ -84,7 +84,7 @@ export const defaultLoggerOptions: Record<string, LoggerOptions> = {
   },
 };
 
-export const sessionDataTypeBox = t.Object({
+export const sessionTypeBox = t.Object({
   sessionId: t.String(),
   sessionExpiresAt: t.Number(),
   idToken: t.String(),

@@ -23,7 +23,9 @@ export async function resource(
 
     const { currentSession, resolvedClient } = resolved;
 
-    logger?.trace("openid-client(iss)/requestResource");
+    logger?.debug(
+      "openid-client/requestResource: (inherit from revalidateSession)",
+    );
 
     const response = resolvedClient.requestResource(
       decodeURIComponent(resourceUrl),

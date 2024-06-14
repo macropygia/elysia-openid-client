@@ -22,7 +22,7 @@ describe("Unit/endpoints/claimsEndpoint", () => {
 
   test("Succeeded", async () => {
     const app = new Elysia()
-      .resolve(() => ({ sessionData: mockActiveSessionWithRealIdToken }))
+      .resolve(() => ({ session: mockActiveSessionWithRealIdToken }))
       .use(endpoint.call(mockBaseClient));
     const response = await app
       .handle(new Request(`http://localhost${path}`, mockPostInit()))
@@ -36,7 +36,7 @@ describe("Unit/endpoints/claimsEndpoint", () => {
     mockBaseClient.fetchSession = mock().mockReturnValue(null);
 
     const app = new Elysia()
-      .resolve(() => ({ sessionData: null }))
+      .resolve(() => ({ session: null }))
       .use(endpoint.call(mockBaseClient));
     const response = await app
       .handle(new Request(`http://localhost${path}`, mockPostInit()))

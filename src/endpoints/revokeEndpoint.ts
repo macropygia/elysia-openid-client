@@ -14,6 +14,10 @@ export function revokeEndpoint(this: OidcClient) {
     logger,
   } = this;
 
+  if (!revokePath) {
+    return new Elysia();
+  }
+
   return new Elysia().all(
     revokePath,
     async ({ set, cookie }) => {
@@ -30,7 +34,7 @@ export function revokeEndpoint(this: OidcClient) {
         await this.client.revoke(staleSession.idToken);
 
         const { sessionId } = staleSession;
-        logger?.debug(`Revoke complete: ${sessionId}`);
+        logger?.debug(`Revoke completed: ${sessionId.slice(0, 8)}`);
         this.deleteSession(sessionId);
         // deleteCookie(this, cookie);
 

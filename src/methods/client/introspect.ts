@@ -16,7 +16,7 @@ export async function introspect(this: OidcClient, args: OIDCClientMethodArgs) {
 
     const { currentSession, resolvedClient } = resolved;
 
-    logger?.trace("openid-client(iss)/introspect");
+    logger?.debug("openid-client/introspect: (inherit from revalidateSession)");
 
     return await resolvedClient.introspect(currentSession.idToken);
   } catch (e: unknown) {

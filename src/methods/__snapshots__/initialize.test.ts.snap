@@ -169,3 +169,18 @@ Client {
   "token_endpoint_auth_method": [native code],
 }
 `;
+
+exports[`Unit/methods/initialize Default: clients 1`] = `
+Client {
+  "authorization_signed_response_alg": [native code],
+  "client_id": [native code],
+  "client_secret": [native code],
+  "grant_types": [native code],
+  "id_token_signed_response_alg": [native code],
+  "introspection_endpoint_auth_method": [native code],
+  "redirect_uris": [native code],
+  "response_types": [native code],
+  "revocation_endpoint_auth_method": [native code],
+  "token_endpoint_auth_method": [native code],
+}
+`;

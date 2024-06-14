@@ -20,6 +20,9 @@ describe("Unit/methods/initialize", async () => {
     expect(mockClinet.issuer).toMatchSnapshot("issuer");
     // expect(mockClinet.issuerMetadata).toMatchSnapshot("issuerMetadata");
     expect(mockClinet.client).toMatchSnapshot("client");
+    expect(mockClinet.clients[`http://localhost:${opPort}`]).toMatchSnapshot(
+      "clients",
+    );
     expect(mockClinet.initialized).toBeTrue();
   });
 

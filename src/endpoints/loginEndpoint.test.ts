@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test";
 import { defaultSettings } from "@/const";
-import { mockBaseClient, mockResetRecursively, opPort } from "@mock/const";
+import {
+  mockBaseClient,
+  mockResetRecursively,
+  mockSessionId,
+  opPort,
+} from "@mock/const";
 import Elysia from "elysia";
 import setCookie from "set-cookie-parser";
 import { loginEndpoint } from "./loginEndpoint";
@@ -13,7 +18,7 @@ describe("Unit/endpoints/loginEndpoint", () => {
   beforeEach(() => {
     mockResetRecursively(mockBaseClient);
     mockBaseClient.createSession = mock().mockReturnValue([
-      "mock-sid",
+      mockSessionId,
       `http://localhost:${opPort}/authorization`,
     ]);
   });
@@ -32,7 +37,7 @@ describe("Unit/endpoints/loginEndpoint", () => {
       response.headers.get("set-cookie") as string,
     )[0];
     expect(cookie.name).toBe("__Host-sid");
-    expect(cookie.value).toBe("mock-sid");
+    expect(cookie.value).toBe(mockSessionId);
     expect(cookie.path).toBe("/");
     expect((cookie.expires as Date) > new Date()).toBeTruthy();
     expect(cookie.httpOnly).toBe(true);
