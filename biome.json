@@ -4,19 +4,21 @@
     "enabled": true
   },
   "files": {
-    "ignore": ["node_modules", "dist", "coverage", "*.d.ts", "*.js"]
+    "ignore": ["node_modules", "dist", "coverage", "*.d.ts", "*.js", ".astro"]
   },
   "linter": {
     "enabled": true,
     "rules": {
       "all": true,
-      "style": {
-        "useNamingConvention": "off"
+      "correctness": {
+        "noNodejsModules": "off"
       },
       "nursery": {
         "noConsole": "off",
-        "useImportRestrictions": "off",
-        "noNodejsModules": "off"
+        "useImportRestrictions": "off"
+      },
+      "style": {
+        "useNamingConvention": "off"
       },
       "suspicious": {
         "noConsoleLog": "off"

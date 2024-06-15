@@ -29,8 +29,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
-    "lint:fix": "biome check --apply .",
-    "lint:unsafe": "biome check --apply-unsafe .",
+    "lint:fix": "biome check --write .",
+    "lint:unsafe": "biome check --write --unsafe .",
     "mock:rebuild": "bun ./__scripts__/rebuildMockDatabases.ts",
     "build": "bun ./__scripts__/build.ts && bun run dts",
     "dts": "tsup ./src/index.ts --dts-only --format esm --out-dir ./src",
@@ -40,12 +40,12 @@
     "openid-client": "^5.6.5"
   },
   "peerDependencies": {
-    "elysia": "^1.0.14",
+    "elysia": "^1.0.23",
     "ioredis": "^5.4.1",
     "lokijs": "^1.5.12",
     "lowdb": "^7.0.1",
-    "pino": "^8.20.0",
-    "pino-pretty": "^11.0.0",
+    "pino": "^9.2.0",
+    "pino-pretty": "^11.2.1",
     "typescript": "^5.4.5"
   },
   "peerDependenciesMeta": {
@@ -66,24 +66,24 @@
     }
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.7.3",
+    "@biomejs/biome": "^1.8.1",
     "@changesets/cli": "^2.27.5",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@types/bun": "latest",
     "@types/lokijs": "^1.5.14",
-    "@types/set-cookie-parser": "^2.4.7",
-    "elysia": "^1.0.22",
+    "@types/set-cookie-parser": "^2.4.9",
+    "elysia": "^1.0.23",
     "ioredis": "^5.4.1",
-    "jose": "^5.3.0",
-    "lint-staged": "^15.2.5",
+    "jose": "^5.4.0",
+    "lint-staged": "^15.2.7",
     "lokijs": "^1.5.12",
     "lowdb": "^7.0.1",
-    "pino": "^9.1.0",
-    "pino-pretty": "^11.1.0",
+    "pino": "^9.2.0",
+    "pino-pretty": "^11.2.1",
     "set-cookie-parser": "^2.6.0",
     "simple-git-hooks": "^2.11.1",
-    "tsup": "^8.0.2",
+    "tsup": "^8.1.0",
     "typescript": "^5.4.5"
   },
   "engines": {
@@ -95,7 +95,7 @@
     "commit-msg": "bunx commitlint -e"
   },
   "lint-staged": {
-    "*.{ts,json}": "biome check --apply"
+    "*.{ts,json}": "biome check --write"
   },
   "publishConfig": {
     "provenance": true
