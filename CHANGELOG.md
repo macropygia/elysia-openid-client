@@ -1,5 +1,15 @@
 # elysia-openid-client
 
+## 0.1.11
+
+### Patch Changes
+
+- 269abba: **[BREAKING CHANGE]** Add client methods for inside the auth hook
+- 2ef6462: Bump dependencies
+- 9ba432b: Add feature to disable endpoints
+- 5010f8d: **[BREAKING CHANGE]** Remove `scope` option and fix scope to `scoped`
+- 9ba432b: **[BREAKING CHANGE]** Fix multiple issuer support
+
 ## 0.1.10
 
 ### Patch Changes
