@@ -42,7 +42,11 @@ describe("Unit/endpoints/loginEndpoint", () => {
     expect((cookie.expires as Date) > new Date()).toBeTruthy();
     expect(cookie.httpOnly).toBe(true);
     expect(cookie.secure).toBeFalsy();
-    expect(cookie.sameSite?.toLowerCase()).toBe("lax");
+    expect(
+      typeof cookie.sameSite === "string"
+        ? cookie.sameSite.toLowerCase()
+        : cookie.sameSite,
+    ).toBe("lax");
   });
 
   test("Failed", async () => {
