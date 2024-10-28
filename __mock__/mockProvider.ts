@@ -9,6 +9,7 @@ import {
   type TokenSetParameters,
   generators,
 } from "openid-client";
+import { mockOrigin } from "./const.ts";
 import { mockIssuerMetadata } from "./issuerMetadata.ts";
 
 export const mockProvider = async (port: number) => {
@@ -75,7 +76,7 @@ export const mockProvider = async (port: number) => {
       }
 
       const claims: IdTokenClaims = {
-        iss: `http://localhost:${port}`,
+        iss: `${mockOrigin}:${port}`,
         sub: "elysia-openid-client",
         aud: client_id,
         exp: Math.floor(Date.now() / 1000) + 3600,

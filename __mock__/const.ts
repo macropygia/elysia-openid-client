@@ -42,9 +42,11 @@ export const mockLogger = {
   fatal: mock(),
 };
 
+export const mockOrigin = "http://localhost";
+
 export const mockBaseOptions = {
-  baseUrl: `http://localhost:${rpPort}`,
-  issuerUrl: `http://localhost:${opPort}`,
+  baseUrl: `${mockOrigin}:${rpPort}`,
+  issuerUrl: `${mockOrigin}:${opPort}`,
   clientMetadata: {
     client_id: "mock-client-id",
     client_secret: "mock-client-secret",
@@ -144,7 +146,7 @@ export const mockGetInit = (sid?: string): RequestInit => ({
 
 export const mockClaims = {
   exp: 5000000000000 / 1000,
-  iss: `http://localhost:${opPort}`,
+  iss: `${mockOrigin}:${opPort}`,
   sub: "mock-sub",
 } as IdTokenClaims;
 
@@ -157,6 +159,8 @@ export const mockStatus = {
   sub: mockClaims.sub,
 };
 
+const mockCookieName = defaultCookieSettings.sessionIdName;
+
 export const mockBaseClient = {
   ...mockBaseOptions,
   factory: mock(),
@@ -166,7 +170,7 @@ export const mockBaseClient = {
   updateSession: mock(),
   fetchSession: mock(),
   deleteSession: mock(),
-  cookieTypeBox: t.Cookie({ "mock-cookie-name": t.String() }),
+  cookieTypeBox: t.Cookie({ [mockCookieName]: t.Optional(t.String()) }),
   createAuthHook: mock(),
   createEndpoints: mock(),
   logger: mockLogger,
@@ -176,7 +180,7 @@ export const mockBaseClient = {
   sessions: mock(),
 } as DeepPartial<OidcClient> as OidcClient;
 mockBaseClient.clients["https://op.example.com"] = mockBaseClient.client;
-mockBaseClient.clients[`http://localhost:${opPort}`] = mockBaseClient.client;
+mockBaseClient.clients[`${mockOrigin}:${opPort}`] = mockBaseClient.client;
 
 export const mockCookie = {
   [defaultCookieSettings.sessionIdName]: {

@@ -4,6 +4,7 @@ import {
   mockActiveSession,
   mockBaseClient,
   mockGetInit,
+  mockOrigin,
   mockResetRecursively,
 } from "@/mock/const";
 import Elysia from "elysia";
@@ -25,7 +26,7 @@ describe("Unit/endpoints/userinfoEndpoint", () => {
       .resolve(() => ({ session: mockActiveSession }))
       .use(endpoint.call(mockBaseClient));
     const response = await app.handle(
-      new Request(`http://localhost${path}`, mockGetInit()),
+      new Request(`${mockOrigin}${path}`, mockGetInit()),
     );
 
     expect(mockBaseClient.client.userinfo).toHaveBeenCalledWith(
@@ -41,7 +42,7 @@ describe("Unit/endpoints/userinfoEndpoint", () => {
       .resolve(() => ({ session: null }))
       .use(endpoint.call(mockBaseClient));
     const response = await app.handle(
-      new Request(`http://localhost${path}`, mockGetInit()),
+      new Request(`${mockOrigin}${path}`, mockGetInit()),
     );
 
     expect(mockBaseClient.client.userinfo).not.toHaveBeenCalled();
@@ -60,7 +61,7 @@ describe("Unit/endpoints/userinfoEndpoint", () => {
       .resolve(() => ({ session: mockActiveSession }))
       .use(endpoint.call(mockBaseClient));
     const response = await app
-      .handle(new Request(`http://localhost${path}`))
+      .handle(new Request(`${mockOrigin}${path}`))
       .then((res) => res.status);
 
     expect(response).toBe(500);

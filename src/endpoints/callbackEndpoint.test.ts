@@ -4,6 +4,7 @@ import {
   mockActiveSession,
   mockBaseClient,
   mockLoginSession,
+  mockOrigin,
   mockResetRecursively,
   mockSessionId,
   rpPort,
@@ -29,11 +30,11 @@ describe("Unit/endpoints/callbackEndpoint", () => {
 
   test("Succeeded", async () => {
     const app = new Elysia().use(endpoint.call(mockBaseClient));
-    const response = await app.handle(new Request(`http://localhost${path}`));
+    const response = await app.handle(new Request(`${mockOrigin}${path}`));
 
     expect(response.status).toBe(302);
     expect(response.headers.get("location")).toBe(
-      `http://localhost:${rpPort}${defaultSettings.callbackCompletedPath}`,
+      `${mockOrigin}:${rpPort}${defaultSettings.callbackCompletedPath}`,
     );
   });
 
@@ -41,7 +42,7 @@ describe("Unit/endpoints/callbackEndpoint", () => {
     mockBaseClient.fetchSession = mock().mockReturnValue(null);
 
     const app = new Elysia().use(endpoint.call(mockBaseClient));
-    const response = await app.handle(new Request(`http://localhost${path}`));
+    const response = await app.handle(new Request(`${mockOrigin}${path}`));
 
     expect(response.status).toBe(401);
     expect(logger?.warn).toHaveBeenCalledTimes(1);
@@ -67,7 +68,7 @@ describe("Unit/endpoints/callbackEndpoint", () => {
     mockBaseClient.fetchSession = mock().mockReturnValue(session);
 
     const app = new Elysia().use(endpoint.call(mockBaseClient));
-    const response = await app.handle(new Request(`http://localhost${path}`));
+    const response = await app.handle(new Request(`${mockOrigin}${path}`));
 
     expect(response.status).toBe(401);
     expect(logger?.warn).toHaveBeenCalledTimes(1);
@@ -77,7 +78,7 @@ describe("Unit/endpoints/callbackEndpoint", () => {
     mockBaseClient.updateSession = mock().mockReturnValue(null);
 
     const app = new Elysia().use(endpoint.call(mockBaseClient));
-    const response = await app.handle(new Request(`http://localhost${path}`));
+    const response = await app.handle(new Request(`${mockOrigin}${path}`));
 
     expect(response.status).toBe(401);
     expect(logger?.warn).toHaveBeenCalledTimes(1);
@@ -89,7 +90,7 @@ describe("Unit/endpoints/callbackEndpoint", () => {
     });
 
     const app = new Elysia().use(endpoint.call(mockBaseClient));
-    const response = await app.handle(new Request(`http://localhost${path}`));
+    const response = await app.handle(new Request(`${mockOrigin}${path}`));
 
     expect(response.status).toBe(500);
     expect(logger?.warn).toHaveBeenCalledTimes(1);

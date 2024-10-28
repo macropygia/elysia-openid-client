@@ -3,6 +3,7 @@ import { defaultSettings } from "@/const";
 import {
   mockActiveSessionWithRealIdToken,
   mockBaseClient,
+  mockOrigin,
   mockPostInit,
   mockResetRecursively,
 } from "@/mock/const";
@@ -26,7 +27,7 @@ describe("Unit/endpoints/statusEndpoint", () => {
       .use(endpoint.call(mockBaseClient));
 
     const response = await app
-      .handle(new Request(`http://localhost${path}`, mockPostInit()))
+      .handle(new Request(`${mockOrigin}${path}`, mockPostInit()))
       .then((res) => res);
 
     expect(response.status).toBe(200);
@@ -40,7 +41,7 @@ describe("Unit/endpoints/statusEndpoint", () => {
       .resolve(() => ({ session: null }))
       .use(endpoint.call(mockBaseClient));
     const response = await app
-      .handle(new Request(`http://localhost${path}`, mockPostInit()))
+      .handle(new Request(`${mockOrigin}${path}`, mockPostInit()))
       .then((res) => res.status);
 
     expect(response).toBe(401);

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, mock, test } from "bun:test";
 import { defaultSettings } from "@/const";
 import {
   mockBaseClient,
+  mockOrigin,
   mockResetRecursively,
   mockSessionId,
   opPort,
@@ -19,18 +20,18 @@ describe("Unit/endpoints/loginEndpoint", () => {
     mockResetRecursively(mockBaseClient);
     mockBaseClient.createSession = mock().mockReturnValue([
       mockSessionId,
-      `http://localhost:${opPort}/authorization`,
+      `${mockOrigin}:${opPort}/authorization`,
     ]);
   });
 
   test("Succeeded", async () => {
     const app = new Elysia().use(endpoint.call(mockBaseClient));
 
-    const response = await app.handle(new Request(`http://localhost${path}`));
+    const response = await app.handle(new Request(`${mockOrigin}${path}`));
 
     expect(response.status).toBe(303);
     expect(response.headers.get("location")).toBe(
-      `http://localhost:${opPort}/authorization`,
+      `${mockOrigin}:${opPort}/authorization`,
     );
 
     const cookie = setCookie.parse(
@@ -55,7 +56,7 @@ describe("Unit/endpoints/loginEndpoint", () => {
     });
 
     const app = new Elysia().use(endpoint.call(mockBaseClient));
-    const response = await app.handle(new Request(`http://localhost${path}`));
+    const response = await app.handle(new Request(`${mockOrigin}${path}`));
 
     expect(response.status).toBe(401);
     expect(logger?.warn).toHaveBeenCalledTimes(1);
@@ -67,7 +68,7 @@ describe("Unit/endpoints/loginEndpoint", () => {
     });
 
     const app = new Elysia().use(endpoint.call(mockBaseClient));
-    const response = await app.handle(new Request(`http://localhost${path}`));
+    const response = await app.handle(new Request(`${mockOrigin}${path}`));
 
     expect(response.status).toBe(500);
     expect(logger?.warn).toHaveBeenCalledTimes(1);

@@ -1,10 +1,12 @@
+import { mockOrigin } from "./const.ts";
+
 export const mockIssuerMetadata = (opPort: number) => ({
-  issuer: `http://localhost:${opPort}`,
-  authorization_endpoint: `http://localhost:${opPort}/oauth2/authorize`,
-  token_endpoint: `http://localhost:${opPort}/oauth2/token`,
-  userinfo_endpoint: `http://localhost:${opPort}/oauth2/userinfo`,
-  registration_endpoint: `http://localhost:${opPort}/oauth2/clients`,
-  jwks_uri: `http://localhost:${opPort}/oauth2/keys`,
+  issuer: `${mockOrigin}:${opPort}`,
+  authorization_endpoint: `${mockOrigin}:${opPort}/oauth2/authorize`,
+  token_endpoint: `${mockOrigin}:${opPort}/oauth2/token`,
+  userinfo_endpoint: `${mockOrigin}:${opPort}/oauth2/userinfo`,
+  registration_endpoint: `${mockOrigin}:${opPort}/oauth2/clients`,
+  jwks_uri: `${mockOrigin}:${opPort}/oauth2/keys`,
   response_types_supported: ["code"],
   response_modes_supported: ["query"],
   grant_types_supported: ["authorization_code", "refresh_token"],
@@ -60,7 +62,7 @@ export const mockIssuerMetadata = (opPort: number) => ({
     "c_hash",
   ],
   code_challenge_methods_supported: ["S256"],
-  introspection_endpoint: `http://localhost:${opPort}/oauth2/introspect`,
+  introspection_endpoint: `${mockOrigin}:${opPort}/oauth2/introspect`,
   introspection_endpoint_auth_methods_supported: [
     "client_secret_basic",
     "client_secret_post",
@@ -68,7 +70,7 @@ export const mockIssuerMetadata = (opPort: number) => ({
     "private_key_jwt",
     "none",
   ],
-  revocation_endpoint: `http://localhost:${opPort}/oauth2/revoke`,
+  revocation_endpoint: `${mockOrigin}:${opPort}/oauth2/revoke`,
   revocation_endpoint_auth_methods_supported: [
     "client_secret_basic",
     "client_secret_post",
@@ -76,7 +78,7 @@ export const mockIssuerMetadata = (opPort: number) => ({
     "private_key_jwt",
     "none",
   ],
-  end_session_endpoint: `http://localhost:${opPort}/oauth2/logout`,
+  end_session_endpoint: `${mockOrigin}:${opPort}/oauth2/logout`,
   request_parameter_supported: true,
   request_object_signing_alg_values_supported: [
     "HS256",
@@ -89,7 +91,7 @@ export const mockIssuerMetadata = (opPort: number) => ({
     "ES384",
     "ES512",
   ],
-  device_authorization_endpoint: `http://localhost:${opPort}/oauth2/device/authorize`,
+  device_authorization_endpoint: `${mockOrigin}:${opPort}/oauth2/device/authorize`,
   dpop_signing_alg_values_supported: [
     "RS256",
     "RS384",

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from "bun:test";
 import type { BaseOidcClient } from "@/core/BaseOidcClient";
-import { mockBaseOptions } from "@/mock/const";
+import { mockBaseOptions, mockOrigin } from "@/mock/const";
 import { validateOptions } from "./validateOptions.ts";
 
 describe("Unit/utils/validateOptions", () => {
@@ -53,7 +53,7 @@ describe("Unit/utils/validateOptions", () => {
     validateOptions(options);
     expect(options.clientMetadata.redirect_uris).toMatchObject([
       "https://localhost/redirect",
-      "http://localhost:57828/auth/callback",
+      `${mockOrigin}:57828/auth/callback`,
     ]);
   });
 });

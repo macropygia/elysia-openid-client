@@ -6,6 +6,7 @@ import {
   mockGetInit,
   mockIdTokenClaims,
   mockLoginSession,
+  mockOrigin,
   mockResetRecursively,
   mockSessionId,
   rpPort,
@@ -33,7 +34,7 @@ describe("Unit/methods/createAuthHook", () => {
       .listen(rpPort);
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, { method: "POST" }),
+      new Request(`${mockOrigin}:${rpPort}/`, { method: "POST" }),
     );
 
     expect(res.status).toBe(200);
@@ -48,7 +49,7 @@ describe("Unit/methods/createAuthHook", () => {
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
 
-    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+    const res = await app.handle(new Request(`${mockOrigin}:${rpPort}/`));
 
     expect(res.status).toBe(303);
     expect(logger?.debug).toHaveBeenCalledWith(
@@ -65,7 +66,7 @@ describe("Unit/methods/createAuthHook", () => {
       .listen(rpPort);
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(303);
@@ -88,7 +89,7 @@ describe("Unit/methods/createAuthHook", () => {
       .listen(rpPort);
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(303);
@@ -115,7 +116,7 @@ describe("Unit/methods/createAuthHook", () => {
       .listen(rpPort);
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(303);
@@ -140,7 +141,7 @@ describe("Unit/methods/createAuthHook", () => {
       .listen(rpPort);
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(303);
@@ -165,7 +166,7 @@ describe("Unit/methods/createAuthHook", () => {
       .listen(rpPort);
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(303);
@@ -192,7 +193,7 @@ describe("Unit/methods/createAuthHook", () => {
       .listen(rpPort);
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(401);
@@ -219,7 +220,7 @@ describe("Unit/methods/createAuthHook", () => {
       .listen(rpPort);
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(500);
@@ -253,7 +254,7 @@ describe("Unit/methods/createAuthHook", () => {
       .listen(rpPort);
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(200);
@@ -282,7 +283,7 @@ describe("Unit/methods/createAuthHook", () => {
       .listen(rpPort);
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(200);

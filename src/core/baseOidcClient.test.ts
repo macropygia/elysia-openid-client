@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { defaultCookieSettings, defaultSettings } from "@/const";
-import { mockBaseOptions, opPort } from "@/mock/const";
+import { mockBaseOptions, mockOrigin, opPort } from "@/mock/const";
 import { mockProvider } from "@/mock/mockProvider";
 import { BaseOidcClient } from "./BaseOidcClient.ts";
 
@@ -16,7 +16,7 @@ describe("Unit/core/BaseOidcClient", () => {
       const mockOptions = structuredClone(mockBaseOptions);
       const client = await BaseOidcClient.factory({
         ...mockOptions,
-        issuerUrl: `http://localhost:${opPort}`,
+        issuerUrl: `${mockOrigin}:${opPort}`,
         settings: defaultSettings,
         cookieSettings: defaultCookieSettings,
       });

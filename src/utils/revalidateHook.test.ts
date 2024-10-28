@@ -13,6 +13,7 @@ import {
   mockActiveSessionWithRealIdTokenRefreshed,
   mockBaseClient,
   mockGetInit,
+  mockOrigin,
   mockResetRecursively,
   mockSessionId,
   rpPort,
@@ -45,7 +46,7 @@ describe("Unit/utils/revalidateHook", () => {
       .guard((app) => app.use(hook).get("/", () => ""))
       .listen(rpPort);
 
-    const res = await app.handle(new Request(`http://localhost:${rpPort}/`));
+    const res = await app.handle(new Request(`${mockOrigin}:${rpPort}/`));
 
     expect(res.status).toBe(401);
     expect(logger?.debug).toHaveBeenCalledWith(
@@ -63,7 +64,7 @@ describe("Unit/utils/revalidateHook", () => {
     (mockBaseClient.fetchSession as Mock<any>).mockReturnValue(null);
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(401);
@@ -85,7 +86,7 @@ describe("Unit/utils/revalidateHook", () => {
     });
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(401);
@@ -110,7 +111,7 @@ describe("Unit/utils/revalidateHook", () => {
     });
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(401);
@@ -135,7 +136,7 @@ describe("Unit/utils/revalidateHook", () => {
     });
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(401);
@@ -158,7 +159,7 @@ describe("Unit/utils/revalidateHook", () => {
     );
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(401);
@@ -187,7 +188,7 @@ describe("Unit/utils/revalidateHook", () => {
     );
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(result).toBe(mockActiveSessionWithRealIdTokenRefreshed);
@@ -206,7 +207,7 @@ describe("Unit/utils/revalidateHook", () => {
     (mockBaseClient.updateSession as Mock<any>).mockReturnValue(null);
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(401);
@@ -229,7 +230,7 @@ describe("Unit/utils/revalidateHook", () => {
     });
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(401);
@@ -252,7 +253,7 @@ describe("Unit/utils/revalidateHook", () => {
     });
 
     const res = await app.handle(
-      new Request(`http://localhost:${rpPort}/`, mockGetInit()),
+      new Request(`${mockOrigin}:${rpPort}/`, mockGetInit()),
     );
 
     expect(res.status).toBe(500);

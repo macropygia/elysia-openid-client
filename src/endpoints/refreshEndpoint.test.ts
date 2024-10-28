@@ -5,6 +5,7 @@ import {
   mockActiveSession,
   mockBaseClient,
   mockGetInit,
+  mockOrigin,
   mockResetRecursively,
 } from "@/mock/const";
 import Elysia from "elysia";
@@ -28,7 +29,7 @@ describe("Unit/endpoints/refreshEndpoint", () => {
   test("Succeeded", async () => {
     const app = new Elysia().use(endpoint.call(mockBaseClient));
     const response = await app.handle(
-      new Request(`http://localhost${path}`, mockGetInit()),
+      new Request(`${mockOrigin}${path}`, mockGetInit()),
     );
 
     expect(response.status).toBe(200);
@@ -45,7 +46,7 @@ describe("Unit/endpoints/refreshEndpoint", () => {
       } as unknown as OidcClient),
     );
     const response = await app.handle(
-      new Request(`http://localhost${path}`, mockGetInit()),
+      new Request(`${mockOrigin}${path}`, mockGetInit()),
     );
 
     expect(response.status).toBe(401);
@@ -60,7 +61,7 @@ describe("Unit/endpoints/refreshEndpoint", () => {
 
     const app = new Elysia().use(endpoint.call(mockBaseClient));
     const response = await app
-      .handle(new Request(`http://localhost${path}`))
+      .handle(new Request(`${mockOrigin}${path}`))
       .then((res) => res.status);
 
     expect(response).toBe(500);

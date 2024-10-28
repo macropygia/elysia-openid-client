@@ -3,6 +3,7 @@ import { defaultSettings } from "@/const";
 import {
   mockActiveSession,
   mockBaseClient,
+  mockOrigin,
   mockResetRecursively,
 } from "@/mock/const";
 import Elysia from "elysia";
@@ -22,7 +23,7 @@ describe("Unit/endpoints/logoutEndpoint", () => {
 
   test("Succeeded", async () => {
     const app = new Elysia().use(endpoint.call(mockBaseClient));
-    const response = await app.handle(new Request(`http://localhost${path}`));
+    const response = await app.handle(new Request(`${mockOrigin}${path}`));
 
     expect(response.status).toBe(303);
     expect(response.headers.get("location")).toBe(redirectPath);
@@ -32,7 +33,7 @@ describe("Unit/endpoints/logoutEndpoint", () => {
     mockBaseClient.fetchSession = mock().mockReturnValue(null);
 
     const app = new Elysia().use(endpoint.call(mockBaseClient));
-    const response = await app.handle(new Request(`http://localhost${path}`));
+    const response = await app.handle(new Request(`${mockOrigin}${path}`));
 
     expect(response.status).toBe(401);
     expect(logger?.warn).toHaveBeenCalledTimes(1);
@@ -45,7 +46,7 @@ describe("Unit/endpoints/logoutEndpoint", () => {
     });
 
     const app = new Elysia().use(endpoint.call(mockBaseClient));
-    const response = await app.handle(new Request(`http://localhost${path}`));
+    const response = await app.handle(new Request(`${mockOrigin}${path}`));
 
     expect(response.status).toBe(500);
     expect(logger?.warn).toHaveBeenCalledTimes(1);

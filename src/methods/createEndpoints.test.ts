@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { OidcClient } from "@/core/OidcClient";
-import { mockBaseOptions } from "@/mock/const";
+import { mockBaseOptions, mockOrigin } from "@/mock/const";
 import { getRandomPort } from "@/mock/getRandomPort";
 import { mockIssuerMetadata } from "@/mock/issuerMetadata";
 import Elysia from "elysia";
@@ -19,8 +19,8 @@ describe("Unit/methods/createEndpoints", async () => {
   const mockOptions = structuredClone(mockBaseOptions);
   const rp = await OidcClient.factory({
     ...mockOptions,
-    baseUrl: `http://localhost:${rpPort}`,
-    issuerUrl: `http://localhost:${opPort}`,
+    baseUrl: `${mockOrigin}:${rpPort}`,
+    issuerUrl: `${mockOrigin}:${opPort}`,
     logger: null,
   });
   const endpoints = rp.endpoints;
@@ -29,9 +29,7 @@ describe("Unit/methods/createEndpoints", async () => {
   const app = new Elysia().use(endpoints).listen(rpPort);
 
   test.each(Object.values(paths))("Default", async (path) => {
-    const res = await app.handle(
-      new Request(`http://localhost:${rpPort}${path}`),
-    );
+    const res = await app.handle(new Request(`${mockOrigin}:${rpPort}${path}`));
     console.log(path, res.status);
     if (path === paths.login) {
       expect(res.status).toBe(303);

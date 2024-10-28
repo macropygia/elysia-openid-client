@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import OidcClient from "@/index";
-import { mockPostInit } from "@/mock/const";
+import { mockOrigin, mockPostInit } from "@/mock/const";
 import { getRandomPort } from "@/mock/getRandomPort";
 import { mockProvider } from "@/mock/mockProvider";
 import Elysia from "elysia";
@@ -10,8 +10,8 @@ describe("Integration/general", async () => {
   const opPort = getRandomPort();
   const rpPort = getRandomPort();
 
-  const baseUrl = `http://localhost:${rpPort}`;
-  const issuerUrl = `http://localhost:${opPort}`;
+  const baseUrl = `${mockOrigin}:${rpPort}`;
+  const issuerUrl = `${mockOrigin}:${opPort}`;
 
   const op = await mockProvider(opPort);
 
