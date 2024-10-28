@@ -365,7 +365,7 @@ export interface OIDCClientMethodArgs {
   /**
    * Cookie object of ElysiaJS
    */
-  cookie: Record<string, Cookie<string>>;
+  cookie: Record<string, Cookie<string | undefined>>;
   /**
    * Session object received from auth hook
    */

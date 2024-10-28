@@ -24,7 +24,7 @@ describe("Unit/utils/extendCookieExpiration", () => {
         value: mockSessionId,
         update: mock(),
       },
-    } as unknown as Record<string, Cookie<string>>;
+    } as unknown as Record<string, Cookie<string | undefined>>;
 
     extendCookieExpiration(ctx, cookie);
 
@@ -50,7 +50,7 @@ describe("Unit/utils/extendCookieExpiration", () => {
       session_id: {
         update: mock(),
       },
-    } as unknown as Record<string, Cookie<string>>;
+    } as unknown as Record<string, Cookie<string | undefined>>;
 
     extendCookieExpiration(ctx, cookie);
 

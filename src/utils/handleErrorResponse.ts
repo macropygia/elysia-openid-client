@@ -15,7 +15,7 @@ export function handleErrorResponse(
   e: unknown,
   currentSession: OIDCClientSession | null,
   ctx: OidcClient,
-  cookie: Record<string, Cookie<string>>,
+  cookie: Record<string, Cookie<string | undefined>>,
 ): Response {
   const { logger } = ctx;
 

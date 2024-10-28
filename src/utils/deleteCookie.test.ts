@@ -23,7 +23,7 @@ describe("Unit/utils/deleteCookie", () => {
         value: undefined,
         update: mock(),
       },
-    } as unknown as Record<string, Cookie<string>>;
+    } as unknown as Record<string, Cookie<string | undefined>>;
     deleteCookie(mockBaseClient, cookie);
 
     expect(

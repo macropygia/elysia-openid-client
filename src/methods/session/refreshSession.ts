@@ -11,7 +11,7 @@ import { TokenSet } from "openid-client";
 export async function refreshSession(
   this: OidcClient,
   sessionId: string,
-  cookie: Record<string, Cookie<string>>,
+  cookie: Record<string, Cookie<string | undefined>>,
 ): Promise<OIDCClientActiveSession | null> {
   const { logger } = this;
 

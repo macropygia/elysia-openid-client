@@ -4,6 +4,7 @@ exports[`Unit/methods/initialize Default: issuer 1`] = `
 Issuer {
   "Client": [class Client],
   "FAPI1Client": [class FAPI1Client],
+  "FAPI2Client": [class FAPI2Client],
   "authorization_endpoint": [native code],
   "claim_types_supported": [native code],
   "claims_parameter_supported": [native code],

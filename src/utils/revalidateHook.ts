@@ -28,7 +28,7 @@ export function revalidateHook(this: OidcClient) {
    * Delete Cookie and return response (401 or 500)
    */
   const abortSession = (
-    cookie: Record<string, Cookie<string>>,
+    cookie: Record<string, Cookie<string | undefined>>,
     status: 401 | 500,
   ) => {
     deleteCookie(this, cookie);
@@ -50,7 +50,7 @@ export function revalidateHook(this: OidcClient) {
       async ({ cookie }) => {
         logger?.trace("utils/revalidateHook");
 
-        const sessionId = cookie[sessionIdName].value as string | undefined;
+        const sessionId = cookie[sessionIdName].value;
         if (!sessionId) {
           logger?.debug("Session ID does not exist (revalidateHook)");
           return abortSession(cookie, 401);

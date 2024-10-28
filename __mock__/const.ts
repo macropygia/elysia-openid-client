@@ -184,7 +184,7 @@ export const mockCookie = {
     remove: mock(),
     update: mock(),
   },
-} as unknown as Record<string, Cookie<string>>;
+} as unknown as Record<string, Cookie<string | undefined>>;
 
 /**
  * Clear calls/instances

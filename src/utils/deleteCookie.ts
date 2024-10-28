@@ -9,7 +9,7 @@ import { addShortId } from "./addShortId.ts";
  */
 export function deleteCookie(
   ctx: OidcClient,
-  cookie: Record<string, Cookie<string>>,
+  cookie: Record<string, Cookie<string | undefined>>,
 ) {
   const {
     cookieSettings: { sessionIdName, httpOnly, secure, sameSite, path },

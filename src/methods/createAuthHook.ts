@@ -34,7 +34,7 @@ export function createAuthHook(this: OidcClient) {
    */
   const abortSession = (
     set: Context["set"],
-    cookie: Record<string, Cookie<string>>,
+    cookie: Record<string, Cookie<string | undefined>>,
   ) => {
     deleteCookie(this, cookie);
     if (!disableRedirect) {
@@ -62,7 +62,7 @@ export function createAuthHook(this: OidcClient) {
           return;
         }
 
-        const sessionId = cookie[sessionIdName].value as string | undefined;
+        const sessionId = cookie[sessionIdName].value;
         if (!sessionId) {
           logger?.debug("Session ID does not exist (authHook)");
           abortSession(set, cookie);

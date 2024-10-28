@@ -9,7 +9,7 @@ import { addShortId } from "./addShortId.ts";
  */
 export function extendCookieExpiration(
   ctx: OidcClient,
-  cookie: Record<string, Cookie<string>>,
+  cookie: Record<string, Cookie<string | undefined>>,
 ) {
   const {
     settings: { refreshExpiration },
@@ -43,7 +43,7 @@ export function extendCookieExpiration(
       `Cookie expiration has been extended: ${cookie[
         sessionIdName
       ].expires?.toLocaleString()}`,
-      cookie[sessionIdName].value,
+      cookie[sessionIdName].value || "Cookie value is empty",
     ),
   );
 }
