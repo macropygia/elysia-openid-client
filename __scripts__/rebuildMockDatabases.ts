@@ -7,7 +7,7 @@ import {
   lowMockFile,
   mockActiveSession,
   sqliteMockFile,
-} from "@mock/const";
+} from "@/mock/const";
 import { sleep } from "bun";
 
 // SQLite

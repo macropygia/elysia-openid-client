@@ -5,8 +5,8 @@ import {
   mockBaseClient,
   mockClearRecursively,
   mockCookie,
-} from "@mock/const";
-import { handleErrorResponse } from "./handleErrorResponse";
+} from "@/mock/const";
+import { handleErrorResponse } from "./handleErrorResponse.ts";
 
 describe("Unit/utils/handleErrorResponse", () => {
   mockCookie[defaultCookieSettings.sessionIdName].update = mock();
@@ -19,7 +19,7 @@ describe("Unit/utils/handleErrorResponse", () => {
   test("Session exists and delete", () => {
     expect(
       handleErrorResponse(
-        new Error(),
+        new Error("Error"),
         mockActiveSession,
         mockBaseClient,
         mockCookie,
@@ -33,7 +33,8 @@ describe("Unit/utils/handleErrorResponse", () => {
 
   test("Session does not exist", () => {
     expect(
-      handleErrorResponse(new Error(), null, mockBaseClient, mockCookie).status,
+      handleErrorResponse(new Error("Error"), null, mockBaseClient, mockCookie)
+        .status,
     ).toBe(401);
     expect(mockBaseClient.deleteSession).not.toHaveBeenCalled();
     expect(

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { mockActiveSession } from "@mock/const";
-import { LokiInMemoryAdapter } from "./LokiInMemoryAdapter";
+import { mockActiveSession } from "@/mock/const";
+import { LokiInMemoryAdapter } from "./LokiInMemoryAdapter.ts";
 
 describe("Unit/dataAdapter/LokiInMemoryAdapter", () => {
   test("Default", () => {

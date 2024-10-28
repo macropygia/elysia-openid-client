@@ -1,13 +1,13 @@
 import { afterAll, beforeEach, describe, expect, test } from "bun:test";
-import type { OIDCClientDataAdapter, OIDCClientSession } from "@/types";
-import { addShortId } from "@/utils/addShortId";
 import {
   mockActiveSession,
   mockBaseClient,
   mockResetRecursively,
   mockSessionId,
-} from "@mock/const";
-import { fetchSession } from "./fetchSession";
+} from "@/mock/const";
+import type { OIDCClientDataAdapter, OIDCClientSession } from "@/types";
+import { addShortId } from "@/utils/addShortId";
+import { fetchSession } from "./fetchSession.ts";
 
 describe("Unit/methods/fetchSession", () => {
   const mockSession = (session: OIDCClientSession | null) =>

@@ -7,16 +7,20 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lint": "biome check ."
   },
   "dependencies": {
-    "@astrojs/check": "^0.7.0",
-    "@astrojs/starlight": "^0.23.2",
-    "astro": "^4.9.2",
-    "sharp": "^0.33.4",
-    "starlight-typedoc": "^0.12.1",
-    "typedoc": "^0.25.13",
-    "typedoc-plugin-markdown": "^4.0.3",
-    "typescript": "^5.4.5"
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/starlight": "^0.28.3",
+    "astro": "^4.16.7",
+    "sharp": "^0.33.5",
+    "starlight-typedoc": "^0.16.0",
+    "typedoc": "^0.26.10",
+    "typedoc-plugin-markdown": "^4.2.9",
+    "typescript": "^5.6.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4"
   }
 }

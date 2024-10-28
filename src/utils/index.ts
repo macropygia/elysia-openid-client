@@ -1,10 +1,10 @@
-import { deleteCookie } from "./deleteCookie";
-import { extendCookieExpiration } from "./extendCookieExpiration";
-import { getClaimsFromIdToken } from "./getClaimsFromIdToken";
-import { handleErrorResponse } from "./handleErrorResponse";
-import { revalidateHook } from "./revalidateHook";
-import { sessionToStatus } from "./sessionToStatus";
-import { validateOptions } from "./validateOptions";
+import { deleteCookie } from "./deleteCookie.ts";
+import { extendCookieExpiration } from "./extendCookieExpiration.ts";
+import { getClaimsFromIdToken } from "./getClaimsFromIdToken.ts";
+import { handleErrorResponse } from "./handleErrorResponse.ts";
+import { revalidateHook } from "./revalidateHook.ts";
+import { sessionToStatus } from "./sessionToStatus.ts";
+import { validateOptions } from "./validateOptions.ts";
 
 export {
   revalidateHook,

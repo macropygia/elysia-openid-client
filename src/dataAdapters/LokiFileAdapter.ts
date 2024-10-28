@@ -1,6 +1,6 @@
 import type { OIDCClientSession } from "@/types";
 import loki from "lokijs";
-import { BaseLokiAdapter } from "./BaseLokiAdapter";
+import { BaseLokiAdapter } from "./BaseLokiAdapter.ts";
 
 export interface LokiFileAdapterOptions {
   /**
@@ -94,7 +94,7 @@ export class LokiFileAdapter extends BaseLokiAdapter {
             resolve();
           } else if (Date.now() - startTime > initMaxWaitTime) {
             clearInterval(interval);
-            reject(new Error());
+            reject(new Error("Database not available within timeout"));
           }
         }, 100);
         const startTime = Date.now();

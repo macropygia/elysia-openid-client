@@ -4,7 +4,7 @@ import { deleteCookie } from "@/utils/deleteCookie";
 import { extendCookieExpiration } from "@/utils/extendCookieExpiration";
 import { getClaimsFromIdToken } from "@/utils/getClaimsFromIdToken";
 import { type Cookie, Elysia } from "elysia";
-import { addShortId } from "./addShortId";
+import { addShortId } from "./addShortId.ts";
 
 /**
  * Before handle for auto refresh

@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import { lowMockFile, mockActiveSession } from "@mock/const";
+import { lowMockFile, mockActiveSession } from "@/mock/const";
 import { sleep } from "bun";
-import { LowdbAdapter } from "./LowdbAdapter";
+import { LowdbAdapter } from "./LowdbAdapter.ts";
 
 describe("Unit/dataAdapter/LowdbAdapter", () => {
   test("Default", async () => {

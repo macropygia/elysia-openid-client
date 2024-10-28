@@ -5,9 +5,9 @@ import {
   mockBaseClient,
   mockGetInit,
   mockResetRecursively,
-} from "@mock/const";
+} from "@/mock/const";
 import Elysia from "elysia";
-import { userinfoEndpoint } from "./userinfoEndpoint";
+import { userinfoEndpoint } from "./userinfoEndpoint.ts";
 
 describe("Unit/endpoints/userinfoEndpoint", () => {
   const endpoint = userinfoEndpoint;

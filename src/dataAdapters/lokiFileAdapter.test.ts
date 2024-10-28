@@ -1,8 +1,8 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import fs from "node:fs";
-import { lokiMockFile, lokiTempFile, mockActiveSession } from "@mock/const";
+import { lokiMockFile, lokiTempFile, mockActiveSession } from "@/mock/const";
 import { sleep } from "bun";
-import { LokiFileAdapter } from "./LokiFileAdapter";
+import { LokiFileAdapter } from "./LokiFileAdapter.ts";
 
 describe("Unit/dataAdapter/LokiFileAdapter", () => {
   test("Default", async () => {

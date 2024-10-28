@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, test } from "bun:test";
 import { defaultSettings } from "@/const";
-import type {} from "@/types";
-import { sessionToStatus } from "@/utils/sessionToStatus";
 import {
   mockActiveSessionWithRealIdToken,
   mockBaseClient,
   mockPostInit,
   mockResetRecursively,
-} from "@mock/const";
+} from "@/mock/const";
+import type {} from "@/types";
+import { sessionToStatus } from "@/utils/sessionToStatus";
 import { Elysia } from "elysia";
-import { statusEndpoint } from "./statusEndpoint";
+import { statusEndpoint } from "./statusEndpoint.ts";
 
 describe("Unit/endpoints/statusEndpoint", () => {
   const endpoint = statusEndpoint;

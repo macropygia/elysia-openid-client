@@ -4,7 +4,15 @@
     "enabled": true
   },
   "files": {
-    "ignore": ["node_modules", "dist", "coverage", "*.d.ts", "*.js", ".astro"]
+    "ignore": [
+      "node_modules",
+      "dist",
+      "coverage",
+      "website",
+      "*.d.ts",
+      "*.js",
+      ".astro"
+    ]
   },
   "linter": {
     "enabled": true,
@@ -14,14 +22,13 @@
         "noNodejsModules": "off"
       },
       "nursery": {
-        "noConsole": "off",
         "useImportRestrictions": "off"
       },
       "style": {
         "useNamingConvention": "off"
       },
       "suspicious": {
-        "noConsoleLog": "off"
+        "noConsole": "off"
       }
     }
   },
@@ -42,11 +49,27 @@
       "linter": {
         "rules": {
           "suspicious": {
+            "noConsole": "off",
+            "noConsoleLog": "off",
             "noEmptyBlockStatements": "off",
             "noExplicitAny": "off"
           },
           "performance": {
             "noDelete": "off"
+          },
+          "style": {
+            "useThrowOnlyError": "off"
+          }
+        }
+      }
+    },
+    {
+      "include": ["__scripts__"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConsole": "off",
+            "noConsoleLog": "off"
           }
         }
       }

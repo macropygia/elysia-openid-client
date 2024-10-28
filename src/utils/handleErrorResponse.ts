@@ -1,7 +1,7 @@
 import type { OidcClient } from "@/core/OidcClient";
 import type { OIDCClientSession } from "@/types";
 import type { Cookie } from "elysia";
-import { deleteCookie } from "./deleteCookie";
+import { deleteCookie } from "./deleteCookie.ts";
 
 /**
  * Handle error response

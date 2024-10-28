@@ -1,6 +1,4 @@
 import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test";
-import { sessionToStatus } from "@/utils";
-import { addShortId } from "@/utils/addShortId";
 import {
   mockActiveSessionWithRealIdToken,
   mockActiveSessionWithRealIdTokenExpired,
@@ -11,9 +9,11 @@ import {
   mockResetRecursively,
   mockSessionId,
   rpPort,
-} from "@mock/const";
+} from "@/mock/const";
+import { sessionToStatus } from "@/utils";
+import { addShortId } from "@/utils/addShortId";
 import Elysia from "elysia";
-import { createAuthHook } from "./createAuthHook";
+import { createAuthHook } from "./createAuthHook.ts";
 
 describe("Unit/methods/createAuthHook", () => {
   const { logger } = mockBaseClient;

@@ -23,7 +23,7 @@ import type {
   UnknownObject,
   UserinfoResponse,
 } from "openid-client";
-import { BaseOidcClient } from "./BaseOidcClient";
+import { BaseOidcClient } from "./BaseOidcClient.ts";
 
 /**
  * OpenID Connect client plugin for ElysiaJS

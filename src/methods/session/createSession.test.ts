@@ -1,7 +1,7 @@
 import { afterAll, beforeEach, describe, expect, test } from "bun:test";
 import { SQLiteAdapter } from "@/dataAdapters/SQLiteAdapter";
-import { mockBaseClient, mockResetRecursively } from "@mock/const";
-import { createSession } from "./createSession";
+import { mockBaseClient, mockResetRecursively } from "@/mock/const";
+import { createSession } from "./createSession.ts";
 
 describe("Unit/methods/createSession", () => {
   const sessions = new SQLiteAdapter();

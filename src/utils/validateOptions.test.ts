@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from "bun:test";
 import type { BaseOidcClient } from "@/core/BaseOidcClient";
-import { mockBaseOptions } from "@mock/const";
-import { validateOptions } from "./validateOptions";
+import { mockBaseOptions } from "@/mock/const";
+import { validateOptions } from "./validateOptions.ts";
 
 describe("Unit/utils/validateOptions", () => {
   let options: BaseOidcClient;

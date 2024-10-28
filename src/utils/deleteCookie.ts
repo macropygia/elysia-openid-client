@@ -1,6 +1,6 @@
 import type { OidcClient } from "@/core/OidcClient";
 import type { Cookie } from "elysia";
-import { addShortId } from "./addShortId";
+import { addShortId } from "./addShortId.ts";
 
 /**
  * Delete session cookie

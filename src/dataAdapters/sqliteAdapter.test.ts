@@ -1,8 +1,12 @@
 import { describe, expect, test } from "bun:test";
 import fs from "node:fs";
-import { mockActiveSession, sqliteMockFile, sqliteTempFile } from "@mock/const";
+import {
+  mockActiveSession,
+  sqliteMockFile,
+  sqliteTempFile,
+} from "@/mock/const";
 import { sleep } from "bun";
-import { SQLiteAdapter } from "./SQLiteAdapter";
+import { SQLiteAdapter } from "./SQLiteAdapter.ts";
 
 describe("Unit/dataAdapter/SQLiteAdapter", () => {
   test("Default", () => {

@@ -5,10 +5,10 @@ import {
   mockResetRecursively,
   mockSessionId,
   opPort,
-} from "@mock/const";
+} from "@/mock/const";
 import Elysia from "elysia";
 import setCookie from "set-cookie-parser";
-import { loginEndpoint } from "./loginEndpoint";
+import { loginEndpoint } from "./loginEndpoint.ts";
 
 describe("Unit/endpoints/loginEndpoint", () => {
   const endpoint = loginEndpoint;
@@ -51,7 +51,7 @@ describe("Unit/endpoints/loginEndpoint", () => {
 
   test("Failed", async () => {
     mockBaseClient.createSession = mock().mockImplementation(() => {
-      throw new Error();
+      throw new Error("Error");
     });
 
     const app = new Elysia().use(endpoint.call(mockBaseClient));

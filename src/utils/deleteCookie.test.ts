@@ -1,8 +1,8 @@
 import { beforeAll, describe, expect, mock, test } from "bun:test";
 import { defaultCookieSettings } from "@/const";
-import { mockBaseClient, mockCookie, mockResetRecursively } from "@mock/const";
+import { mockBaseClient, mockCookie, mockResetRecursively } from "@/mock/const";
 import type { Cookie } from "elysia";
-import { deleteCookie } from "./deleteCookie";
+import { deleteCookie } from "./deleteCookie.ts";
 
 describe("Unit/utils/deleteCookie", () => {
   beforeAll(() => {

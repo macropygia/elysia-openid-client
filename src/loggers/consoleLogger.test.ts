@@ -7,7 +7,7 @@ import {
   spyOn,
   test,
 } from "bun:test";
-import { consoleLogger } from "./consoleLogger";
+import { consoleLogger } from "./consoleLogger.ts";
 
 describe("Unit/loggers/consoleLogger", () => {
   let logDebug: Mock<() => void>;

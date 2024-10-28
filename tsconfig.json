@@ -28,7 +28,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@mock/*": ["__mock__/*"]
+      "@/mock/*": ["__mock__/*"]
     }
   },
   "exclude": ["website", "coverage"]

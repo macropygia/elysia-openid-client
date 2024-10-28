@@ -16,10 +16,10 @@ import {
   mockResetRecursively,
   mockSessionId,
   rpPort,
-} from "@mock/const";
+} from "@/mock/const";
 import Elysia from "elysia";
-import { addShortId } from "./addShortId";
-import { revalidateHook } from "./revalidateHook";
+import { addShortId } from "./addShortId.ts";
+import { revalidateHook } from "./revalidateHook.ts";
 
 describe("Unit/utils/revalidateHook", () => {
   const { logger } = mockBaseClient;

@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test";
 import { defaultSettings } from "@/const";
-import type {} from "@/types";
 import {
   mockActiveSessionWithRealIdToken,
   mockBaseClient,
   mockIdTokenClaims,
   mockPostInit,
   mockResetRecursively,
-} from "@mock/const";
+} from "@/mock/const";
+import type {} from "@/types";
 import { Elysia } from "elysia";
-import { claimsEndpoint } from "./claimsEndpoint";
+import { claimsEndpoint } from "./claimsEndpoint.ts";
 
 describe("Unit/endpoints/claimsEndpoint", () => {
   const endpoint = claimsEndpoint;

@@ -1,6 +1,6 @@
 import type { OIDCClientSession } from "@/types";
 import loki from "lokijs";
-import { BaseLokiAdapter } from "./BaseLokiAdapter";
+import { BaseLokiAdapter } from "./BaseLokiAdapter.ts";
 
 export interface LokiInMemoryAdapterOptions {
   /**

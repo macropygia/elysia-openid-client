@@ -1,13 +1,13 @@
-import { callbackEndpoint } from "./callbackEndpoint";
-import { claimsEndpoint } from "./claimsEndpoint";
-import { introspectEndpoint } from "./introspectEndpoint";
-import { loginEndpoint } from "./loginEndpoint";
-import { logoutEndpoint } from "./logoutEndpoint";
-import { refreshEndpoint } from "./refreshEndpoint";
-import { resourceEndpoint } from "./resourceEndpoint";
-import { revokeEndpoint } from "./revokeEndpoint";
-import { statusEndpoint } from "./statusEndpoint";
-import { userinfoEndpoint } from "./userinfoEndpoint";
+import { callbackEndpoint } from "./callbackEndpoint.ts";
+import { claimsEndpoint } from "./claimsEndpoint.ts";
+import { introspectEndpoint } from "./introspectEndpoint.ts";
+import { loginEndpoint } from "./loginEndpoint.ts";
+import { logoutEndpoint } from "./logoutEndpoint.ts";
+import { refreshEndpoint } from "./refreshEndpoint.ts";
+import { resourceEndpoint } from "./resourceEndpoint.ts";
+import { revokeEndpoint } from "./revokeEndpoint.ts";
+import { statusEndpoint } from "./statusEndpoint.ts";
+import { userinfoEndpoint } from "./userinfoEndpoint.ts";
 
 export {
   callbackEndpoint,

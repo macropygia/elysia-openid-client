@@ -7,9 +7,9 @@ import {
   mockResetRecursively,
   mockSessionId,
   rpPort,
-} from "@mock/const";
+} from "@/mock/const";
 import Elysia from "elysia";
-import { callbackEndpoint } from "./callbackEndpoint";
+import { callbackEndpoint } from "./callbackEndpoint.ts";
 
 describe("Unit/endpoints/callbackEndpoint", () => {
   const endpoint = callbackEndpoint;

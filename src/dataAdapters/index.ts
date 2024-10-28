@@ -1,8 +1,8 @@
-import { LokiFileAdapter } from "./LokiFileAdapter";
-import { LokiInMemoryAdapter } from "./LokiInMemoryAdapter";
-import { LowdbAdapter } from "./LowdbAdapter";
-import { RedisAdapter } from "./RedisAdapter";
-import { SQLiteAdapter } from "./SQLiteAdapter";
+import { LokiFileAdapter } from "./LokiFileAdapter.ts";
+import { LokiInMemoryAdapter } from "./LokiInMemoryAdapter.ts";
+import { LowdbAdapter } from "./LowdbAdapter.ts";
+import { RedisAdapter } from "./RedisAdapter.ts";
+import { SQLiteAdapter } from "./SQLiteAdapter.ts";
 
 export {
   LokiFileAdapter,

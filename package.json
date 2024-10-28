@@ -37,7 +37,7 @@
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
-    "openid-client": "^5.6.5"
+    "openid-client": "^5.7.0"
   },
   "peerDependencies": {
     "elysia": "^1.0.23",
@@ -66,30 +66,30 @@
     }
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.8.1",
-    "@changesets/cli": "^2.27.5",
-    "@commitlint/cli": "^19.3.0",
-    "@commitlint/config-conventional": "^19.2.2",
+    "@biomejs/biome": "^1.9.4",
+    "@changesets/cli": "^2.27.9",
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
     "@types/bun": "latest",
     "@types/lokijs": "^1.5.14",
-    "@types/set-cookie-parser": "^2.4.9",
-    "elysia": "^1.0.23",
+    "@types/set-cookie-parser": "^2.4.10",
+    "elysia": "^1.1.23",
     "ioredis": "^5.4.1",
-    "jose": "^5.4.0",
-    "lint-staged": "^15.2.7",
+    "jose": "^5.9.6",
+    "lint-staged": "^15.2.10",
     "lokijs": "^1.5.12",
     "lowdb": "^7.0.1",
-    "pino": "^9.2.0",
-    "pino-pretty": "^11.2.1",
-    "set-cookie-parser": "^2.6.0",
+    "pino": "^9.5.0",
+    "pino-pretty": "^11.3.0",
+    "set-cookie-parser": "^2.7.1",
     "simple-git-hooks": "^2.11.1",
-    "tsup": "^8.1.0",
-    "typescript": "^5.4.5"
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3"
   },
   "engines": {
     "bun": "^1.1.10"
   },
-  "packageManager": "bun@1.1.10",
+  "packageManager": "bun@1.1.33",
   "simple-git-hooks": {
     "pre-commit": "bunx lint-staged",
     "commit-msg": "bunx commitlint -e"

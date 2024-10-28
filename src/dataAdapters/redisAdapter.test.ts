@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { mockActiveSession, mockLoginSession } from "@mock/const";
-import { RedisAdapter } from "./RedisAdapter";
+import { mockActiveSession, mockLoginSession } from "@/mock/const";
+import { RedisAdapter } from "./RedisAdapter.ts";
 
 describe("Unit/dataAdapter/RedisAdapter", () => {
   test.skipIf(!process.env.REDIS_HOST)("Default", async () => {

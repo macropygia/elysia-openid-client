@@ -1,4 +1,4 @@
-import { BaseOidcClient } from "./BaseOidcClient";
-import { OidcClient } from "./OidcClient";
+import { BaseOidcClient } from "./BaseOidcClient.ts";
+import { OidcClient } from "./OidcClient.ts";
 
 export { BaseOidcClient, OidcClient };

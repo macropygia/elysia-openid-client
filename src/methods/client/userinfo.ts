@@ -1,6 +1,6 @@
 import type { OidcClient } from "@/core";
 import type { OIDCClientMethodArgs } from "@/types";
-import { revalidateSession } from "./revalidateSession";
+import { revalidateSession } from "./revalidateSession.ts";
 
 export async function userinfo(this: OidcClient, args: OIDCClientMethodArgs) {
   const { logger } = this;

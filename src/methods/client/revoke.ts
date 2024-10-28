@@ -1,7 +1,7 @@
 import type { OidcClient } from "@/core";
 import type { OIDCClientMethodArgs } from "@/types";
 import { deleteCookie } from "@/utils";
-import { revalidateSession } from "./revalidateSession";
+import { revalidateSession } from "./revalidateSession.ts";
 // import type { Cookie } from "elysia";
 
 export async function revoke(this: OidcClient, args: OIDCClientMethodArgs) {

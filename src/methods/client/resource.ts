@@ -1,6 +1,6 @@
 import type { OidcClient } from "@/core";
 import type { OIDCClientMethodArgs } from "@/types";
-import { revalidateSession } from "./revalidateSession";
+import { revalidateSession } from "./revalidateSession.ts";
 // import type { Cookie } from "elysia";
 
 export async function resource(

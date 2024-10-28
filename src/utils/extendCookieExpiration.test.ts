@@ -1,8 +1,8 @@
 import { describe, expect, mock, test } from "bun:test";
 import type { OidcClient } from "@/core/OidcClient";
-import { type DeepPartial, logger, mockSessionId } from "@mock/const";
+import { type DeepPartial, logger, mockSessionId } from "@/mock/const";
 import type { Cookie } from "elysia";
-import { extendCookieExpiration } from "./extendCookieExpiration";
+import { extendCookieExpiration } from "./extendCookieExpiration.ts";
 
 describe("Unit/utils/extendCookieExpiration", () => {
   test("Succeeded", () => {

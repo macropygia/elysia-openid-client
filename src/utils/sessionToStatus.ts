@@ -3,7 +3,7 @@ import type {
   OIDCClientLogger,
   OIDCClientSessionStatus,
 } from "@/types";
-import { getClaimsFromIdToken } from "./getClaimsFromIdToken";
+import { getClaimsFromIdToken } from "./getClaimsFromIdToken.ts";
 
 /**
  * Convert session data to session status

@@ -4,8 +4,8 @@ import {
   mockActiveSession,
   mockBaseClient,
   mockResetRecursively,
-} from "@mock/const";
-import { deleteSession } from "./deleteSession";
+} from "@/mock/const";
+import { deleteSession } from "./deleteSession.ts";
 
 describe("Unit/methods/deleteSession", () => {
   const sessions = new SQLiteAdapter();

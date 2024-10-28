@@ -2,7 +2,7 @@ import type { OidcClient } from "@/core";
 import type { OIDCClientMethodArgs } from "@/types";
 import {} from "@/utils";
 import { TokenSet } from "openid-client";
-import { revalidateSession } from "./revalidateSession";
+import { revalidateSession } from "./revalidateSession.ts";
 
 export async function refresh(this: OidcClient, args: OIDCClientMethodArgs) {
   const { logger } = this;

@@ -1,8 +1,8 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { OidcClient } from "@/core/OidcClient";
-import { mockBaseOptions } from "@mock/const";
-import { getRandomPort } from "@mock/getRandomPort";
-import { mockIssuerMetadata } from "@mock/issuerMetadata";
+import { mockBaseOptions } from "@/mock/const";
+import { getRandomPort } from "@/mock/getRandomPort";
+import { mockIssuerMetadata } from "@/mock/issuerMetadata";
 import Elysia from "elysia";
 
 describe("Unit/methods/createEndpoints", async () => {

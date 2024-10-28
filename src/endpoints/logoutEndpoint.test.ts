@@ -4,9 +4,9 @@ import {
   mockActiveSession,
   mockBaseClient,
   mockResetRecursively,
-} from "@mock/const";
+} from "@/mock/const";
 import Elysia from "elysia";
-import { logoutEndpoint } from "./logoutEndpoint";
+import { logoutEndpoint } from "./logoutEndpoint.ts";
 
 describe("Unit/endpoints/logoutEndpoint", () => {
   const endpoint = logoutEndpoint;

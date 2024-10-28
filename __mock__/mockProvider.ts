@@ -9,13 +9,13 @@ import {
   type TokenSetParameters,
   generators,
 } from "openid-client";
-import { mockIssuerMetadata } from "./issuerMetadata";
+import { mockIssuerMetadata } from "./issuerMetadata.ts";
 
 export const mockProvider = async (port: number) => {
   const logger = consoleLogger();
 
   // JWT
-  const keys = [];
+  const keys: Record<string, string | undefined>[] = [];
   const { privateKey } = await jose.generateKeyPair("RS256", {
     extractable: true,
   });

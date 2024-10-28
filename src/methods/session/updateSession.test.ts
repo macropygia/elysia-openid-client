@@ -1,17 +1,17 @@
 import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test";
 import type { OidcClient } from "@/core/OidcClient";
 import { SQLiteAdapter } from "@/dataAdapters/SQLiteAdapter";
-import type { OIDCClientOptions } from "@/types";
-import { addShortId } from "@/utils/addShortId";
 import {
   type DeepPartial,
   mockActiveSession,
   mockBaseClient,
   mockResetRecursively,
   mockSessionId,
-} from "@mock/const";
+} from "@/mock/const";
+import type { OIDCClientOptions } from "@/types";
+import { addShortId } from "@/utils/addShortId";
 import type { TokenSet } from "openid-client";
-import { updateSession } from "./updateSession";
+import { updateSession } from "./updateSession.ts";
 
 describe("Unit/methods/updateSession", () => {
   const sessions = new SQLiteAdapter();

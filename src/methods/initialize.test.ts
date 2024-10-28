@@ -1,9 +1,9 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { BaseOidcClient } from "@/core/BaseOidcClient";
-import { mockBaseOptions } from "@mock/const";
-import { getRandomPort } from "@mock/getRandomPort";
-import { mockProvider } from "@mock/mockProvider";
-import { initialize } from "./initialize";
+import { mockBaseOptions } from "@/mock/const";
+import { getRandomPort } from "@/mock/getRandomPort";
+import { mockProvider } from "@/mock/mockProvider";
+import { initialize } from "./initialize.ts";
 
 describe("Unit/methods/initialize", async () => {
   const opPort = getRandomPort();

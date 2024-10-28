@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { mockActiveSessionWithRealIdToken, mockLogger } from "@mock/const";
-import { sessionToStatus } from "./sessionToStatus";
+import { mockActiveSessionWithRealIdToken, mockLogger } from "@/mock/const";
+import { sessionToStatus } from "./sessionToStatus.ts";
 
 describe("Unit/utils/sessionToStatus", () => {
   test("Default", () => {
