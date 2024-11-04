@@ -19,11 +19,11 @@ export function deleteCookie(
 
   // cookie[sessionIdName].remove(); // NOTE: No effect (2024-04-19)
 
-  if (cookie[sessionIdName].value) {
+  if (cookie[sessionIdName]) {
     logger?.debug(
       addShortId(
         `Session ID Cookie deleted: ${cookie[sessionIdName].value}`,
-        cookie[sessionIdName].value,
+        cookie[sessionIdName].value || "Cookie value is empty",
       ),
     );
     cookie[sessionIdName].update({
