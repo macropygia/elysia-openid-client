@@ -1,5 +1,11 @@
 # elysia-openid-client
 
+## 0.1.12
+
+### Patch Changes
+
+- 6fe7de6: Bump dependencies
+
 ## 0.1.11
 
 ### Patch Changes
