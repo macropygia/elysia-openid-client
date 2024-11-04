@@ -28,6 +28,6 @@ describe("Unit/utils/deleteCookie", () => {
 
     expect(
       cookie[mockBaseClient.cookieSettings.sessionIdName].update,
-    ).not.toHaveBeenCalled();
+    ).toHaveBeenCalledTimes(1);
   });
 });
