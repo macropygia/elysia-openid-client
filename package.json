@@ -73,7 +73,7 @@
     "@types/bun": "latest",
     "@types/lokijs": "^1.5.14",
     "@types/set-cookie-parser": "^2.4.10",
-    "elysia": "^1.1.23",
+    "elysia": "^1.1.24",
     "ioredis": "^5.4.1",
     "jose": "^5.9.6",
     "lint-staged": "^15.2.10",
@@ -89,7 +89,7 @@
   "engines": {
     "bun": "^1.1.10"
   },
-  "packageManager": "bun@1.1.33",
+  "packageManager": "bun@1.1.34",
   "simple-git-hooks": {
     "pre-commit": "bunx lint-staged",
     "commit-msg": "bunx commitlint -e"
